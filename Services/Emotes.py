@@ -20,12 +20,14 @@ def happy(walle):
     walle.sadness(0)
     walle.eyebrow(1)
     walle.blink()
+    #Mettre un son joyeux
 
 def sadness(walle):
     walle.sadness(1)
     walle.eyebrow(1)
     walle.lid(0.4)
     #walle.neck_level(0)
+    #Mettre un son triste
 
 def rizz(walle):
     walle.lid(0.4)
@@ -54,10 +56,21 @@ def looking(walle):
     time.sleep(3)
     walle.neckLR(0.5)
 
+def surprise(walle):
+    walle.eyebrow(1)
+    walle.sadness(0.8)
+    walle.headAngle(0)
+    #Mettre le son "Wow!"
+    time.sleep(2)
+    walle.eyebrow(0)
+    walle.sadness(1)
+    walle.headAngle(0.5)
+
 EMOTES = {
     "Auto_adjust": auto_adjust,
     "Happy": happy,
     "Sadness": sadness,
     "Rizz": rizz,
-    "Looking": looking
+    "Looking": looking,
+    "Surprise": surprise
 }
