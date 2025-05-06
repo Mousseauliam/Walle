@@ -1,7 +1,7 @@
 import time
 
 def auto_adjust(walle):
-    walle.headAngle(0)
+    walle.headAngle(0.5)
     walle.coef['UD_R'] = 0
     walle.update(['UD_R'])
     time.sleep(1)
@@ -20,6 +20,11 @@ def happy(walle):
     walle.sadness(0)
     walle.eyebrow(1)
     walle.blink()
+
+def angry(walle):
+    walle.sadness(0.5)
+    walle.eyebrow(1)
+    walle.
 
 EMOTES = {
     "Auto_adjust": auto_adjust,
