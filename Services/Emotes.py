@@ -21,6 +21,11 @@ def happy(walle):
     walle.eyebrow(1)
     walle.blink()
 
+def angry(walle):
+    walle.sadness(0.5)
+    walle.eyebrow(1)
+    walle.
+
 EMOTES = {
     "Auto_adjust": auto_adjust,
     "Happy": happy
