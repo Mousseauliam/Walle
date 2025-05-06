@@ -32,7 +32,9 @@ def run(robot,server):
             if (head_angle!= head_angle_temp):
                 robot.headAngle(head_angle_temp)
                 
-
+            if head_factor[2] :
+                robot.blink()
+            
             time.sleep(0.1) 
 
 def stop():

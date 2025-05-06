@@ -27,7 +27,7 @@ GPIO.setup(pinBtn_T, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 GPIO.setup(pinBtn_S, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
 
-#server run
+#server
 flask_thread = threading.Thread(target=server.run_web_server)
 flask_thread.daemon = True
 flask_thread.start()

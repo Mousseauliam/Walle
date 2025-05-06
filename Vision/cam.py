@@ -23,6 +23,11 @@ x_position_history = [0]*5
 y_position_history = [0]*5
 head_detected = False
 
+blink_threshold = 0.12
+blink = False
+L_eye_closed = False
+R_eye_closed = False
+
 def gen_frames():
     global last_frame, last_results
     while True:
@@ -47,13 +52,20 @@ def gen_frames():
 
 
 def frame_process():
-    global last_frame, last_results, head_detected
+    global last_frame, last_results, head_detected, blink
     if last_results.multi_face_landmarks:
         head_detected = True
         face_landmarks = last_results.multi_face_landmarks[0]
         L_eye_bottom = face_landmarks.landmark[145] 
         R_eye_bottom = face_landmarks.landmark[374] 
-        nose_tip = face_landmarks.landmark[1]  
+        nose_tip = face_landmarks.landmark[1]
+        
+        L_eye_top = face_landmarks.landmark[159]  # Haut de l'œil gauche
+        R_eye_top = face_landmarks.landmark[386]  # Haut de l'œil droit
+        L_eye_L = face_landmarks.landmark[130]  # Coin gauche œil gauche
+        L_eye_R = face_landmarks.landmark[133]  # Coin droit œil gauche
+        R_eye_L = face_landmarks.landmark[362]  # Coin gauche œil droit
+        R_eye_R = face_landmarks.landmark[263]  # Coin droit œil droit  
 
         # position
         x_position_history.pop(0)
@@ -67,6 +79,25 @@ def frame_process():
         angle = np.arctan2(dy, dx)
         head_tilt_history.pop(0)
         head_tilt_history.append((angle / (np.pi / 4) + 1) / 2)
+        
+        #blink detection
+        L_eye_ratio = abs(L_eye_top.y - L_eye_bottom.y)/abs(L_eye_L.x-L_eye_R.x)
+        R_eye_ratio = abs(R_eye_top.y - R_eye_bottom.y)/abs(R_eye_L.x-R_eye_R.x)
+
+        if L_eye_ratio < blink_threshold:
+            if not L_eye_closed:
+                blink = True
+                L_eye_closed = True
+        else:
+            L_eye_closed = False
+
+        if R_eye_ratio < blink_threshold:
+            if not R_eye_closed:
+                blink = True
+                R_eye_closed = True
+        else:
+            R_eye_closed = False
+            
     else:
         head_detected = False
         return None
@@ -75,7 +106,10 @@ def get_head_factor():
     x_position= round(sum(x_position_history) / len(x_position_history),2)
     y_position= round(sum(y_position_history) / len(y_position_history),2)
     head_tilt = round(sum(head_tilt_history) / len(head_tilt_history),2)
+    res = [x_position, y_position, head_tilt, blink ]
+    blink = False
+    
     if head_detected:
-        return [x_position, y_position, head_tilt]
+        return res
     else:
         return None
