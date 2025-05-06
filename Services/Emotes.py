@@ -41,17 +41,16 @@ def rizz(walle):
 def looking(walle):
     walle.neckLR(0)
     walle.neckAngle(0.8)
-    time.sleep(1)
+    time.sleep(3)
     walle.blink()
     walle.neckLR(1)
-    time.sleep(1)
-    walle.neckAngle(0.2)
-    time.sleep(1)
-    walle.neckLR(1)
-    walle.blink()
-    time.sleep(1)
-    walle.neckLR(0.5)
+    time.sleep(3)
     walle.neckAngle(0.5)
+    time.sleep(3)
+    walle.neckLR(1)
+    walle.blink()
+    time.sleep(3)
+    walle.neckLR(0.5)
 
 EMOTES = {
     "Auto_adjust": auto_adjust,
