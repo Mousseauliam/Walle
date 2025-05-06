@@ -78,7 +78,7 @@ while cap.isOpened():
                     R_eye_closed = True
             else:
                 R_eye_closed = False
-
+            print(f"Clignements gauche: {L_blink_count}, Clignements droit: {R_blink_count}")
             """
             # Affichage des compteurs de clignement
             cv2.putText(frame, f"Clignements gauche: {L_blink_count}", (10, 150),
@@ -95,7 +95,7 @@ while cap.isOpened():
     fps += 1
     cTime = time.time()
     if cTime - pTime >= 1:  # Mise à jour chaque seconde
-        print(fps)
+        #print(fps)
         fps = 0
         pTime = cTime
     
