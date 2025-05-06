@@ -38,9 +38,25 @@ def rizz(walle):
     walle.eyebrow(0)
     walle.lid(0)
 
+def looking(walle):
+    walle.neckLR(0)
+    walle.neckAngle(0.8)
+    time.sleep(1)
+    walle.blink()
+    walle.neckLR(1)
+    time.sleep(1)
+    walle.neckAngle(0.2)
+    time.sleep(1)
+    walle.neckLR(1)
+    walle.blink()
+    time.sleep(1)
+    walle.neckLR(0.5)
+    walle.neckAngle(0.5)
+
 EMOTES = {
     "Auto_adjust": auto_adjust,
     "Happy": happy,
     "Sadness": sadness,
-    "Rizz": rizz
+    "Rizz": rizz,
+    "Looking": looking
 }
