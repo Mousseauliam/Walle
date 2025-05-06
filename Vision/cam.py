@@ -83,7 +83,7 @@ def frame_process():
         #blink detection
         L_eye_ratio = abs(L_eye_top.y - L_eye_bottom.y)/abs(L_eye_L.x-L_eye_R.x)
         R_eye_ratio = abs(R_eye_top.y - R_eye_bottom.y)/abs(R_eye_L.x-R_eye_R.x)
-
+        print(f"L_eye_ratio: {L_eye_ratio}, R_eye_ratio: {R_eye_ratio}")
         if L_eye_ratio < blink_threshold:
             if not L_eye_closed:
                 blink = True
