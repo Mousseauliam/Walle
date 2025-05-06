@@ -52,7 +52,7 @@ def gen_frames():
 
 
 def frame_process():
-    global last_frame, last_results, head_detected, blink
+    global last_frame, last_results, head_detected, blink, L_eye_closed, R_eye_closed, head_tilt_history, x_position_history, y_position_history
     if last_results.multi_face_landmarks:
         head_detected = True
         face_landmarks = last_results.multi_face_landmarks[0]
@@ -103,6 +103,7 @@ def frame_process():
         return None
     
 def get_head_factor():
+    global blink
     x_position= round(sum(x_position_history) / len(x_position_history),2)
     y_position= round(sum(y_position_history) / len(y_position_history),2)
     head_tilt = round(sum(head_tilt_history) / len(head_tilt_history),2)
