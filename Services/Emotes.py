@@ -1,7 +1,7 @@
 import time
 
 def auto_adjust(walle):
-    walle.headAngle(0)
+    walle.headAngle(0.5)
     walle.coef['UD_R'] = 0
     walle.update(['UD_R'])
     time.sleep(1)
