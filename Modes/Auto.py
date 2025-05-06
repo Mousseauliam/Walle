@@ -31,6 +31,7 @@ def run(robot,server):
             head_angle_temp = round(((1-head_factor[2]) - 0.5) * tilt_factor + 0.5,2)
             if (head_angle!= head_angle_temp):
                 robot.headAngle(head_angle_temp)
+                
 
             time.sleep(0.1) 
 

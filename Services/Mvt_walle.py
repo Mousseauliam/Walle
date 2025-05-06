@@ -20,19 +20,19 @@ class Walle:
             "eyebrow_R": 0.0,
             "UD_L": 0.55,
             "UD_R": 0.6,
-            "head_angle": 0.5,
-            "eye_sad": 0.0,
             "neck_U":0.0,
             "neck_L":0.0,
             "neck_LR":0.0,
-            "neck_level":1.0,
-            "neck_angle":0.0,
             "arm_L":0.5,
             "arm_R":0.5,
             "hand_L":1.0,
             "hand_R":1.0,
             "speed_L":0.5,
-            "speed_R":0.5
+            "speed_R":0.5,
+            "head_angle": 0.5,
+            "neck_level":1.0,
+            "neck_angle":0.0,
+            "sadness": 0.0,
         }
         self.coef = self.coef_init.copy()
         #self.update(self.coef.keys())
@@ -79,8 +79,8 @@ class Walle:
         UD_R_temp = base_position + (0.5-angle)
 
         # sadness effect
-        self.coef["UD_L"] = max(0, min(1,((1 - self.coef["eye_sad"]) * UD_L_temp)))
-        self.coef["UD_R"] = max(0, min(1,((1 - self.coef["eye_sad"]) * UD_R_temp)))
+        self.coef["UD_L"] = max(0, min(1,((1 - self.coef["sadness"]) * UD_L_temp)))
+        self.coef["UD_R"] = max(0, min(1,((1 - self.coef["sadness"]) * UD_R_temp)))
 
         self.update(["UD_L", "UD_R"])
         
@@ -95,7 +95,7 @@ class Walle:
         self.update(["eyebrow_L", "eyebrow_R"])
 
     def sadness(self, angle):
-        self.coef["eye_sad"] = angle
+        self.coef["sadness"] = angle
         print(f"[Mvt_Walle] Niveau de tristesse réglé à {angle}")
         self.headAngle()
         
