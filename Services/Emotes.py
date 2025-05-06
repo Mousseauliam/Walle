@@ -25,9 +25,21 @@ def sadness(walle):
     walle.sadness(1)
     walle.eyebrow(1)
     walle.lid(0.4)
+    #walle.neck_level(0)
+
+def rizz(walle):
+    walle.lid(0.4)
+    walle.eyebrow(1)
+    time.sleep(0.2)
+    walle.eyebrow(0)
+    time.sleep(0.2)
+    walle.eyebrow(1)
+    time.sleep(0.2)
+    walle.eyebrow(0)
 
 EMOTES = {
     "Auto_adjust": auto_adjust,
     "Happy": happy,
-    "Sadness": sadness
+    "Sadness": sadness,
+    "Rizz": rizz
 }
