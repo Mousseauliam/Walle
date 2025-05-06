@@ -93,6 +93,11 @@ class Walle:
         self.coef["eyebrow_L"] = angle
         self.coef["eyebrow_R"] = angle
         self.update(["eyebrow_L", "eyebrow_R"])
+    
+    def lid(self, angle):
+        self.coef["lid_L"] = angle
+        self.coef["lid_R"] = angle
+        self.update(["lid_L", "lid_R"])
 
     def sadness(self, angle):
         self.coef["sadness"] = angle
