@@ -36,6 +36,7 @@ def rizz(walle):
     walle.eyebrow(1)
     time.sleep(0.2)
     walle.eyebrow(0)
+    walle.lid(0)
 
 EMOTES = {
     "Auto_adjust": auto_adjust,
