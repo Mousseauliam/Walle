@@ -109,13 +109,14 @@ def get_head_factor():
         blink_type = "none"
         if both_closed and (time.time() - last_blink > 1.5):
             blink_type = "blink"
+            last_blink = time.time()
         elif both_open:
             blink_type = "open"
         elif left_closed:
-            blink_type = "wink_left"
-        elif right_closed:
             blink_type = "wink_right"
-        last_blink = time.time()
+        elif right_closed:
+            blink_type = "wink_left"
+
 
         res = [x_position, y_position, head_tilt, blink_type ]
         blink = False
