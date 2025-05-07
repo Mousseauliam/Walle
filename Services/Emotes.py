@@ -58,12 +58,12 @@ def looking(walle):
 
 def surprise(walle):
     walle.eyebrow(1)
-    walle.sadness(0.8)
+    walle.sadness(0)
     walle.headAngle(0)
     #Mettre le son "Wow!"
     time.sleep(1.5)
     walle.eyebrow(0)
-    walle.sadness(1)
+    walle.sadness(0.2)
     walle.headAngle(0.5)
 
 EMOTES = {
