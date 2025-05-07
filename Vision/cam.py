@@ -23,7 +23,7 @@ x_position_history = [0]*5
 y_position_history = [0]*5
 head_detected = False
 
-blink_threshold = 0.14
+blink_threshold = 0.15
 last_blink = 0
 L_eye_history = [0]*5
 R_eye_history = [0]*5
