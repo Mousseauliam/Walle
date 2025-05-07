@@ -61,6 +61,8 @@ while power:
     if state_btn[3] == 0:
         robot.sleep()
         print("sleep")
+        power = False
+        os.system("sudo systemctl restart walle.service")
     
     
     selected = server.get_selected_mode()
