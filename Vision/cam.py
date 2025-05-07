@@ -106,7 +106,8 @@ def frame_process():
     
 def get_head_factor():
     if head_detected:
-        global blink
+        global blink_threshold, L_eye_history, R_eye_history, last_blink
+        
         x_position= round(sum(x_position_history) / len(x_position_history),2)
         y_position= round(sum(y_position_history) / len(y_position_history),2)
         head_tilt = round(sum(head_tilt_history) / len(head_tilt_history),2)
