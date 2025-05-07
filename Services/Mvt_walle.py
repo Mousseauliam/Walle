@@ -180,8 +180,29 @@ class Walle:
             return None
 
     def sleep(self):
-        self.coef = self.coef_init.copy()
-        self.update(self.coef.keys())
+        self.coef = {
+            "lid_L":1,
+            "lid_R":1,
+            "eyebrow_L": 0.0,
+            "eyebrow_R": 0.0,
+            "UD_L": 0,
+            "UD_R": 0,
+            "neck_U":0.0,
+            "neck_L":1,
+            "neck_LR":0.5,
+            "arm_L":0.5,
+            "arm_R":0.5,
+            "hand_L":0.5,
+            "hand_R":0.5,
+            "speed_L":0.5,
+            "speed_R":0.5,
+            "head_angle": 0.5,
+            "neck_level":1.0,
+            "neck_angle":0.4,
+            "sadness": 0.0,
+        }
+        for key in list(self.coef.keys())[:14]:
+            self.update([key])
         
 
     def close(self):

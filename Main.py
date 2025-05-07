@@ -58,6 +58,10 @@ while power:
     state_btn[3] = GPIO.input(pinBtn_S)
     print(f"[Main] Button states: {state_btn}")
     
+    if state_btn[3] == 0:
+        robot.sleep()
+        print("sleep")
+    
     
     selected = server.get_selected_mode()
 
@@ -77,7 +81,7 @@ while power:
     
 
 manager.stop_mode()
-#robot.sleep()
+robot.sleep()
 robot.close()
 
 #os.system("sudo shutdown -h now")
