@@ -14,19 +14,19 @@ class Walle:
             self.serial_available = False
             
         self.coef_init = {
-            "lid_L":1.0,
-            "lid_R":1.0,
+            "lid_L":0,
+            "lid_R":0,
             "eyebrow_L": 0.0,
             "eyebrow_R": 0.0,
-            "UD_L": 0.55,
-            "UD_R": 0.6,
+            "UD_L": 0,
+            "UD_R": 0,
             "neck_U":0.0,
             "neck_L":0.0,
             "neck_LR":0.0,
             "arm_L":0.5,
             "arm_R":0.5,
-            "hand_L":1.0,
-            "hand_R":1.0,
+            "hand_L":0.5,
+            "hand_R":0.5,
             "speed_L":0.5,
             "speed_R":0.5,
             "head_angle": 0.5,
@@ -35,8 +35,9 @@ class Walle:
             "sadness": 0.0,
         }
         self.coef = self.coef_init.copy()
-        time.sleep(1)
-        for key in self.coef.keys():
+        self.headAngle(self.coef_init["head_angle"])
+        self.neckAngle(self.coef_init["neck_angle"])
+        for key in list(self.coef.keys())[:14]:
             self.update([key])
         #self.sound = SoundPlayer()
         
