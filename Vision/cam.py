@@ -105,7 +105,7 @@ def get_head_factor():
         left_closed = (L_eye_ratio < blink_threshold) and (R_eye_ratio >= blink_threshold)
         right_closed = (R_eye_ratio < blink_threshold) and (L_eye_ratio >= blink_threshold)
         
-        blink_type = "none"
+        
         if time.time() - last_blink > 1.5:
             if both_closed :
                 blink_type = "blink"
@@ -113,6 +113,8 @@ def get_head_factor():
                 blink_type = "wink_left"
             elif right_closed:
                 blink_type = "wink_right"
+            else:
+                blink_type = "none"
             last_blink = time.time()
 
         res = [x_position, y_position, head_tilt, blink_type ]
