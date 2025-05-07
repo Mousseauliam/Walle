@@ -40,8 +40,10 @@ def run(robot,server):
                     robot.blink()
                 case "wink_left":
                     robot.manual("lid_L", 1)
+                    robot.manual("lid_R", 0)
                 case "wink_right":
                     robot.manual("lid_R", 1)
+                    robot.manual("lid_L", 0)
             
             time.sleep(0.1) 
 
