@@ -102,19 +102,20 @@ def get_head_factor():
         R_eye_ratio = round(sum(R_eye_history) / len(R_eye_history),2)
         
         both_closed = (L_eye_ratio < blink_threshold) and (R_eye_ratio < blink_threshold)
+        both_open = (L_eye_ratio >= blink_threshold) and (R_eye_ratio >= blink_threshold)
         left_closed = (L_eye_ratio < blink_threshold) and (R_eye_ratio >= blink_threshold)
         right_closed = (R_eye_ratio < blink_threshold) and (L_eye_ratio >= blink_threshold)
         
-        
+        blink_type = "none"
         if time.time() - last_blink > 1.5:
             if both_closed :
                 blink_type = "blink"
+            elif both_open:
+                blink_type = "open"
             elif left_closed:
                 blink_type = "wink_left"
             elif right_closed:
                 blink_type = "wink_right"
-            else:
-                blink_type = "none"
             last_blink = time.time()
 
         res = [x_position, y_position, head_tilt, blink_type ]

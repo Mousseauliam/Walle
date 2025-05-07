@@ -33,7 +33,7 @@ def run(robot,server):
                 robot.headAngle(head_angle_temp)
                 
             match head_factor[3]:
-                case "none":
+                case "open":
                     robot.manual("lid_L", 0)
                     robot.manual("lid_R", 0)
                 case "blink":
