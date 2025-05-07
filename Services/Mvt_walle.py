@@ -32,7 +32,7 @@ class Walle:
             "head_angle": 0.5,
             "neck_level":1.0,
             "neck_angle":0.4,
-            "sadness": 0.2,
+            "sadness": 0.3,
         }
         self.coef = self.coef_init.copy()
         self.headAngle(self.coef_init["head_angle"])
