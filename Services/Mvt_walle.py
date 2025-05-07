@@ -31,7 +31,7 @@ class Walle:
             "speed_R":0.5,
             "head_angle": 0.5,
             "neck_level":1.0,
-            "neck_angle":0.0,
+            "neck_angle":0.4,
             "sadness": 0.0,
         }
         self.coef = self.coef_init.copy()
