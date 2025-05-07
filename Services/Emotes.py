@@ -43,11 +43,16 @@ def rizz(walle):
 def looking(walle):
     walle.neckLR(0)
     walle.neckAngle(0.2)
+    #walle.armR(0.4)
     time.sleep(3)
+    walle.handR(1)
+    time.sleep(0.5)
+    walle.handR(0)
     walle.neckLR(1)
     time.sleep(0.3)
     walle.blink()
     time.sleep(3)
+    #walle.armR(0)
     walle.neckAngle(0.5)
     time.sleep(1)
     walle.neckLR(0)
@@ -66,11 +71,23 @@ def curious(walle):
     walle.sadness(0.2)
     walle.headAngle(0.5)
 
+def surprise(walle):
+    walle.eyebrow(1)
+    walle.sadness(0)
+    #walle.arm(0.3)
+    time.sleep(0.5)
+    #walle.arm(0)
+    time.sleep(1)
+    walle.eyebrow(0)
+    walle.sadness(0.2)
+
+
 EMOTES = {
     "Auto_adjust": auto_adjust,
     "Happy": happy,
     "Sadness": sadness,
     "Rizz": rizz,
     "Looking": looking,
-    "Curious": curious
+    "Curious": curious,
+    "Surprise": surprise
 }
