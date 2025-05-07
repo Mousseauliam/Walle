@@ -56,7 +56,7 @@ def looking(walle):
     time.sleep(3)
     walle.neckLR(0.5)
 
-def surprise(walle):
+def curious(walle):
     walle.eyebrow(1)
     walle.sadness(0)
     walle.headAngle(0)
@@ -72,5 +72,5 @@ EMOTES = {
     "Sadness": sadness,
     "Rizz": rizz,
     "Looking": looking,
-    "Surprise": surprise
+    "Curious": curious
 }
