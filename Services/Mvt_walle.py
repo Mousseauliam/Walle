@@ -34,12 +34,13 @@ class Walle:
             "neck_angle":0.4,
             "sadness": 0.3,
         }
+        """
         self.coef = self.coef_init.copy()
         self.headAngle(self.coef_init["head_angle"])
         self.neckAngle(self.coef_init["neck_angle"])
         time.sleep(1)
         for key in list(self.coef.keys())[:14]:
-            self.update([key])
+            self.update([key])"""
         #self.sound = SoundPlayer()
         
 
@@ -107,11 +108,6 @@ class Walle:
         self.coef["sadness"] = angle
         print(f"[Mvt_Walle] Niveau de tristesse réglé à {angle}")
         self.headAngle()
-
-    def arm(self, angle):
-        self.coef["hand_L"] = angle
-        self.coef["hand_R"] = angle
-        self.update(["hand_L", "hand_R"])
         
     """  
     def neckLevel(self, necklevel=None):
