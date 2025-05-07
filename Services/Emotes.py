@@ -61,7 +61,7 @@ def surprise(walle):
     walle.sadness(0.8)
     walle.headAngle(0)
     #Mettre le son "Wow!"
-    time.sleep(2)
+    time.sleep(1.5)
     walle.eyebrow(0)
     walle.sadness(1)
     walle.headAngle(0.5)
