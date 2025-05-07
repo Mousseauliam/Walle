@@ -63,9 +63,10 @@ class Walle:
         self.update(['lid_L','lid_R'])
         
     def manual(self,name,angle):
-        self.coef[name]=angle
-        print(f"[Mvt_Walle] {name} réglé à {angle}")
-        self.update([name])
+        if (self.coef[name] != angle) :
+            self.coef[name]=angle
+            print(f"[Mvt_Walle] {name} réglé à {angle}")
+            self.update([name])
 
     def headAngle(self, angle=None):
         if angle is None:

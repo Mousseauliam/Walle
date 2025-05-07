@@ -24,9 +24,9 @@ y_position_history = [0]*5
 head_detected = False
 
 blink_threshold = 0.12
-blink = False
-L_eye_closed = False
-R_eye_closed = False
+last_blink = 0
+L_eye_history = [0]*10
+R_eye_history = [0]*10
 
 def gen_frames():
     global last_frame, last_results
@@ -81,9 +81,11 @@ def frame_process():
         head_tilt_history.append((angle / (np.pi / 4) + 1) / 2)
         
         #blink detection
-        L_eye_ratio = abs(L_eye_top.y - L_eye_bottom.y)/abs(L_eye_L.x-L_eye_R.x)
-        R_eye_ratio = abs(R_eye_top.y - R_eye_bottom.y)/abs(R_eye_L.x-R_eye_R.x)
-        print(f"L_eye_ratio: {L_eye_ratio}, R_eye_ratio: {R_eye_ratio}")
+        L_eye_history.pop(0)
+        L_eye_history.append(abs(L_eye_top.y - L_eye_bottom.y)/abs(L_eye_L.x-L_eye_R.x))
+        R_eye_history.pop(0)
+        R_eye_history.append(abs(R_eye_top.y - R_eye_bottom.y)/abs(R_eye_L.x-R_eye_R.x))
+        
         if L_eye_ratio < blink_threshold:
             if not L_eye_closed:
                 blink = True
@@ -103,14 +105,29 @@ def frame_process():
         return None
     
 def get_head_factor():
-    global blink
-    x_position= round(sum(x_position_history) / len(x_position_history),2)
-    y_position= round(sum(y_position_history) / len(y_position_history),2)
-    head_tilt = round(sum(head_tilt_history) / len(head_tilt_history),2)
-    res = [x_position, y_position, head_tilt, blink ]
-    blink = False
-    
     if head_detected:
+        global blink
+        x_position= round(sum(x_position_history) / len(x_position_history),2)
+        y_position= round(sum(y_position_history) / len(y_position_history),2)
+        head_tilt = round(sum(head_tilt_history) / len(head_tilt_history),2)
+        L_eye_ratio = round(sum(L_eye_history) / len(L_eye_history),2)
+        R_eye_ratio = round(sum(R_eye_history) / len(R_eye_history),2)
+        
+        both_closed = (L_eye_ratio < blink_threshold) and (R_eye_ratio < blink_threshold)
+        left_closed = (L_eye_ratio < blink_threshold) and (R_eye_ratio >= blink_threshold)
+        right_closed = (R_eye_ratio < blink_threshold) and (L_eye_ratio >= blink_threshold)
+        
+        blink_type = "none"
+        if both_closed and (time.time() - last_blink > 1.5):
+            blink_type = "blink"
+            last_blink = time.time()
+        elif left_closed:
+            blink_type = "wink_left"
+        elif right_closed:
+            blink_type = "wink_right"
+
+        res = [x_position, y_position, head_tilt, blink_type ]
+        blink = False
         return res
     else:
         return None

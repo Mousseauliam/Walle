@@ -32,8 +32,16 @@ def run(robot,server):
             if (head_angle!= head_angle_temp):
                 robot.headAngle(head_angle_temp)
                 
-            if head_factor[3] :
-                robot.blink()
+            match head_factor[3]:
+                case "none":
+                    robot.manual("lid_L", 0)
+                    robot.manual("lid_R", 0)
+                case "blink":
+                    robot.blink()
+                case "wink_left":
+                    robot.manual("lid_L", 1)
+                case "wink_right":
+                    robot.manual("lid_R", 1)
             
             time.sleep(0.1) 
 
