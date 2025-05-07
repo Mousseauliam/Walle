@@ -37,6 +37,7 @@ class Walle:
         self.coef = self.coef_init.copy()
         self.headAngle(self.coef_init["head_angle"])
         self.neckAngle(self.coef_init["neck_angle"])
+        time.sleep(1)
         for key in list(self.coef.keys())[:14]:
             self.update([key])
         #self.sound = SoundPlayer()
