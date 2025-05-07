@@ -86,19 +86,6 @@ def frame_process():
         R_eye_history.pop(0)
         R_eye_history.append(abs(R_eye_top.y - R_eye_bottom.y)/abs(R_eye_L.x-R_eye_R.x))
         
-        if L_eye_ratio < blink_threshold:
-            if not L_eye_closed:
-                blink = True
-                L_eye_closed = True
-        else:
-            L_eye_closed = False
-
-        if R_eye_ratio < blink_threshold:
-            if not R_eye_closed:
-                blink = True
-                R_eye_closed = True
-        else:
-            R_eye_closed = False
             
     else:
         head_detected = False
