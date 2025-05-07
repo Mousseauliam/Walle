@@ -22,7 +22,7 @@ class Walle:
             "UD_R": 0,
             "neck_U":0.0,
             "neck_L":0.0,
-            "neck_LR":0.0,
+            "neck_LR":0.5,
             "arm_L":0.5,
             "arm_R":0.5,
             "hand_L":0.5,
