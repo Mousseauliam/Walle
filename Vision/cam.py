@@ -23,10 +23,10 @@ x_position_history = [0]*5
 y_position_history = [0]*5
 head_detected = False
 
-blink_threshold = 0.12
+blink_threshold = 0.15
 last_blink = 0
-L_eye_history = [0]*10
-R_eye_history = [0]*10
+L_eye_history = [0]*5
+R_eye_history = [0]*5
 
 def gen_frames():
     global last_frame, last_results
