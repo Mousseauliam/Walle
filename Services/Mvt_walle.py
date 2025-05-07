@@ -47,8 +47,7 @@ class Walle:
         res = ""
         for key in tab:
             res += f"{key}%{self.coef[key]}\n"
-            #print(f"[Mvt_Walle] 🔄 {key} = {self.coef[key]}")
-        print(f"[Mvt_Walle] {res}")
+            print(f"[Mvt_Walle] 🔄 {key} = {self.coef[key]}")
 
         if self.serial_available:
             self.serial.write(res.encode())
