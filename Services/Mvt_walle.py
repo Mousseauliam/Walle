@@ -35,8 +35,9 @@ class Walle:
             "sadness": 0.0,
         }
         self.coef = self.coef_init.copy()
-        self.update(self.coef.keys())
-        
+        time.sleep(1)
+        for key in self.coef.keys():
+            self.update([key])
         #self.sound = SoundPlayer()
         
 

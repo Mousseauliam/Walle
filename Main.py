@@ -56,7 +56,8 @@ while power:
     state_btn[1] = GPIO.input(pinBtn_T)
     state_btn[2] = GPIO.input(pinBtn_C) 
     state_btn[3] = GPIO.input(pinBtn_S)
-    #print(f"[Main] Button states: {state_btn}")
+    print(f"[Main] Button states: {state_btn}")
+    
     
     selected = server.get_selected_mode()
 
