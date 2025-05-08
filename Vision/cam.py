@@ -146,9 +146,9 @@ def frame_process():
         
         h_wrist = nose_tip.y -0.1
         h_elbow = nose_tip.y -0.3
-        above_head = ((last_elbow_L[1]> h_elbow) and (last_wrist_L[1]> h_wrist)) or ((last_elbow_R[1]> h_elbow) and (last_wrist_R[1]> h_wrist))
+        above_head = ((last_elbow_L[1]< h_elbow) and (last_wrist_L[1]< h_wrist)) or ((last_elbow_R[1]< h_elbow) and (last_wrist_R[1]< h_wrist))
         
-        print(h_wrist, h_elbow, above_head, (last_elbow_L[1]> h_elbow))
+        print(h_wrist, h_elbow, above_head, last_elbow_L[1])
         
         last_process = time.time()
         
