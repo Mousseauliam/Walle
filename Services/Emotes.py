@@ -94,7 +94,7 @@ def dance(walle):
         time.sleep(0.2)
         walle.headAngle(0.7)
         time.sleep(0.4)
-        walle.neckAngle.(0.6)
+        walle.neckAngle(0.6)
         time.sleep(0.2)
         walle.neckAngle(0.5)
         time.sleep(0.2)
