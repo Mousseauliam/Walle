@@ -5,7 +5,7 @@ active = False
 
 deadzone = 0.09
 y_step = 0.03
-x_factor = 10
+x_factor = -10
 tilt_factor = 1.2
 
 def run(robot,server):
