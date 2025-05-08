@@ -88,19 +88,19 @@ def dance(walle):
         #walle.coef["speed_R"]= 0.3
         walle.headAngle(0.3)
         time.sleep(0.4)
-        walle.neckAngle(0.4)
+        walle.neckLR(0.4)
         time.sleep(0.2)
-        walle.neckAngle(0.5)
+        walle.neckLR(0.5)
         time.sleep(0.5)
         walle.headAngle(0.7)
         time.sleep(0.4)
-        walle.neckAngle(0.4)
+        walle.neckLR(0.4)
         time.sleep(0.2)
-        walle.neckAngle(0.5)
+        walle.neckLR(0.5)
         time.sleep(0.5)
         a+=1
     walle.headAngle(0.5)
-    walle.neckAngle(0.5)
+    walle.neckLR(0.5)
 
 EMOTES = {
     "Auto_adjust": auto_adjust,
