@@ -39,7 +39,7 @@ class Walle:
 
         self.wake_up()
         
-        self.sound = SoundPlayer()
+        self.sound_player = SoundPlayer()
         
 
     def update(self, tab):
@@ -168,8 +168,8 @@ class Walle:
             Emotes.EMOTES[name](self)
              
     def sound(self, name):
-        if not self.sound.is_playing():
-            self.sound.play(name)
+        if not self.sound_player.is_playing():
+            self.sound_player.play(name)
 
     def get_coef(self, name):
         if name in self.coef:
