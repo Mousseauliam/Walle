@@ -60,8 +60,11 @@ while power:
     #print(f"[Main] Button states: {state_btn}")
     
     if state_btn[0] == 0:
-        robot.sound("voice_walle")
+        robot.sound("brr1")
     
+    if state_btn[1] == 0:
+        robot.sound("yah")
+        
     if state_btn[3] == 0:
         print("btn soleil")
         power = False
@@ -92,5 +95,5 @@ robot.sleep()
 robot.close()
 if fetch_git:
     print(fetch_git)
-    os.system("sudo systemctl restart walle.service")
+    os.system("systemctl --user restart walle.service")
 #os.system("sudo shutdown -h now")
