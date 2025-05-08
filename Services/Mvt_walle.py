@@ -36,23 +36,8 @@ class Walle:
         }
         
         self.coef = self.coef_init.copy()
-        time.sleep(2)
-        self.manual("lid_L", 1)
-        self.manual("lid_R", 1)
-        self.manual("eyebrow_L", 0.0)
-        self.manual("eyebrow_R", 0.0)
-        self.manual("UD_L", 0.5)
-        self.manual("UD_R", 0.5)
-        self.manual("neck_U", 0.4)
-        self.manual("neck_L", 0.6)
-        self.manual("neck_LR", 0.5)
-        self.manual("arm_L", 0.5)
-        self.manual("arm_R", 0.5)
-        self.manual("hand_L", 0.5)
-        self.manual("hand_R", 0.5)
-        self.sadness(self.coef_init["sadness"])
-        time.sleep(2)
-        self.emote("Auto_adjust")
+
+        self.wake_up()
         
         self.sound = SoundPlayer()
         
@@ -208,6 +193,29 @@ class Walle:
         self.manual("hand_L", 0.5)
         self.manual("hand_R", 0.5)
         
+    def wake_up(self):
+        time.sleep(2)
+        self.manual("lid_L", 1)
+        self.manual("lid_R", 1)
+        time.sleep(0.3)
+        self.manual("eyebrow_L", 0.0)
+        self.manual("eyebrow_R", 0.0)
+        time.sleep(0.3)
+        self.manual("UD_L", 0.5)
+        self.manual("UD_R", 0.5)
+        time.sleep(0.3)
+        self.manual("neck_U", 0.4)
+        self.manual("neck_L", 0.6)
+        self.manual("neck_LR", 0.5)
+        time.sleep(0.3)
+        self.manual("arm_L", 0.5)
+        self.manual("arm_R", 0.5)
+        time.sleep(0.5)
+        self.manual("hand_L", 0.5)
+        self.manual("hand_R", 0.5)
+        self.sadness(0.3)
+        time.sleep(2)
+        self.emote("Auto_adjust")
         
 
     def close(self):
