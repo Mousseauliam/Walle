@@ -56,13 +56,13 @@ while power:
     state_btn[1] = lgpio.gpio_read(h, pinBtn_T)
     state_btn[2] = lgpio.gpio_read(h, pinBtn_C)
     state_btn[3] = lgpio.gpio_read(h, pinBtn_S)
-    print(f"[Main] Button states: {state_btn}")
+    #print(f"[Main] Button states: {state_btn}")
     
     if state_btn[3] == 0:
         robot.sleep()
         print("sleep")
-        power = False
-        os.system("sudo systemctl restart walle.service")
+        #power = False
+        #os.system("sudo systemctl restart walle.service")
     
     
     selected = server.get_selected_mode()
