@@ -193,8 +193,8 @@ def get_head_factor():
                 velocity_moy.append((velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6] + velocity[i+8] + velocity[i+10] )/6)
             
             if (is_waving([w[0] for w in last_wrist_L]) or is_waving([w[0] for w in last_wrist_R])) and any(velocity > hello_threshold for velocity in velocity_moy) and any(velocity < (hello_threshold+1) for velocity in velocity_moy) and above_head:
-                emote = "Rizz"
-                print("Rizz")
+                emote = "Hello"
+                print("Hello")
                 last_emote = time.time()
             elif any(velocity > surprise_threshold for velocity in velocity_moy):
                 emote = "Surpise"
