@@ -59,6 +59,9 @@ while power:
     state_btn[3] = lgpio.gpio_read(h, pinBtn_S)
     #print(f"[Main] Button states: {state_btn}")
     
+    if state_btn[0] == 0:
+        robot.sound("voice_walle")
+    
     if state_btn[3] == 0:
         power = False
         fetch_git = True
