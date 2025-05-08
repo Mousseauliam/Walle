@@ -212,7 +212,7 @@ class Walle:
         self.manual("hand_L", 0.5)
         self.manual("hand_R", 0.5)
         self.sadness(0.3)
-        time.sleep(2)
+        time.sleep(1)
         self.emote("Auto_adjust")
         
 
