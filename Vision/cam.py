@@ -38,7 +38,7 @@ last_wrist_R = [0.0]*3
 last_elbow_L = [0.0]*3
 last_elbow_R = [0.0]*3
 last_time = time.time()
-velocity = [0]*8
+velocity = [0]*12
 surprised = False
 last_surprised = 0
 
@@ -136,9 +136,9 @@ def frame_process():
         
         for i in range(2):
             if (time.time() - last_surprised) > 3:
-                moy=(velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6])/4
+                moy=(velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6]+ velocity[i+8] + velocity[i+10])/6
                 print(f"moy {i} : {moy}")
-                if moy > 0.008:
+                if moy > 0.012:
                     surprised = True
                     last_surprised = time.time()
                     print(surprised)
