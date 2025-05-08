@@ -41,7 +41,7 @@ last_process = time.time()
 velocity = [0]*12
 emote = None
 last_emote = 0
-surprise_threshold = 5
+surprise_threshold = 4
 above_head = False
 
 def gen_frames():
