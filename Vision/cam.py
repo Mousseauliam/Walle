@@ -133,10 +133,11 @@ def frame_process():
         velocity.append(np.sqrt((wrist_R.x - last_wrist_R[0])**2 + (wrist_R.y - last_wrist_R[1])**2 + (wrist_R.z - last_wrist_R[2])**2) / (now - last_time))
         velocity.append(np.sqrt((elbow_L.x - last_elbow_L[0])**2 + (elbow_L.y - last_elbow_L[1])**2 + (elbow_L.z - last_elbow_L[2])**2) / (now - last_time))
         velocity.append(np.sqrt((elbow_R.x - last_elbow_R[0])**2 + (elbow_R.y - last_elbow_R[1])**2 + (elbow_R.z - last_elbow_R[2])**2) / (now - last_time))
+        
         for i in range(2):
             if (time.time() - last_surprised) > 3:
                 moy=(velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6])/4
-                if moy > 0.010:
+                if moy > 0.08:
                     surprised = True
                     last_surprised = time.time()
                     print(surprised)
@@ -151,7 +152,7 @@ def frame_process():
     
 def get_head_factor():
     if head_detected:
-        global blink_threshold, L_eye_history, R_eye_history, velocity
+        global blink_threshold, L_eye_history, R_eye_history, surprised
         
         x_position= round(sum(x_position_history) / len(x_position_history),2)
         y_position= round(sum(y_position_history) / len(y_position_history),2)
@@ -175,7 +176,7 @@ def get_head_factor():
         elif right_closed:
             blink_type = "wink_left"
 
-        res = [x_position, y_position, z_position, head_tilt, blink_type ]
+        res = [x_position, y_position, z_position, head_tilt, blink_type, surprised]
         
         print(velocity)
         

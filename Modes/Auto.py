@@ -66,6 +66,9 @@ def run(robot,server):
                     robot.manual("lid_L", 0)
                     wink_right = time.time()
             
+            if head_factor[5]:
+                    robot.emote("Surprise")
+            
             time.sleep(0.1) 
 
 def stop():
