@@ -11,15 +11,17 @@ global last_blink
 global wink_left
 global wink_right 
 global cooling_time
+global eye_closed
 
 
 def run(robot,server):
-    global active, last_blink, wink_left, wink_right, cooling_time
+    global active, last_blink, wink_left, wink_right, cooling_time, eye_closed
     active = True
     last_blink = 0
     wink_left = 0
     wink_right = 0
     cooling_time = 0.5
+    eye_closed = False
     
     while active:
         head_factor=get_head_factor()
@@ -46,14 +48,18 @@ def run(robot,server):
                 
             match head_factor[4]:
                 case "open":
-                    if (time.time() - wink_left) > 0.5:
+                    if (time.time() - wink_left) > 0.4:
                         robot.manual("lid_L", 0)
-                    if (time.time() - wink_right) > 0.5:
+                    if (time.time() - wink_right) > 0.4:
                         robot.manual("lid_R", 0)
                 case "blink":
-                    if (time.time() - last_blink) > 0.5:
+                    if not eye_closed and (time.time() - last_blink) > 0.8:
                         robot.blink()
                         last_blink = time.time()
+                        eye_closed = True
+                    else:
+                        eye_closed = False
+                    
                 case "wink_left":
                     robot.manual("lid_L", 1)
                     robot.manual("lid_R", 0)
