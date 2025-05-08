@@ -63,6 +63,7 @@ while power:
         robot.sound("voice_walle")
     
     if state_btn[3] == 0:
+        print("btn soleil")
         power = False
         fetch_git = True
         
