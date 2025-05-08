@@ -36,7 +36,7 @@ class Walle:
         }
         
         self.coef = self.coef_init.copy()
-        
+        time.sleep(2)
         self.manual("lid_L", 1)
         self.manual("lid_R", 1)
         self.manual("eyebrow_L", 0.0)
