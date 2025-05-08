@@ -179,6 +179,7 @@ def get_head_factor():
             velocity_moy = [0]*4
             for i in range(4):
                 velocity_moy.append((velocity[i] + velocity[i+4] )/2)
+            print(velocity_moy)
             
             if any(velocity > surprise_threshold for velocity in velocity_moy):
                 if above_head:
