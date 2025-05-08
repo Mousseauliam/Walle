@@ -107,7 +107,7 @@ class Walle:
         print(f"[Mvt_Walle] Niveau de tristesse réglé à {angle}")
         self.headAngle()
         
-    ef hand(self, angle):
+    def hand(self, angle):
         self.coef["hand_L"] = angle
         self.coef["hand_R"] = angle
         self.update(["hand_L", "hand_R"])
