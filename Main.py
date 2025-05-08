@@ -95,5 +95,5 @@ robot.sleep()
 robot.close()
 if fetch_git:
     print(fetch_git)
-    os.system("sudo systemctl restart walle.service")
+    os.system("systemctl --user restart walle.service")
 #os.system("sudo shutdown -h now")
