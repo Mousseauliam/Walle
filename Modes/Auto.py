@@ -7,13 +7,17 @@ deadzone = 0.09
 y_step = 0.03
 tilt_factor = 1.2
 
-last_blink = 0
-wink_left = False
-wink_right = False
+global last_blink
+global wink_left
+global wink_right 
+
 
 def run(robot,server):
-    global active
+    global active, last_blink, wink_left, wink_right
     active = True
+    last_blink = 0
+    wink_left = 0
+    wink_right = 0
     while active:
         head_factor=get_head_factor()
         if head_factor is not None:
@@ -39,9 +43,9 @@ def run(robot,server):
                 
             match head_factor[4]:
                 case "open":
-                    if not wink_left :
+                    if (time.time() - wink_left) > 1:
                         robot.manual("lid_L", 0)
-                    if not wink_right :
+                    if (time.time() - wink_right) > 1:
                         robot.manual("lid_R", 0)
                 case "blink":
                     if (time.time() - last_blink) > 0.5:
@@ -50,11 +54,11 @@ def run(robot,server):
                 case "wink_left":
                     robot.manual("lid_L", 1)
                     robot.manual("lid_R", 0)
-                    wink_left = True
+                    wink_left = time.time()
                 case "wink_right":
                     robot.manual("lid_R", 1)
                     robot.manual("lid_L", 0)
-                    wink_right = True
+                    wink_right = time.time()
             
             time.sleep(0.1) 
 
