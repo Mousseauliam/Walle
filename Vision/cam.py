@@ -41,7 +41,7 @@ last_process = time.time()
 velocity = [0]*12
 emote = None
 last_emote = 0
-surprise_threshold = 0.012
+surprise_threshold = 2
 above_head = False
 
 def gen_frames():
@@ -66,7 +66,14 @@ def gen_frames():
 
         
         if results_pose.pose_landmarks:
-            for landmark in results_pose.pose_landmarks.landmark:
+            key_landmarks = [
+                mp_pose.PoseLandmark.LEFT_WRIST,
+                mp_pose.PoseLandmark.RIGHT_WRIST,
+                mp_pose.PoseLandmark.LEFT_ELBOW,
+                mp_pose.PoseLandmark.RIGHT_ELBOW
+            ]
+            for landmark_id in key_landmarks:
+                landmark = results_pose.pose_landmarks.landmark[landmark_id.value]
                 x, y = int(landmark.x * w), int(landmark.y * h)
                 cv2.circle(frame, (x, y), 4, (0, 0, 255), -1)
                 
@@ -176,7 +183,7 @@ def get_head_factor():
             blink_type = "wink_left"
                 
         if (time.time() - last_emote) > 3:
-            velocity_moy = [0]*4
+            velocity_moy = []
             for i in range(4):
                 velocity_moy.append((velocity[i] + velocity[i+4] )/2)
             print(velocity_moy)
