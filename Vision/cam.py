@@ -41,7 +41,7 @@ last_process = time.time()
 velocity = [0]*12
 emote = None
 last_emote = 0
-surprise_threshold = 3.5
+surprise_threshold = 5
 above_head = False
 
 def gen_frames():
@@ -147,7 +147,9 @@ def frame_process():
         h_wrist = nose_tip.y -0.1
         h_elbow = nose_tip.y -0.3
         above_head = ((last_elbow_L[1].y> h_elbow) and (last_wrist_L[1].y> h_wrist)) or ((last_elbow_R[1].y> h_elbow) and (last_wrist_R[1].y> h_wrist))
+        
         print(h_wrist, h_elbow, above_head, (last_elbow_L[1].y> h_elbow))
+        
         last_process = time.time()
         
         # wrist position
@@ -184,8 +186,8 @@ def get_head_factor():
                 
         if (time.time() - last_emote) > 3:
             velocity_moy = []
-            for i in range(4):
-                velocity_moy.append((velocity[i] + velocity[i+4] )/2)
+            for i in range(2):
+                velocity_moy.append((velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6] + velocity[i+8] + velocity[i+10] )/6)
             print(velocity_moy)
             
             if any(velocity > surprise_threshold for velocity in velocity_moy):
