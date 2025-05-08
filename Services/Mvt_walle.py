@@ -5,6 +5,9 @@ import time
 
 class Walle:
     def __init__(self, port: str):
+        self.sound_player = SoundPlayer()
+        self.sound("start")
+        
         self.serial_available = True
         try:
             self.serial = serial.Serial(port, baudrate=115200, timeout=1)
@@ -37,7 +40,6 @@ class Walle:
         
         self.coef = self.coef_init.copy()
         
-        self.sound_player = SoundPlayer()
         
         time.sleep(2)
         self.wake_up()
@@ -211,7 +213,6 @@ class Walle:
         self.manual("hand_R", 0.5)
         
     def wake_up(self):
-        self.sound("start")
         self.manual("lid_L", 0)
         self.manual("lid_R", 0)
         time.sleep(0.3)
