@@ -3,7 +3,7 @@ from Web import server
 from Services.Mvt_walle import Walle
 from Services.Modes_manager import ModeManager
 from Web.log_redirector import init_socketio, redirect_stdout
-import RPi.GPIO as GPIO
+import lgpio
 
 import threading
 import time
@@ -12,7 +12,7 @@ import os
 power=True
 
 # Definition des pins
-GPIO.setmode(GPIO.BCM)
+h = lgpio.gpiochip_open(0)
 
 pinBtn_R = 24
 pinBtn_T = 2
@@ -21,10 +21,10 @@ pinBtn_S = 23
 state_btn=[0]*4
 
 
-GPIO.setup(pinBtn_R, GPIO.IN, pull_up_down = GPIO.PUD_UP)
-GPIO.setup(pinBtn_C, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
-GPIO.setup(pinBtn_T, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
-GPIO.setup(pinBtn_S, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+lgpio.gpio_claim_input(h, pinBtn_R, lgpio.SET_PULL_UP)
+lgpio.gpio_claim_input(h, pinBtn_C, lgpio.SET_PULL_DOWN)
+lgpio.gpio_claim_input(h, pinBtn_T, lgpio.SET_PULL_DOWN)
+lgpio.gpio_claim_input(h, pinBtn_S, lgpio.SET_PULL_UP)
 
 
 #server
