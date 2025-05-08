@@ -39,8 +39,10 @@ last_elbow_L = [0.0]*3
 last_elbow_R = [0.0]*3
 last_process = time.time()
 velocity = [0]*12
-surprised = False
-last_surprised = 0
+emote = None
+last_emote = 0
+surprise_threshold = 0.012
+above_head = False
 
 def gen_frames():
     global last_frame, last_results,last_results_pose, last_process
@@ -78,7 +80,8 @@ def gen_frames():
 
 
 def frame_process():
-    global last_frame, last_results, head_detected, blink, L_eye_closed, R_eye_closed, head_tilt_history, x_position_history, y_position_history, last_results_pose, last_wrist_L, last_wrist_R, last_elbow_L, last_elbow_R, last_process, velocity, surprised, last_surprised
+    global last_frame, last_results, head_detected, blink, L_eye_closed, R_eye_closed, head_tilt_history, x_position_history, y_position_history, last_results_pose, last_wrist_L, last_wrist_R, last_elbow_L, last_elbow_R, last_process, velocity, last_emote
+    global above_head
     if last_results.multi_face_landmarks:
         head_detected = True
         face_landmarks = last_results.multi_face_landmarks[0]
@@ -134,15 +137,9 @@ def frame_process():
         velocity.append(np.sqrt((elbow_L.x - last_elbow_L[0])**2 + (elbow_L.y - last_elbow_L[1])**2 + (elbow_L.z - last_elbow_L[2])**2) / (now - last_process))
         velocity.append(np.sqrt((elbow_R.x - last_elbow_R[0])**2 + (elbow_R.y - last_elbow_R[1])**2 + (elbow_R.z - last_elbow_R[2])**2) / (now - last_process))
         
-        for i in range(4):
-            if (time.time() - last_surprised) > 3:
-                moy=(velocity[i] + velocity[i+4] )/2
-                if moy > 0.012:
-                    surprised = True
-                    last_surprised = time.time()
-                    print(surprised)
-                else:
-                    surprised = False
+        h_wrist = nose_tip.y -0.1
+        h_elbow = nose_tip.y -0.3
+        above_head = ((last_elbow_L[1]> h_elbow) and (last_wrist_L[1]> h_wrist)) or ((last_elbow_R[1]> h_elbow) and (last_wrist_R[1]> h_wrist))
                     
         last_process = time.time()
         
@@ -154,7 +151,7 @@ def frame_process():
     
 def get_head_factor():
     if head_detected:
-        global blink_threshold, L_eye_history, R_eye_history, surprised
+        global blink_threshold, L_eye_history, R_eye_history, emote, surprise_threshold, last_emote, above_head
         
         x_position= round(sum(x_position_history) / len(x_position_history),2)
         y_position= round(sum(y_position_history) / len(y_position_history),2)
@@ -177,10 +174,24 @@ def get_head_factor():
             blink_type = "wink_right"
         elif right_closed:
             blink_type = "wink_left"
+                
+        if (time.time() - last_emote) > 3:
+            velocity_moy = [0]*4
+            for i in range(4):
+                velocity_moy.append((velocity[i] + velocity[i+4] )/2)
+            
+            if any(velocity > surprise_threshold for velocity in velocity_moy):
+                if above_head:
+                    emote = "Surprise"
+                    last_emote = time.time()
+                else:
+                    emote = "Rizz"
+            else:
+                emote = None
 
-        res = [x_position, y_position, z_position, head_tilt, blink_type, surprised]
+        res = [x_position, y_position, z_position, head_tilt, blink_type, emote]
         
-        surprised = False
+        emote=None
         
         return res
     else:
