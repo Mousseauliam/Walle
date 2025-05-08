@@ -14,7 +14,7 @@ def auto_adjust(walle):
     time.sleep(0.7)
     walle.sadness(0.7)
     time.sleep(1)
-    walle.sadness(0)
+    walle.sadness(0.3)
 
 def happy(walle):
     walle.sadness(0)
@@ -65,7 +65,7 @@ def curious(walle):
     walle.eyebrow(1)
     walle.sadness(0)
     walle.headAngle(0)
-    walle.sound("waow1")
+    
     time.sleep(1.5)
     walle.eyebrow(0)
     walle.sadness(0.2)
@@ -74,6 +74,7 @@ def curious(walle):
 def surprise(walle):
     walle.eyebrow(1)
     walle.sadness(0)
+    walle.sound("waow1")
     #walle.arm(0.3)
     time.sleep(0.5)
     #walle.arm(0)
