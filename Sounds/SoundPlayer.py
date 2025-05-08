@@ -1,9 +1,12 @@
 import pygame
 import threading
 import os
+import os
+
 
 class SoundPlayer:
     def __init__(self):
+        os.environ["SDL_AUDIODRIVER"] = "alsa"
         try:
             pygame.mixer.init()
         except pygame.error as e:

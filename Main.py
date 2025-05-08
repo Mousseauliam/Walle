@@ -60,8 +60,11 @@ while power:
     #print(f"[Main] Button states: {state_btn}")
     
     if state_btn[0] == 0:
-        robot.sound("voice_walle")
+        robot.sound("brr1")
     
+    if state_btn[1] == 0:
+        robot.sound("yah")
+        
     if state_btn[3] == 0:
         print("btn soleil")
         power = False
