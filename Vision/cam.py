@@ -33,10 +33,10 @@ R_eye_history = [0]*5
 
 #body variables
 last_results_pose = None
-last_wrist_L = [0.0]*3
-last_wrist_R = [0.0]*3
-last_elbow_L = [0.0]*3
-last_elbow_R = [0.0]*3
+last_wrist_L = [0.0, 0.0, 0.0]*10
+last_wrist_R = [0.0, 0.0, 0.0]*10
+last_elbow_L = [0.0, 0.0, 0.0]*10
+last_elbow_R = [0.0, 0.0, 0.0]*10
 last_process = time.time()
 velocity = [0]*12
 emote = None
@@ -139,26 +139,30 @@ def frame_process():
         now= time.time()
         
         velocity = velocity[4:]
-        velocity.append(np.sqrt((wrist_L.x - last_wrist_L[0])**2 + (wrist_L.y - last_wrist_L[1])**2 + (wrist_L.z - last_wrist_L[2])**2) / (now - last_process))
-        velocity.append(np.sqrt((wrist_R.x - last_wrist_R[0])**2 + (wrist_R.y - last_wrist_R[1])**2 + (wrist_R.z - last_wrist_R[2])**2) / (now - last_process))
-        velocity.append(np.sqrt((elbow_L.x - last_elbow_L[0])**2 + (elbow_L.y - last_elbow_L[1])**2 + (elbow_L.z - last_elbow_L[2])**2) / (now - last_process))
-        velocity.append(np.sqrt((elbow_R.x - last_elbow_R[0])**2 + (elbow_R.y - last_elbow_R[1])**2 + (elbow_R.z - last_elbow_R[2])**2) / (now - last_process))
+        velocity.append(np.sqrt((wrist_L.x - last_wrist_L[9][0])**2 + (wrist_L.y - last_wrist_L[9][1])**2 + (wrist_L.z - last_wrist_L[9][2])**2) / (now - last_process))
+        velocity.append(np.sqrt((wrist_R.x - last_wrist_R[9][0])**2 + (wrist_R.y - last_wrist_R[9][1])**2 + (wrist_R.z - last_wrist_R[9][2])**2) / (now - last_process))
+        velocity.append(np.sqrt((elbow_L.x - last_elbow_L[9][0])**2 + (elbow_L.y - last_elbow_L[9][1])**2 + (elbow_L.z - last_elbow_L[9][2])**2) / (now - last_process))
+        velocity.append(np.sqrt((elbow_R.x - last_elbow_R[9][0])**2 + (elbow_R.y - last_elbow_R[9][1])**2 + (elbow_R.z - last_elbow_R[9][2])**2) / (now - last_process))
         
-        h_wrist = nose_tip.y +0.1
+        h_wrist = nose_tip.y + 0.1
         h_elbow = nose_tip.y +0.3
-        above_head = ((last_elbow_L[1]< h_elbow) and (last_wrist_L[1]< h_wrist)) or ((last_elbow_R[1]< h_elbow) and (last_wrist_R[1]< h_wrist))
+        above_head = ((last_elbow_L[9][1]< h_elbow) and (last_wrist_L[9][1]< h_wrist)) or ((last_elbow_R[9][1]< h_elbow) and (last_wrist_R[9][1]< h_wrist))
         
         last_process = time.time()
         
         # wrist position
-        last_wrist_L = [wrist_L.x, wrist_L.y, wrist_L.z]
-        last_wrist_R = [wrist_R.x, wrist_R.y, wrist_R.z]
-        last_elbow_L = [elbow_L.x, elbow_L.y, elbow_L.z]
-        last_elbow_R = [elbow_R.x, elbow_R.y, elbow_R.z]
-    
+        last_wrist_L.pop(0)
+        last_wrist_L.append([wrist_L.x, wrist_L.y, wrist_L.z])
+        last_wrist_R.pop(0)
+        last_wrist_R.append([wrist_R.x, wrist_R.y, wrist_R.z])
+        last_elbow_L.pop(0)
+        last_elbow_L.append([elbow_L.x, elbow_L.y, elbow_L.z])
+        last_elbow_R.pop(0)
+        last_elbow_R.append([elbow_R.x, elbow_R.y, elbow_R.z])
+
 def get_head_factor():
     if head_detected:
-        global blink_threshold, L_eye_history, R_eye_history, emote, surprise_threshold, last_emote, above_head
+        global blink_threshold, L_eye_history, R_eye_history, emote, surprise_threshold, last_emote, above_head, last_wrist_L, last_wrist_R, velocity
         
         x_position= round(sum(x_position_history) / len(x_position_history),2)
         y_position= round(sum(y_position_history) / len(y_position_history),2)
@@ -189,7 +193,7 @@ def get_head_factor():
             print(velocity_moy)
             
             if any(velocity > surprise_threshold for velocity in velocity_moy):
-                if above_head:
+                if above_head and is_waving(last_wrist_L[:][0]) or is_waving(last_wrist_L[:][0]):
                     emote = "Rizz"
                     last_emote = time.time()
                 else:
@@ -204,3 +208,13 @@ def get_head_factor():
         return res
     else:
         return None
+    
+
+def is_waving(history, threshold=0.02, min_crossings=2):
+    # Compte les changements de direction
+    crossings = 0
+    for i in range(2, len(history)):
+        if (history[i-2] - history[i-1]) * (history[i-1] - history[i]) < 0:
+            if abs(history[i-1] - history[i]) > threshold:
+                crossings += 1
+    return crossings >= min_crossings
