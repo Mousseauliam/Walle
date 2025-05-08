@@ -20,6 +20,7 @@ pinBtn_T = 2
 pinBtn_C = 3
 pinBtn_S = 23
 state_btn=[0]*4
+last_state_change =0
 
 
 lgpio.gpio_claim_input(h, pinBtn_R, lgpio.SET_PULL_UP)
@@ -49,7 +50,10 @@ modes = {
     "Sleep": Sleep
 }
 
-#
+# music
+music =["sunday_clothe", "la_vie_en_rose", "takes_a_moments"]
+last_music =0
+
 current_mode_name = None
 
 while power:
@@ -60,11 +64,16 @@ while power:
     state_btn[3] = lgpio.gpio_read(h, pinBtn_S)
     #print(f"[Main] Button states: {state_btn}")
     
-    if state_btn[0] == 0:
-        robot.sound("brr1")
-    
-    if state_btn[1] == 0:
-        robot.sound("yah")
+    if ((time.time() -last_state_change)>0.5):
+        if state_btn[0] == 0:
+            robot.stop_sound()
+
+        if state_btn[1] == 0:
+            robot.sound(music[last_music])
+            last_music += 1
+            if last_music >= len(music):
+                last_music = 0
+            last_state_change = time.time()
         
     if state_btn[3] == 0:
         print("btn soleil")

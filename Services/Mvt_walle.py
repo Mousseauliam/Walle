@@ -170,6 +170,10 @@ class Walle:
     def sound(self, name):
         if not self.sound_player.is_playing():
             self.sound_player.play(name)
+            
+    def stop_sound(self):
+        if self.sound_player.is_playing():
+            self.sound_player.stop()
 
     def get_coef(self, name):
         if name in self.coef:

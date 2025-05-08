@@ -22,3 +22,8 @@ class SoundPlayer:
 
     def is_playing(self):
         return pygame.mixer.music.get_busy()
+    
+    def stop(self):
+        with self.lock:
+            pygame.mixer.music.stop()
+            print("[SoundPlayer] Stopped sound")
