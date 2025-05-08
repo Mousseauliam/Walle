@@ -132,7 +132,13 @@ def frame_process():
         velocity[2] = np.sqrt((elbow_L.x - last_elbow_L[0])**2 + (elbow_L.y - last_elbow_L[1])**2 + (elbow_L.z - last_elbow_L[2])**2) / (now - last_time)
         velocity[3] = np.sqrt((elbow_R.x - last_elbow_R[0])**2 + (elbow_R.y - last_elbow_R[1])**2 + (elbow_R.z - last_elbow_R[2])**2) / (now - last_time)
         
-        
+        for i in velocity:
+            if i > 0.008:
+                surprised = True
+                print(surprised)
+            else:
+                surprised = False
+
         # wrist position
         last_wrist_L = [wrist_L.x, wrist_L.y, wrist_L.z]
         last_wrist_R = [wrist_R.x, wrist_R.y, wrist_R.z]
