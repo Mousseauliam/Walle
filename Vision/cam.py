@@ -39,6 +39,7 @@ last_elbow_L = [0.0]*3
 last_elbow_R = [0.0]*3
 last_time = time.time()
 velocity = [0]*4
+surprised = False
 
 def gen_frames():
     global last_frame, last_results,last_results_pose, last_time
@@ -76,7 +77,7 @@ def gen_frames():
 
 
 def frame_process():
-    global last_frame, last_results, head_detected, blink, L_eye_closed, R_eye_closed, head_tilt_history, x_position_history, y_position_history, last_results_pose, last_wrist_L, last_wrist_R, last_elbow_L, last_elbow_R, last_time, velocity
+    global last_frame, last_results, head_detected, blink, L_eye_closed, R_eye_closed, head_tilt_history, x_position_history, y_position_history, last_results_pose, last_wrist_L, last_wrist_R, last_elbow_L, last_elbow_R, last_time, velocity, surprised
     if last_results.multi_face_landmarks:
         head_detected = True
         face_landmarks = last_results.multi_face_landmarks[0]
@@ -130,6 +131,7 @@ def frame_process():
         velocity[1] = np.sqrt((wrist_R.x - last_wrist_R[0])**2 + (wrist_R.y - last_wrist_R[1])**2 + (wrist_R.z - last_wrist_R[2])**2) / (now - last_time)
         velocity[2] = np.sqrt((elbow_L.x - last_elbow_L[0])**2 + (elbow_L.y - last_elbow_L[1])**2 + (elbow_L.z - last_elbow_L[2])**2) / (now - last_time)
         velocity[3] = np.sqrt((elbow_R.x - last_elbow_R[0])**2 + (elbow_R.y - last_elbow_R[1])**2 + (elbow_R.z - last_elbow_R[2])**2) / (now - last_time)
+        
         
         # wrist position
         last_wrist_L = [wrist_L.x, wrist_L.y, wrist_L.z]

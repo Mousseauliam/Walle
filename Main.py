@@ -11,6 +11,7 @@ import os
 
 power=True
 fetch_git=False
+sleep=False
 
 # Definition des pins
 h = lgpio.gpiochip_open(0)
@@ -74,6 +75,17 @@ while power:
             if last_music >= len(music):
                 last_music = 0
             last_state_change = time.time()
+            
+    if state_btn[2] == 0:
+        print("[Main] sleep ...")
+        if not sleep :
+            robot.sleep()
+        else:
+            robot.wake_up()
+        sleep = not sleep
+        time.sleep(0.5)
+        
+        
         
     if state_btn[3] == 0:
         print("btn soleil")
