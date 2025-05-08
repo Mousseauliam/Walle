@@ -178,7 +178,6 @@ def get_head_factor():
 
         res = [x_position, y_position, z_position, head_tilt, blink_type, surprised]
         
-        print(velocity)
         
         return res
     else:
