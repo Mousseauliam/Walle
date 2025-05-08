@@ -121,10 +121,10 @@ def frame_process():
     
     if last_results_pose.pose_landmarks:
         pose_landmarks = last_results_pose.pose_landmarks
-        wrist_L = pose_landmarks.landmark[15]
-        wrist_R = pose_landmarks.landmark[16]
-        elbow_L = pose_landmarks.landmark[13]
-        elbow_R = pose_landmarks.landmark[14]
+        wrist_L = pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_WRIST.value]
+        wrist_R = pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_WRIST.value]
+        elbow_L = pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_ELBOW.value]
+        elbow_R = pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_ELBOW.value]
         
         now= time.time()
         
@@ -133,10 +133,10 @@ def frame_process():
         velocity.append(np.sqrt((wrist_R.x - last_wrist_R[0])**2 + (wrist_R.y - last_wrist_R[1])**2 + (wrist_R.z - last_wrist_R[2])**2) / (now - last_time))
         velocity.append(np.sqrt((elbow_L.x - last_elbow_L[0])**2 + (elbow_L.y - last_elbow_L[1])**2 + (elbow_L.z - last_elbow_L[2])**2) / (now - last_time))
         velocity.append(np.sqrt((elbow_R.x - last_elbow_R[0])**2 + (elbow_R.y - last_elbow_R[1])**2 + (elbow_R.z - last_elbow_R[2])**2) / (now - last_time))
-        for i in range(4):
-            if (time.time() - last_surprised) > 1.5:
-                moy=(velocity[i] + velocity[i+4])/2
-                if moy > 0.01:
+        for i in range(2):
+            if (time.time() - last_surprised) > 3:
+                moy=(velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6])/4
+                if moy > 0.010:
                     surprised = True
                     last_surprised = time.time()
                     print(surprised)
