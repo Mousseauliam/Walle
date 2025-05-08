@@ -42,6 +42,7 @@ velocity = [0]*12
 emote = None
 last_emote = 0
 surprise_threshold = 5.5
+hello_threshold = 1.5
 above_head = False
 
 def gen_frames():
@@ -162,7 +163,7 @@ def frame_process():
 
 def get_head_factor():
     if head_detected:
-        global blink_threshold, L_eye_history, R_eye_history, emote, surprise_threshold, last_emote, above_head, last_wrist_L, last_wrist_R, velocity
+        global blink_threshold, L_eye_history, R_eye_history, emote, surprise_threshold, hello_threshold, last_emote, above_head, last_wrist_L, last_wrist_R, velocity
         
         x_position= round(sum(x_position_history) / len(x_position_history),2)
         y_position= round(sum(y_position_history) / len(y_position_history),2)
@@ -191,15 +192,13 @@ def get_head_factor():
             for i in range(2):
                 velocity_moy.append((velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6] + velocity[i+8] + velocity[i+10] )/6)
             
-            
-            if any(velocity > surprise_threshold for velocity in velocity_moy):
-                if above_head and is_waving([w[0] for w in last_wrist_L]) or is_waving([w[0] for w in last_wrist_R]):
-                    emote = "Rizz"
-                    print("Rizz")
-                    
-                else:
-                    emote = "Surpised"
-                    print("Surprised")
+            if (is_waving([w[0] for w in last_wrist_L]) or is_waving([w[0] for w in last_wrist_R])) and any(velocity > hello_threshold for velocity in velocity_moy) and above_head:
+                emote = "Rizz"
+                print("Rizz")
+                last_emote = time.time()
+            elif any(velocity > surprise_threshold for velocity in velocity_moy):
+                emote = "Surpised"
+                print("Surprised")
                 last_emote = time.time()
             else:
                 emote = None
@@ -215,7 +214,6 @@ def get_head_factor():
     
 
 def is_waving(history, threshold=0.02, min_crossings=2):
-    # Compte les changements de direction
     crossings = 0
     for i in range(2, len(history)):
         if (history[i-2] - history[i-1]) * (history[i-1] - history[i]) < 0:
