@@ -134,10 +134,9 @@ def frame_process():
         velocity.append(np.sqrt((elbow_L.x - last_elbow_L[0])**2 + (elbow_L.y - last_elbow_L[1])**2 + (elbow_L.z - last_elbow_L[2])**2) / (now - last_time))
         velocity.append(np.sqrt((elbow_R.x - last_elbow_R[0])**2 + (elbow_R.y - last_elbow_R[1])**2 + (elbow_R.z - last_elbow_R[2])**2) / (now - last_time))
         
-        for i in range(2):
+        for i in range(4):
             if (time.time() - last_surprised) > 3:
-                moy=(velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6]+ velocity[i+8] + velocity[i+10])/6
-                print(f"moy {i} : {moy}")
+                moy=(velocity[i] + velocity[i+4] )/2
                 if moy > 0.012:
                     surprised = True
                     last_surprised = time.time()
@@ -179,6 +178,7 @@ def get_head_factor():
 
         res = [x_position, y_position, z_position, head_tilt, blink_type, surprised]
         
+        surprised = False
         
         return res
     else:
