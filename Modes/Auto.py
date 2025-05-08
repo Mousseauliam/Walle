@@ -7,6 +7,7 @@ deadzone = 0.09
 y_step = 0.03
 tilt_factor = 1.2
 
+last_blink = 0
 def run(robot,server):
     global active
     active = True

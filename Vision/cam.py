@@ -25,7 +25,6 @@ z_position_history = [0]*5
 head_detected = False
 
 blink_threshold = 0.15
-last_blink = 0
 L_eye_history = [0]*5
 R_eye_history = [0]*5
 
@@ -112,9 +111,8 @@ def get_head_factor():
         right_closed = (R_eye_ratio < blink_threshold) and (L_eye_ratio >= blink_threshold)
         
         blink_type = "none"
-        if both_closed and (time.time() - last_blink > 1.5):
+        if both_closed:
             blink_type = "blink"
-            last_blink = time.time()
         elif both_open:
             blink_type = "open"
         elif left_closed:
