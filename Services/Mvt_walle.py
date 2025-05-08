@@ -20,8 +20,8 @@ class Walle:
             "eyebrow_R": 0.0,
             "UD_L": 0,
             "UD_R": 0,
-            "neck_U":0.0,
-            "neck_L":0.0,
+            "neck_U":0.4,
+            "neck_L":0.6,
             "neck_LR":0.5,
             "arm_L":0.5,
             "arm_R":0.5,
@@ -37,12 +37,24 @@ class Walle:
         
         self.coef = self.coef_init.copy()
         
-        self.headAngle(self.coef_init["head_angle"])
-        self.neckAngle(self.coef_init["neck_angle"])
+        self.manual("lid_L", 1)
+        self.manual("lid_R", 1)
+        self.manual("eyebrow_L", 0.0)
+        self.manual("eyebrow_R", 0.0)
+        self.manual("UD_L", 0.5)
+        self.manual("UD_R", 0.5)
+        self.manual("neck_U", 0.4)
+        self.manual("neck_L", 0.6)
+        self.manual("neck_LR", 0.5)
+        self.manual("arm_L", 0.5)
+        self.manual("arm_R", 0.5)
+        self.manual("hand_L", 0.5)
+        self.manual("hand_R", 0.5)
         self.sadness(self.coef_init["sadness"])
         time.sleep(2)
         self.emote("Auto_adjust")
-        #self.sound = SoundPlayer()
+        
+        self.sound = SoundPlayer()
         
 
     def update(self, tab):
@@ -169,11 +181,11 @@ class Walle:
     def emote(self, name):
         if name in Emotes.EMOTES:
             Emotes.EMOTES[name](self)
-    """   
+             
     def sound(self, name):
         if not self.sound.is_playing():
             self.sound.play(name)
-            """
+
     def get_coef(self, name):
         if name in self.coef:
             return self.coef[name]
