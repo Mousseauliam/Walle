@@ -3,14 +3,32 @@ from Web import server
 from Services.Mvt_walle import Walle
 from Services.Modes_manager import ModeManager
 from Web.log_redirector import init_socketio, redirect_stdout
+import lgpio
 
 import threading
 import time
 import os
 
 power=True
+fetch_git=False
 
-#server run
+# Definition des pins
+h = lgpio.gpiochip_open(0)
+
+pinBtn_R = 24
+pinBtn_T = 2
+pinBtn_C = 3
+pinBtn_S = 23
+state_btn=[0]*4
+
+
+lgpio.gpio_claim_input(h, pinBtn_R, lgpio.SET_PULL_UP)
+lgpio.gpio_claim_input(h, pinBtn_C, lgpio.SET_PULL_DOWN)
+lgpio.gpio_claim_input(h, pinBtn_T, lgpio.SET_PULL_DOWN)
+lgpio.gpio_claim_input(h, pinBtn_S, lgpio.SET_PULL_UP)
+
+
+#server
 flask_thread = threading.Thread(target=server.run_web_server)
 flask_thread.daemon = True
 flask_thread.start()
@@ -30,9 +48,27 @@ modes = {
     "Sequence": Sequence,
     "Sleep": Sleep
 }
+
 current_mode_name = None
 
 while power:
+    
+    state_btn[0] = lgpio.gpio_read(h, pinBtn_R)
+    state_btn[1] = lgpio.gpio_read(h, pinBtn_T)
+    state_btn[2] = lgpio.gpio_read(h, pinBtn_C)
+    state_btn[3] = lgpio.gpio_read(h, pinBtn_S)
+    #print(f"[Main] Button states: {state_btn}")
+    
+    if state_btn[0] == 0:
+        robot.sound("voice_walle")
+    
+    if state_btn[3] == 0:
+        print("btn soleil")
+        power = False
+        fetch_git = True
+        
+    
+    
     selected = server.get_selected_mode()
 
     if selected != current_mode_name:
@@ -50,8 +86,11 @@ while power:
     time.sleep(0.03)
     
 
+lgpio.gpiochip_close(h)
 manager.stop_mode()
 robot.sleep()
 robot.close()
-
+if fetch_git:
+    print(fetch_git)
+    os.system("sudo systemctl restart walle.service")
 #os.system("sudo shutdown -h now")

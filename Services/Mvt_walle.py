@@ -7,71 +7,74 @@ class Walle:
     def __init__(self, port: str):
         self.serial_available = True
         try:
-            self.serial = serial.Serial(port, baudrate=9600, timeout=1)
+            self.serial = serial.Serial(port, baudrate=115200, timeout=1)
             print(f"[Mvt_Walle] ✅ Connexion au port {port} réussie.")
         except serial.SerialException as e:
-            print(f"[Mvt_Walle] ❌ Erreur : Impossible d'ouvrir le port {port}.\n")
+            print(f"[Mvt_Walle] ❌ Erreur : Impossible d'ouvrir le port {port}.")
             self.serial_available = False
             
         self.coef_init = {
-            "lid_L":1.0,
-            "lid_R":1.0,
-            "eyebrow_L": 0.0,
-            "eyebrow_R": 0.0,
-            "UD_L": 0.55,
-            "UD_R": 0.6,
-            "eye_angle": 0.5,
-            "eye_sad": 0.0,
-            "neck_U":0.0,
-            "neck_L":0.0,
-            "neck_LR":0.0,
-            "neck_level":0.5,
-            "neck_angle":0.0,
+            "lid_L":1,
+            "lid_R":1,
+            "eyebrow_L": 0.1,
+            "eyebrow_R": 0.1,
+            "UD_L": 0,
+            "UD_R": 0,
+            "neck_U":0,
+            "neck_L":0,
+            "neck_LR":0.5,
             "arm_L":0.5,
             "arm_R":0.5,
-            "hand_L":1.0,
-            "hand_R":1.0,
+            "hand_L":0.5,
+            "hand_R":0.5,
             "speed_L":0.5,
-            "speed_R":0.5
+            "speed_R":0.5,
+            "head_angle": 0.5,
+            "neck_level":1.0,
+            "neck_angle":0.4,
+            "sadness": 0.3,
         }
-        self.coef = self.coef_init.copy()
-        #self.update(self.coef.keys())
         
-        self.sound = SoundPlayer()
+        self.coef = self.coef_init.copy()
+
+        self.wake_up()
+        
+        self.sound_player = SoundPlayer()
         
 
     def update(self, tab):
         res = ""
         for key in tab:
             res += f"{key}%{self.coef[key]}\n"
-            #print(f"[Mvt_Walle] 🔄 {key} = {self.coef[key]}")
+            print(f"[Mvt_Walle] 🔄 {key} = {self.coef[key]}")
 
         if self.serial_available:
             self.serial.write(res.encode())
-            print("[Mvt_Walle] ➡️ Envoyé à l'Arduino:")
+            print("[Mvt_Walle] ➡️ Envoyé à l'Arduino\n")
         else:
-            print("[Mvt_Walle] Erreur envoie arduino")
+            print("[Mvt_Walle] Erreur envoie arduino\n")
 
     def blink(self):
-        self.coef['lid_L']=0
-        self.coef['lid_R']=0
-        self.update(['lid_L','lid_R'])
-        print("[Mvt_Walle] WALL-E cligne des yeux. 1\n")
-        time.sleep(0.15)
         self.coef['lid_L']=1
         self.coef['lid_R']=1
         self.update(['lid_L','lid_R'])
+        print("[Mvt_Walle] WALL-E cligne des yeux. 1")
+        time.sleep(0.15)
+        self.coef['lid_L']=0
+        self.coef['lid_R']=0
+        self.update(['lid_L','lid_R'])
         
     def manual(self,name,angle):
-        self.coef[name]=angle
-        print(f"[Mvt_Walle] {name} réglé à {angle}\n")
-        self.update([name])
+        if (self.coef[name] != angle) :
+            self.coef[name]=angle
+            print(f"[Mvt_Walle] {name} réglé à {angle}")
+            self.update([name])
 
     def headAngle(self, angle=None):
         if angle is None:
-            angle = self.coef["eye_angle"]
+            angle = self.coef["head_angle"]
         else:
-            self.coef["eye_angle"] = angle
+            self.coef["head_angle"] = angle
 
         base_position = 0.5
 
@@ -79,25 +82,32 @@ class Walle:
         UD_R_temp = base_position + (0.5-angle)
 
         # sadness effect
-        self.coef["UD_L"] = max(0, min(1,((1 - self.coef["eye_sad"]) * UD_L_temp)))
-        self.coef["UD_R"] = max(0, min(1,((1 - self.coef["eye_sad"]) * UD_R_temp)))
+        self.coef["UD_L"] = max(0, min(1,((1 - self.coef["sadness"]) * UD_L_temp)))
+        self.coef["UD_R"] = max(0, min(1,((1 - self.coef["sadness"]) * UD_R_temp)))
 
         self.update(["UD_L", "UD_R"])
         
     def neckLR(self, angle):
         self.coef["neck_LR"]=angle
+        print(f"[Mvt_Walle] WALL-E tourne la tête de {angle}")
         self.update(["neck_LR"])
 
     def eyebrow(self, angle):
         self.coef["eyebrow_L"] = angle
         self.coef["eyebrow_R"] = angle
         self.update(["eyebrow_L", "eyebrow_R"])
+    
+    def lid(self, angle):
+        self.coef["lid_L"] = angle
+        self.coef["lid_R"] = angle
+        self.update(["lid_L", "lid_R"])
 
     def sadness(self, angle):
-        self.coef["eye_sad"] = angle
+        self.coef["sadness"] = angle
+        print(f"[Mvt_Walle] Niveau de tristesse réglé à {angle}")
         self.headAngle()
-        print(f"[Mvt_Walle] Niveau de tristesse réglé à {angle}\n")
         
+    """  
     def neckLevel(self, necklevel=None):
         neckAngle = self.coef["neck_angle"]
 
@@ -106,50 +116,107 @@ class Walle:
         else:
             self.coef["neck_level"] = necklevel
 
-        neck_L_temp = (1 - neckAngle) * necklevel
-        neck_U_temp = neckAngle + (1 - neckAngle) * necklevel
 
-        self.coef["neck_L"] = max(0, min(1, neck_L_temp))
-        self.coef["neck_U"] = max(0, min(1, neck_U_temp))
+        if neckAngle == 0:
+            neck_L = 1
+            neck_U = 0
+        elif neckAngle == 1:
+            neck_L = 0
+            neck_U = 1
+        elif neckAngle == 0.5:
+            neck_L = necklevel
+            neck_U = necklevel
+        else:
 
+            neck_L = (1 - neckAngle) if neckAngle < 0.5 else 0
+            neck_U = neckAngle if neckAngle > 0.5 else 0
+
+
+        self.coef["neck_L"] = max(0, min(1, neck_L))
+        self.coef["neck_U"] = max(0, min(1, neck_U))
+
+        print(f"[Mvt_Walle] Neck_level réglé à {necklevel}")
         self.update(["neck_L", "neck_U"])
-        
+        """
     def neckAngle(self, neckAngle):
         self.coef["neck_angle"] = neckAngle
-        self.neckLevel()
+        self.coef["neck_L"]= (1-neckAngle)
+        self.coef["neck_U"]= neckAngle
+        print(f"[Mvt_Walle] Neck_angle réglé à {neckAngle}")
+        self.update(["neck_L", "neck_U"])
         
     def forward(self, speed=0.5):
         self.coef["speed_L"] = speed
         self.coef["speed_R"] = speed
+        print(f"[Mvt_Walle] WALL-E avance à la vitesse {speed}")
         self.update(["speed_L", "speed_R"])
-        print(f"[Mvt_Walle] WALL-E avance à la vitesse {speed}\n")
         
     def backward(self, speed=0.5):
         self.coef["speed_L"] = -speed
         self.coef["speed_R"] = -speed
+        print(f"[Mvt_Walle] WALL-E recule à la vitesse {speed}")
         self.update(["speed_L", "speed_R"])
-        print(f"[Mvt_Walle] WALL-E recule à la vitesse {speed}\n")
         
     def turn (self, speed=0.5):
         self.coef["speed_L"] = (0.5-speed)*2
         self.coef["speed_R"] = (0.5-speed)*-2
+        print(f"[Mvt_Walle] WALL-E tourne à la vitesse {(0.5-speed)*2}")
         self.update(["speed_L", "speed_R"])
-        print(f"[Mvt_Walle] WALL-E tourne à la vitesse {(0.5-speed)*2}\n")
         
     def emote(self, name):
         if name in Emotes.EMOTES:
             Emotes.EMOTES[name](self)
-        
+             
     def sound(self, name):
-        if not self.sound.is_playing():
-            self.sound.play(name)
+        if not self.sound_player.is_playing():
+            self.sound_player.play(name)
+
+    def get_coef(self, name):
+        if name in self.coef:
+            return self.coef[name]
+        else:
+            print(f"[Mvt_Walle] Erreur: {name} n'est pas un coefficient valide.")
+            return None
 
     def sleep(self):
-        self.coef = self.coef_init.copy()
-        self.update(self.coef.keys())
+        self.manual("lid_L", 1)
+        self.manual("lid_R", 1)
+        self.manual("eyebrow_L", 0.0)
+        self.manual("eyebrow_R", 0.0)
+        self.manual("UD_L", 0)
+        self.manual("UD_R", 0)
+        self.manual("neck_U", 0.0)
+        self.manual("neck_L", 0)
+        self.manual("neck_LR", 0.5)
+        self.manual("arm_L", 0.5)
+        self.manual("arm_R", 0.5)
+        self.manual("hand_L", 0.5)
+        self.manual("hand_R", 0.5)
+        
+    def wake_up(self):
+        time.sleep(2)
+        self.manual("lid_L", 0)
+        self.manual("lid_R", 0)
+        time.sleep(0.3)
+        self.manual("eyebrow_L", 0.0)
+        self.manual("eyebrow_R", 0.0)
+        time.sleep(0.3)
+        self.neckAngle(0.5)
+        time.sleep(0.3)
+        self.neckAngle(0.4)
+        self.manual("neck_LR", 0.5)
+        time.sleep(1)
+        self.manual("arm_L", 0.5)
+        self.manual("arm_R", 0.5)
+        time.sleep(0.5)
+        self.manual("hand_L", 0.5)
+        self.manual("hand_R", 0.5)
+        self.sadness(0.3)
+        time.sleep(2)
+        self.emote("Auto_adjust")
         
 
     def close(self):
         if self.serial_available:
             self.serial.close()
-        print("[Mvt_Walle] Port série fermé.\n")
+        print("[Mvt_Walle] Port série fermé.")

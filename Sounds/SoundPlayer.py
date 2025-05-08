@@ -4,7 +4,10 @@ import os
 
 class SoundPlayer:
     def __init__(self):
-        pygame.mixer.init()
+        try:
+            pygame.mixer.init()
+        except pygame.error as e:
+            print(f"[SoundPlayer] Audio init failed: {e}")
         self.lock = threading.Lock()
 
     def play(self, sound_name):

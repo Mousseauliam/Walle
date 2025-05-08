@@ -34,8 +34,22 @@ def run(robot,server):
             
         servo, position = server.get_servo_data()
         if servo != None:
-            print(f"[Manual] Servo {servo} to position {position/180}")
-            robot.manual(servo,position/180)
+            match servo:
+                case 'head_angle':
+                    robot.headAngle(position)
+                case "neck_level":
+                    robot.neckLevel(position)
+                case "neck_angle":
+                    robot.neckAngle(position)
+                case "sadness":
+                    robot.sadness(position)
+                case "neck_LR":
+                    robot.neckLR(position)
+                case "eyebrows":
+                    robot.eyebrow(position)
+                case _:
+                    print(f"[Manual] Servo {servo} to position {position}")
+                    robot.manual(servo,position)
             
         time.sleep(0.05)
 

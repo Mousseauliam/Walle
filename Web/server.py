@@ -78,10 +78,10 @@ def get_selected_emote():
 def get_servo_data():
     global selected_servo, servo_position
     temp1 = selected_servo
-    temp2 = servo_position
+    temp2 = servo_position/180
     selected_servo = None
     servo_position = 90
     return temp1, temp2
 
 def run_web_server():
-    socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False)
+    socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, allow_unsafe_werkzeug=True)
