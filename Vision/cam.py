@@ -144,8 +144,8 @@ def frame_process():
         velocity.append(np.sqrt((elbow_L.x - last_elbow_L[0])**2 + (elbow_L.y - last_elbow_L[1])**2 + (elbow_L.z - last_elbow_L[2])**2) / (now - last_process))
         velocity.append(np.sqrt((elbow_R.x - last_elbow_R[0])**2 + (elbow_R.y - last_elbow_R[1])**2 + (elbow_R.z - last_elbow_R[2])**2) / (now - last_process))
         
-        h_wrist = nose_tip.y -0.1
-        h_elbow = nose_tip.y -0.3
+        h_wrist = nose_tip.y +0.1
+        h_elbow = nose_tip.y +0.3
         above_head = ((last_elbow_L[1]< h_elbow) and (last_wrist_L[1]< h_wrist)) or ((last_elbow_R[1]< h_elbow) and (last_wrist_R[1]< h_wrist))
         
         print(h_wrist, h_elbow, above_head, last_elbow_L[1])
