@@ -41,7 +41,7 @@ last_process = time.time()
 velocity = [0]*12
 emote = None
 last_emote = 0
-surprise_threshold = 2
+surprise_threshold = 3.5
 above_head = False
 
 def gen_frames():
@@ -146,8 +146,8 @@ def frame_process():
         
         h_wrist = nose_tip.y -0.1
         h_elbow = nose_tip.y -0.3
-        above_head = ((last_elbow_L[1]> h_elbow) and (last_wrist_L[1]> h_wrist)) or ((last_elbow_R[1]> h_elbow) and (last_wrist_R[1]> h_wrist))
-                    
+        above_head = ((last_elbow_L[1].y> h_elbow) and (last_wrist_L[1].y> h_wrist)) or ((last_elbow_R[1].y> h_elbow) and (last_wrist_R[1].y> h_wrist))
+        print(h_wrist, h_elbow, above_head, (last_elbow_L[1].y> h_elbow))
         last_process = time.time()
         
         # wrist position
