@@ -5,7 +5,6 @@ active = False
 
 deadzone = 0.09
 y_step = 0.03
-x_factor = 0.5
 tilt_factor = 1.2
 
 def run(robot,server):
@@ -24,6 +23,7 @@ def run(robot,server):
                 
             neck_LR = robot.get_coef("neck_LR")
             print( head_factor[2])
+            x_factor = (head_factor[2] + 0.02) * (0.3 - 0.5) / (-0.07 + 0.02) + 0.5
             neck_LR_temp = round((head_factor[0] - 0.5) * x_factor+ 0.5,2)
             if (neck_LR!= neck_LR_temp):
                 robot.neckLR(neck_LR_temp)
