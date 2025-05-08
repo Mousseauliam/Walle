@@ -33,10 +33,10 @@ R_eye_history = [0]*5
 
 #body variables
 last_results_pose = None
-last_wrist__L = None
-last_wrist__R = None
-last_elbow__L = None
-last_elbow__R = None
+last_wrist__L = [None]*3
+last_wrist__R = [None]*3
+last_elbow__L = [None]*3
+last_elbow_R = [None]*3
 last_time = time.time()
 velocity = [0]*4
 
