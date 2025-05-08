@@ -36,12 +36,12 @@ class Walle:
         }
         
         self.coef = self.coef_init.copy()
-        """"
+        
         self.headAngle(self.coef_init["head_angle"])
         self.neckAngle(self.coef_init["neck_angle"])
-        time.sleep(1)
-        for key in list(self.coef.keys())[:14]:
-            self.update([key])"""
+        self.sadness(self.coef_init["sadness"])
+        time.sleep(2)
+        self.emote("Auto_adjust")
         #self.sound = SoundPlayer()
         
 
@@ -182,29 +182,20 @@ class Walle:
             return None
 
     def sleep(self):
-        self.coef = {
-            "lid_L":1,
-            "lid_R":1,
-            "eyebrow_L": 0.0,
-            "eyebrow_R": 0.0,
-            "UD_L": 0,
-            "UD_R": 0,
-            "neck_U":0.0,
-            "neck_L":0,
-            "neck_LR":0.5,
-            "arm_L":0.5,
-            "arm_R":0.5,
-            "hand_L":0.5,
-            "hand_R":0.5,
-            "speed_L":0.5,
-            "speed_R":0.5,
-            "head_angle": 0.5,
-            "neck_level":1.0,
-            "neck_angle":0.4,
-            "sadness": 0.0,
-        }
-        for key in list(self.coef.keys())[:14]:
-            self.update([key])
+        self.manual("lid_L", 1)
+        self.manual("lid_R", 1)
+        self.manual("eyebrow_L", 0.0)
+        self.manual("eyebrow_R", 0.0)
+        self.manual("UD_L", 0)
+        self.manual("UD_R", 0)
+        self.manual("neck_U", 0.0)
+        self.manual("neck_L", 0)
+        self.manual("neck_LR", 0.5)
+        self.manual("arm_L", 0.5)
+        self.manual("arm_R", 0.5)
+        self.manual("hand_L", 0.5)
+        self.manual("hand_R", 0.5)
+        
         
 
     def close(self):

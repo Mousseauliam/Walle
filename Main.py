@@ -61,8 +61,8 @@ while power:
     if state_btn[3] == 0:
         robot.sleep()
         print("sleep")
-        #power = False
-        #os.system("sudo systemctl restart walle.service")
+        os.system("sudo systemctl restart walle.service")
+        
     
     
     selected = server.get_selected_mode()
@@ -86,5 +86,4 @@ lgpio.gpiochip_close(h)
 manager.stop_mode()
 robot.sleep()
 robot.close()
-
 #os.system("sudo shutdown -h now")
