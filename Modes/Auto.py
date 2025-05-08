@@ -10,14 +10,17 @@ tilt_factor = 1.2
 global last_blink
 global wink_left
 global wink_right 
+global cooling_time
 
 
 def run(robot,server):
-    global active, last_blink, wink_left, wink_right
+    global active, last_blink, wink_left, wink_right, cooling_time
     active = True
     last_blink = 0
     wink_left = 0
     wink_right = 0
+    cooling_time = 0.5
+    
     while active:
         head_factor=get_head_factor()
         if head_factor is not None:
@@ -43,9 +46,9 @@ def run(robot,server):
                 
             match head_factor[4]:
                 case "open":
-                    if (time.time() - wink_left) > 1:
+                    if (time.time() - wink_left) > 0.5:
                         robot.manual("lid_L", 0)
-                    if (time.time() - wink_right) > 1:
+                    if (time.time() - wink_right) > 0.5:
                         robot.manual("lid_R", 0)
                 case "blink":
                     if (time.time() - last_blink) > 0.5:

@@ -111,4 +111,4 @@ EMOTES = {
     "Curious": curious,
     "Surprise": surprise,
     "Dance": dance
-}
+}x
