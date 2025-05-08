@@ -72,6 +72,7 @@ def frame_process():
         x_position_history.append(nose_tip.x)
         y_position_history.pop(0)
         y_position_history.append(nose_tip.y)
+        print(nose_tip.z)
 
         # head angle
         dx = R_eye_bottom.x - L_eye_bottom.x
@@ -117,9 +118,8 @@ def get_head_factor():
         elif right_closed:
             blink_type = "wink_left"
 
-
         res = [x_position, y_position, head_tilt, blink_type ]
-        blink = False
+        
         return res
     else:
         return None
