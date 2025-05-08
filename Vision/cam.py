@@ -33,10 +33,10 @@ R_eye_history = [0]*5
 
 #body variables
 last_results_pose = None
-last_wrist_L = [0.0, 0.0, 0.0]*10
-last_wrist_R = [0.0, 0.0, 0.0]*10
-last_elbow_L = [0.0, 0.0, 0.0]*10
-last_elbow_R = [0.0, 0.0, 0.0]*10
+last_wrist_L = [[0.0, 0.0, 0.0] for _ in range(10)]
+last_wrist_R = [[0.0, 0.0, 0.0] for _ in range(10)]
+last_elbow_L = [[0.0, 0.0, 0.0] for _ in range(10)]
+last_elbow_R = [[0.0, 0.0, 0.0] for _ in range(10)]
 last_process = time.time()
 velocity = [0]*12
 emote = None
