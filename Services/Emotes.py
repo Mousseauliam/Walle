@@ -43,16 +43,16 @@ def rizz(walle):
 def looking(walle):
     walle.neckLR(0)
     walle.neckAngle(0.2)
-    #walle.arm_R(0.4)
+    #walle.coef["arm_R"]=0.4
     time.sleep(3)
-    #hand_R(1)
+    #walle.coef["hand_R"]=1
     time.sleep(0.5)
-    #.hand_R(0)
+    #walle.coef["hand_L"]=0
     walle.neckLR(1)
     time.sleep(0.3)
     walle.blink()
     time.sleep(3)
-    #walle.arm_R(0)
+    #walle.coef["arm_R"]=0
     walle.neckAngle(0.5)
     time.sleep(1)
     walle.neckLR(0)
@@ -81,6 +81,26 @@ def surprise(walle):
     walle.eyebrow(0)
     walle.sadness(0.2)
 
+def dance(walle):
+    a=0
+    while a<=2:
+        #walle.coef["speed_L"]= 0.7
+        #walle.coef["speed_R"]= 0.3
+        walle.headAngle(0.3)
+        time.sleep(0.4)
+        walle.neckAngle(0.6)
+        time.sleep(0.2)
+        walle.neckAngle(0.5)
+        time.sleep(0.2)
+        walle.headAngle(0.7)
+        time.sleep(0.4)
+        walle.neckAngle.(0.6)
+        time.sleep(0.2)
+        walle.neckAngle(0.5)
+        time.sleep(0.2)
+        a+=1
+    walle.headAngle(0.5)
+    walle.neckAngle(0.5)
 
 EMOTES = {
     "Auto_adjust": auto_adjust,
@@ -89,5 +109,6 @@ EMOTES = {
     "Rizz": rizz,
     "Looking": looking,
     "Curious": curious,
-    "Surprise": surprise
+    "Surprise": surprise,
+    "Dance": dance
 }
