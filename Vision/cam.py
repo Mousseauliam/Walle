@@ -5,7 +5,9 @@ import mediapipe as mp
 import numpy as np
 
 mp_face_mesh = mp.solutions.face_mesh
+mp_pose = mp.solutions.pose
 face_mesh = mp_face_mesh.FaceMesh(static_image_mode=False, max_num_faces=1, refine_landmarks=True)
+pose = mp_pose.Pose(static_image_mode=False)
 
 # Camera init
 screen_width, screen_height = 1240, 960
@@ -33,15 +35,26 @@ def gen_frames():
     while True:
         frame = picam2.capture_array()
         frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+        
         results = face_mesh.process(frame)
+        results_pose = pose.process(frame)
+        
         last_frame = frame
         last_results = results
         h, w, _ = frame.shape
+        
         if results.multi_face_landmarks:
             for face_landmarks in results.multi_face_landmarks:
                 for landmark in face_landmarks.landmark:
                     x, y = int(landmark.x * w), int(landmark.y * h)
                     cv2.circle(frame, (x, y), 1, (0, 255, 0), -1)
+
+        
+        if results_pose.pose_landmarks:
+            for landmark in results_pose.pose_landmarks.landmark:
+                x, y = int(landmark.x * w), int(landmark.y * h)
+                cv2.circle(frame, (x, y), 2, (255, 0, 0), -1)
+                
         ret, buffer = cv2.imencode('.jpg', frame)
         if not ret:
             continue
