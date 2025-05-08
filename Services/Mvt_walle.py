@@ -37,10 +37,12 @@ class Walle:
         
         self.coef = self.coef_init.copy()
         
+        self.sound_player = SoundPlayer()
+        
         time.sleep(2)
         self.wake_up()
         
-        self.sound_player = SoundPlayer()
+        
         
 
     def update(self, tab):
