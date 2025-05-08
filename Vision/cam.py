@@ -137,6 +137,7 @@ def frame_process():
         for i in range(2):
             if (time.time() - last_surprised) > 3:
                 moy=(velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6])/4
+                print(f"moy {i} : {moy}")
                 if moy > 0.08:
                     surprised = True
                     last_surprised = time.time()

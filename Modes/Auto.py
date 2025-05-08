@@ -21,8 +21,7 @@ def run(robot,server):
     wink_left = 0
     wink_right = 0
     cooling_time = 0.5
-    eye_closed = False
-    
+        
     while active:
         head_factor=get_head_factor()
         if head_factor is not None:
