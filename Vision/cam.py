@@ -190,7 +190,7 @@ def get_head_factor():
             velocity_moy = []
             for i in range(2):
                 velocity_moy.append((velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6] + velocity[i+8] + velocity[i+10] )/6)
-            print(velocity_moy)
+            
             
             if any(velocity > surprise_threshold for velocity in velocity_moy):
                 if above_head and is_waving(last_wrist_L[:][0]) or is_waving(last_wrist_L[:][0]):
@@ -200,6 +200,7 @@ def get_head_factor():
                     emote = "Surpised"
             else:
                 emote = None
+            print(velocity_moy, is_waving(last_wrist_L[:][0]) , is_waving(last_wrist_L[:][0]))
 
         res = [x_position, y_position, z_position, head_tilt, blink_type, emote]
         
