@@ -80,8 +80,10 @@ while power:
         print("[Main] sleep ...")
         if not sleep :
             robot.sleep()
+            manager.stop_mode()
         else:
             robot.wake_up()
+            manager.launch_mode(modes[current_mode_name])
         sleep = not sleep
         time.sleep(0.5)
         
