@@ -36,7 +36,8 @@ class Walle:
         }
         
         self.coef = self.coef_init.copy()
-
+        
+        time.sleep(2)
         self.wake_up()
         
         self.sound_player = SoundPlayer()
@@ -198,7 +199,7 @@ class Walle:
         self.manual("hand_R", 0.5)
         
     def wake_up(self):
-        time.sleep(2)
+        self.sound("start")
         self.manual("lid_L", 0)
         self.manual("lid_R", 0)
         time.sleep(0.3)
