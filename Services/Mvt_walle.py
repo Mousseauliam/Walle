@@ -107,6 +107,16 @@ class Walle:
         print(f"[Mvt_Walle] Niveau de tristesse réglé à {angle}")
         self.headAngle()
         
+    ef hand(self, angle):
+        self.coef["hand_L"] = angle
+        self.coef["hand_R"] = angle
+        self.update(["hand_L", "hand_R"])
+
+    def arm(self, angle):
+        self.coef["arm_L"] = angle
+        self.coef["arm_R"] = angle
+        self.update(["arm_L", "arm_R"])
+
     """  
     def neckLevel(self, necklevel=None):
         neckAngle = self.coef["neck_angle"]
