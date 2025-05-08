@@ -14,14 +14,14 @@ class Walle:
             self.serial_available = False
             
         self.coef_init = {
-            "lid_L":0,
-            "lid_R":0,
-            "eyebrow_L": 0.0,
-            "eyebrow_R": 0.0,
+            "lid_L":1,
+            "lid_R":1,
+            "eyebrow_L": 0.1,
+            "eyebrow_R": 0.1,
             "UD_L": 0,
             "UD_R": 0,
-            "neck_U":0.4,
-            "neck_L":0.6,
+            "neck_U":0,
+            "neck_L":0,
             "neck_LR":0.5,
             "arm_L":0.5,
             "arm_R":0.5,
@@ -195,14 +195,13 @@ class Walle:
         
     def wake_up(self):
         time.sleep(2)
-        self.manual("lid_L", 1)
-        self.manual("lid_R", 1)
+        self.manual("lid_L", 0)
+        self.manual("lid_R", 0)
         time.sleep(0.3)
         self.manual("eyebrow_L", 0.0)
         self.manual("eyebrow_R", 0.0)
         time.sleep(0.3)
-        self.manual("UD_L", 0.5)
-        self.manual("UD_R", 0.5)
+        self.neckAngle(0.5)
         time.sleep(0.3)
         self.neckAngle(0.4)
         self.manual("neck_LR", 0.5)
