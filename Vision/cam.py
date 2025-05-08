@@ -26,12 +26,22 @@ y_position_history = [0]*4
 z_position_history = [0]*5
 head_detected = False
 
-blink_threshold = 0.15
+#eyes variables
+blink_threshold = 0.13
 L_eye_history = [0]*5
 R_eye_history = [0]*5
 
+#body variables
+last_results_pose = None
+last_wrist__L = None
+last_wrist__R = None
+last_elbow__L = None
+last_elbow__R = None
+last_time = time.time()
+velocity = [0]*4
+
 def gen_frames():
-    global last_frame, last_results
+    global last_frame, last_results,last_results_pose, last_time
     while True:
         frame = picam2.capture_array()
         frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
@@ -41,6 +51,7 @@ def gen_frames():
         
         last_frame = frame
         last_results = results
+        last_results_pose = results_pose
         h, w, _ = frame.shape
         
         if results.multi_face_landmarks:
@@ -53,7 +64,7 @@ def gen_frames():
         if results_pose.pose_landmarks:
             for landmark in results_pose.pose_landmarks.landmark:
                 x, y = int(landmark.x * w), int(landmark.y * h)
-                cv2.circle(frame, (x, y), 2, (255, 0, 0), -1)
+                cv2.circle(frame, (x, y), 4, (0, 0, 255), -1)
                 
         ret, buffer = cv2.imencode('.jpg', frame)
         if not ret:
@@ -65,7 +76,7 @@ def gen_frames():
 
 
 def frame_process():
-    global last_frame, last_results, head_detected, blink, L_eye_closed, R_eye_closed, head_tilt_history, x_position_history, y_position_history
+    global last_frame, last_results, head_detected, blink, L_eye_closed, R_eye_closed, head_tilt_history, x_position_history, y_position_history, last_results_pose, last_wrist__L, last_wrist__R, last_elbow__L, last_elbow__R, last_time, velocity
     if last_results.multi_face_landmarks:
         head_detected = True
         face_landmarks = last_results.multi_face_landmarks[0]
@@ -101,15 +112,34 @@ def frame_process():
         L_eye_history.append(abs(L_eye_top.y - L_eye_bottom.y)/abs(L_eye_L.x-L_eye_R.x))
         R_eye_history.pop(0)
         R_eye_history.append(abs(R_eye_top.y - R_eye_bottom.y)/abs(R_eye_L.x-R_eye_R.x))
-        
             
     else:
         head_detected = False
         return None
     
+    if last_results_pose.pose_landmarks:
+        pose_landmarks = last_results_pose.pose_landmarks
+        wrist_L = pose_landmarks.landmark[15]
+        wrist_R = pose_landmarks.landmark[16]
+        elbow_L = pose_landmarks.landmark[13]
+        elbow_R = pose_landmarks.landmark[14]
+        
+        now= time.time()
+        
+        velocity[0] = np.sqrt((wrist_L.x - last_wrist__L[0])**2 + (wrist_L.y - last_wrist__L[1])**2 + (wrist_L.z - last_wrist__L[2])**2) / (now - last_time)
+        velocity[1] = np.sqrt((wrist_R.x - last_wrist__R[0])**2 + (wrist_R.y - last_wrist__R[1])**2 + (wrist_R.z - last_wrist__R[2])**2) / (now - last_time)
+        velocity[2] = np.sqrt((elbow_L.x - last_elbow__L[0])**2 + (elbow_L.y - last_elbow__L[1])**2 + (elbow_L.z - last_elbow__L[2])**2) / (now - last_time)
+        velocity[3] = np.sqrt((elbow_R.x - last_elbow__R[0])**2 + (elbow_R.y - last_elbow__R[1])**2 + (elbow_R.z - last_elbow__R[2])**2) / (now - last_time)
+        
+        # wrist position
+        last_wrist__L = [wrist_L.x, wrist_L.y, wrist_L.z]
+        last_wrist__R = [wrist_R.x, wrist_R.y, wrist_R.z]
+        last_elbow__L = [elbow_L.x, elbow_L.y, elbow_L.z]
+        last_elbow__R = [elbow_R.x, elbow_R.y, elbow_R.z]
+    
 def get_head_factor():
     if head_detected:
-        global blink_threshold, L_eye_history, R_eye_history
+        global blink_threshold, L_eye_history, R_eye_history, velocity
         
         x_position= round(sum(x_position_history) / len(x_position_history),2)
         y_position= round(sum(y_position_history) / len(y_position_history),2)
@@ -134,6 +164,8 @@ def get_head_factor():
             blink_type = "wink_left"
 
         res = [x_position, y_position, z_position, head_tilt, blink_type ]
+        
+        print(velocity)
         
         return res
     else:
