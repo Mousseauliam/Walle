@@ -128,7 +128,7 @@ def frame_process():
         
         now= time.time()
         
-        velocity.pop([0,1,2,3])
+        velocity = velocity[4:]
         velocity.append(np.sqrt((wrist_L.x - last_wrist_L[0])**2 + (wrist_L.y - last_wrist_L[1])**2 + (wrist_L.z - last_wrist_L[2])**2) / (now - last_time))
         velocity.append(np.sqrt((wrist_R.x - last_wrist_R[0])**2 + (wrist_R.y - last_wrist_R[1])**2 + (wrist_R.z - last_wrist_R[2])**2) / (now - last_time))
         velocity.append(np.sqrt((elbow_L.x - last_elbow_L[0])**2 + (elbow_L.y - last_elbow_L[1])**2 + (elbow_L.z - last_elbow_L[2])**2) / (now - last_time))
