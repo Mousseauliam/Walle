@@ -52,11 +52,11 @@ current_mode_name = None
 
 while power:
     
-    state_btn[0] = GPIO.input(pinBtn_R)
-    state_btn[1] = GPIO.input(pinBtn_T)
-    state_btn[2] = GPIO.input(pinBtn_C) 
-    state_btn[3] = GPIO.input(pinBtn_S)
-    #print(f"[Main] Button states: {state_btn}")
+    state_btn[0] = lgpio.gpio_read(h, pinBtn_R)
+    state_btn[1] = lgpio.gpio_read(h, pinBtn_T)
+    state_btn[2] = lgpio.gpio_read(h, pinBtn_C)
+    state_btn[3] = lgpio.gpio_read(h, pinBtn_S)
+    print(f"[Main] Button states: {state_btn}")
     
     if state_btn[3] == 0:
         robot.sleep()
@@ -82,6 +82,7 @@ while power:
     time.sleep(0.03)
     
 
+lgpio.gpiochip_close(h)
 manager.stop_mode()
 robot.sleep()
 robot.close()
