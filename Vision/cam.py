@@ -20,7 +20,8 @@ last_frame = None
 last_results = None
 head_tilt_history=[0]*10
 x_position_history = [0]*5
-y_position_history = [0]*5
+y_position_history = [0]*4
+z_position_history = [0]*5
 head_detected = False
 
 blink_threshold = 0.15
@@ -72,7 +73,9 @@ def frame_process():
         x_position_history.append(nose_tip.x)
         y_position_history.pop(0)
         y_position_history.append(nose_tip.y)
-        print(nose_tip.z)
+        z_position_history.pop(0)
+        z_position_history.append(nose_tip.z)
+        
 
         # head angle
         dx = R_eye_bottom.x - L_eye_bottom.x
@@ -98,6 +101,7 @@ def get_head_factor():
         
         x_position= round(sum(x_position_history) / len(x_position_history),2)
         y_position= round(sum(y_position_history) / len(y_position_history),2)
+        z_position= round(sum(z_position_history) / len(z_position_history),2)
         head_tilt = round(sum(head_tilt_history) / len(head_tilt_history),2)
         L_eye_ratio = round(sum(L_eye_history) / len(L_eye_history),2)
         R_eye_ratio = round(sum(R_eye_history) / len(R_eye_history),2)
@@ -118,7 +122,7 @@ def get_head_factor():
         elif right_closed:
             blink_type = "wink_left"
 
-        res = [x_position, y_position, head_tilt, blink_type ]
+        res = [x_position, y_position, z_position, head_tilt, blink_type ]
         
         return res
     else:
