@@ -10,6 +10,7 @@ import time
 import os
 
 power=True
+fetch_git=False
 
 # Definition des pins
 h = lgpio.gpiochip_open(0)
@@ -59,9 +60,8 @@ while power:
     #print(f"[Main] Button states: {state_btn}")
     
     if state_btn[3] == 0:
-        robot.sleep()
-        print("sleep")
-        os.system("sudo systemctl restart walle.service")
+        power = False
+        fetch_git = True
         
     
     
@@ -86,4 +86,7 @@ lgpio.gpiochip_close(h)
 manager.stop_mode()
 robot.sleep()
 robot.close()
+if fetch_git:
+    print(fetch_git)
+    os.system("sudo systemctl restart walle.service")
 #os.system("sudo shutdown -h now")
