@@ -13,17 +13,18 @@ POSE_MODEL_PATH = "Vision/Modele/pose_landmarker_lite.task"
 BaseOptions = python.BaseOptions
 VisionRunningMode = vision.RunningMode
 
+
 # Hand Gesture Recognizer
 hand_options = vision.GestureRecognizerOptions(
     base_options=BaseOptions(model_asset_path=HAND_MODEL_PATH),
-    running_mode=VisionRunningMode.LIVE_STREAM
+    running_mode=VisionRunningMode.IMAGE,
 )
 hand_recognizer = vision.GestureRecognizer.create_from_options(hand_options)
 
 # Face Landmarker
 face_options = vision.FaceLandmarkerOptions(
     base_options=BaseOptions(model_asset_path=FACE_MODEL_PATH),
-    running_mode=VisionRunningMode.LIVE_STREAM,
+    running_mode=VisionRunningMode.IMAGE,
     num_faces=1,
     output_face_blendshapes=True
     
@@ -33,7 +34,7 @@ face_landmarker = vision.FaceLandmarker.create_from_options(face_options)
 # Pose Landmarker
 pose_options = vision.PoseLandmarkerOptions(
     base_options=BaseOptions(model_asset_path=POSE_MODEL_PATH),
-    running_mode=VisionRunningMode.LIVE_STREAM,
+    running_mode=VisionRunningMode.IMAGE,
     num_poses=1
 )
 pose_landmarker = vision.PoseLandmarker.create_from_options(pose_options)
