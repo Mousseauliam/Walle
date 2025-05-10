@@ -42,7 +42,7 @@ velocity = [0]*12
 emote = None
 last_emote = 0
 surprise_threshold = 4
-hello_threshold = 1.3
+hello_threshold = 1.1
 above_head = False
 
 def gen_frames():
@@ -145,8 +145,8 @@ def frame_process():
         velocity.append(np.sqrt((elbow_L.x - last_elbow_L[9][0])**2 + (elbow_L.y - last_elbow_L[9][1])**2 + (elbow_L.z - last_elbow_L[9][2])**2) / (now - last_process))
         velocity.append(np.sqrt((elbow_R.x - last_elbow_R[9][0])**2 + (elbow_R.y - last_elbow_R[9][1])**2 + (elbow_R.z - last_elbow_R[9][2])**2) / (now - last_process))
         
-        h_wrist = nose_tip.y + 0.1
-        h_elbow = nose_tip.y +0.3
+        h_wrist = nose_tip.y + 0.2
+        h_elbow = nose_tip.y +0.4
         above_head = ((last_elbow_L[9][1]< h_elbow) and (last_wrist_L[9][1]< h_wrist)) or ((last_elbow_R[9][1]< h_elbow) and (last_wrist_R[9][1]< h_wrist))
         
         last_process = time.time()
