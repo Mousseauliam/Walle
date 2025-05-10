@@ -25,7 +25,7 @@ def run(robot,server):
     while active:
         head_factor=get_head_factor()
         if head_factor is not None:
-            """ 
+            
             neck_angle = robot.get_coef("neck_angle")
             if (head_factor[1] < (0.5 - deadzone)) and (neck_angle>y_step) :
                 robot.neckAngle(round(neck_angle - y_step,2))
@@ -42,7 +42,7 @@ def run(robot,server):
             head_angle_temp = round(((1-head_factor[3]) - 0.5) * tilt_factor + 0.5,2)
             if (head_angle!= head_angle_temp):
                 robot.headAngle(head_angle_temp)
-            
+            """
             match head_factor[4]:
                 case "open":
                     if (time.time() - wink_left) > 0.4:
