@@ -25,7 +25,7 @@ def run(robot,server):
 
     while active:
         head_factor=get_head_factor()
-        if head_factor is not None:
+        if head_factor[3:] is not None:
             
             neck_angle = robot.get_coef("neck_angle")
             if (head_factor[1] < (0.5 - deadzone)) and (neck_angle>y_step) :
@@ -65,11 +65,11 @@ def run(robot,server):
                     robot.manual("lid_R", 1)
                     robot.manual("lid_L", 0)
                     wink_right = time.time()
+        
+        if head_factor[5] is not None:
+            robot.emote(head_factor[5])
             
-            if head_factor[5]:
-                    robot.emote(head_factor[5])
-            
-            time.sleep(0.1) 
+        time.sleep(0.1) 
 
 def stop():
     global active

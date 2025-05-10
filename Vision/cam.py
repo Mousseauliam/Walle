@@ -197,6 +197,10 @@ def get_head_factor():
             blink_type = "wink_right"
         elif right_closed:
             blink_type = "wink_left"
+        res = [x_position, y_position, z_position, head_tilt, blink_type]
+    else:
+        res =[None, None, None, None,None]
+        
     if (time.time() - last_emote) > 4:
         velocity_moy = []
         for i in range(2):
@@ -215,7 +219,7 @@ def get_head_factor():
         else:
             emote = None
 
-    res = [x_position, y_position, z_position, head_tilt, blink_type, emote]
+    res.append(emote)
     emote=None    
     return res
     
