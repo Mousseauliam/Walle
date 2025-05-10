@@ -100,16 +100,13 @@ def gen_frames():
 
         
         if pose_result.pose_landmarks:
-            key_landmarks = [
-                15,  # LEFT_WRIST
-                16,  # RIGHT_WRIST
-                13,  # LEFT_ELBOW
-                14   # RIGHT_ELBOW
-            ]
-            for landmark_id in key_landmarks:
-                landmark = pose_result.pose_landmarks.landmark[landmark_id.value]
-                x, y = int(landmark.x * w), int(landmark.y * h)
-                cv2.circle(frame, (x, y), 4, (0, 0, 255), -1)
+            key_landmarks = [15, 16, 13, 14]
+            # pose_result.pose_landmarks est une liste de listes (une par personne détectée)
+            for person_landmarks in pose_result.pose_landmarks:
+                for landmark_id in key_landmarks:
+                    landmark = person_landmarks[landmark_id]
+                    x, y = int(landmark.x * w), int(landmark.y * h)
+                    cv2.circle(frame, (x, y), 4, (0, 0, 255), -1)
         
         ret, buffer = cv2.imencode('.jpg', frame)
         
@@ -127,9 +124,9 @@ def frame_process():
     
 def head_factor():
     global head_detected, last_results, x_position_history, y_position_history, z_position_history, head_tilt_history, L_eye_history, R_eye_history, nose_tip_y, chin_tip_y
-    if last_results.multi_face_landmarks:
+    if last_results.face_landmarks:
         head_detected = True
-        face_landmarks = last_results.multi_face_landmarks[0]
+        face_landmarks = last_results.face_landmarks[0]
         L_eye_bottom = face_landmarks.landmark[145] 
         R_eye_bottom = face_landmarks.landmark[374] 
         nose_tip = face_landmarks.landmark[1]
@@ -261,4 +258,4 @@ def get_head_factor():
     res.append(emote)
     emote=None    
     return res
-    
+
