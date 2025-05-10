@@ -230,7 +230,7 @@ def hand_factor():
 
 def get_head_factor():
     if head_detected:
-        global blink_threshold, L_eye_history, R_eye_history, emote, surprise_threshold, hello_threshold, last_emote, above_head, last_wrist_L, last_wrist_R, velocity
+        global blink_threshold, L_eye_history, R_eye_history, emote, surprise_threshold, hello_threshold, last_emote, above_head, last_wrist_L, last_wrist_R, velocity, last_hand_gesture
         
         x_position= round(sum(x_position_history) / len(x_position_history),2)
         y_position= round(sum(y_position_history) / len(y_position_history),2)
@@ -264,7 +264,7 @@ def get_head_factor():
         
         #print(velocity_moy, is_waving([w[0] for w in last_wrist_L]) , is_waving([w[0] for w in last_wrist_R]), above_head)
         
-        if () and above_head:
+        if last_hand_gesture == "Open_Palm" and above_head:
             emote = "Hello"
             print("Hello")
             last_emote = time.time()
