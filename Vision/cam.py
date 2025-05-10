@@ -86,10 +86,12 @@ def gen_frames():
         frame_process()
         time.sleep(0.03)
 
-
 def frame_process():
-    global last_frame, last_results, head_detected, head_tilt_history, x_position_history, y_position_history, last_results_pose, last_wrist_L, last_wrist_R, last_elbow_L, last_elbow_R, last_process, velocity, last_emote
-    global above_head
+    head_factor()
+    body_factor()
+    
+def head_factor():
+    global head_detected, last_results, x_position_history, y_position_history, z_position_history, head_tilt_history, L_eye_history, R_eye_history
     if last_results.multi_face_landmarks:
         head_detected = True
         face_landmarks = last_results.multi_face_landmarks[0]
@@ -125,11 +127,12 @@ def frame_process():
         L_eye_history.append(abs(L_eye_top.y - L_eye_bottom.y)/abs(L_eye_L.x-L_eye_R.x))
         R_eye_history.pop(0)
         R_eye_history.append(abs(R_eye_top.y - R_eye_bottom.y)/abs(R_eye_L.x-R_eye_R.x))
-            
+
     else:
         head_detected = False
-        return None
-    
+        
+def body_factor():
+    global last_results_pose, last_wrist_L, last_wrist_R, last_elbow_L, last_elbow_R, last_process, velocity, above_head
     if last_results_pose.pose_landmarks:
         pose_landmarks = last_results_pose.pose_landmarks
         wrist_L = pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_WRIST.value]
@@ -161,6 +164,14 @@ def frame_process():
         last_elbow_R.pop(0)
         last_elbow_R.append([elbow_R.x, elbow_R.y, elbow_R.z])
 
+def is_waving(history, threshold=0.02, min_crossings=2):
+    crossings = 0
+    for i in range(2, len(history)):
+        if (history[i-2] - history[i-1]) * (history[i-1] - history[i]) < 0:
+            if abs(history[i-1] - history[i]) > threshold:
+                crossings += 1
+    return crossings >= min_crossings
+
 def get_head_factor():
     if head_detected:
         global blink_threshold, L_eye_history, R_eye_history, emote, surprise_threshold, hello_threshold, last_emote, above_head, last_wrist_L, last_wrist_R, velocity
@@ -175,7 +186,7 @@ def get_head_factor():
         both_closed = (L_eye_ratio < blink_threshold) and (R_eye_ratio < blink_threshold)
         both_open = (L_eye_ratio >= blink_threshold) and (R_eye_ratio >= blink_threshold)
         left_closed = (L_eye_ratio < blink_threshold) and (R_eye_ratio >= blink_threshold)
-        right_closed = (R_eye_ratio < (blink_threshold+0.01)) and (L_eye_ratio >= blink_threshold)
+        right_closed = (R_eye_ratio < (blink_threshold+0.02)) and (L_eye_ratio >= blink_threshold)
         
         blink_type = "none"
         if both_closed:
@@ -186,38 +197,25 @@ def get_head_factor():
             blink_type = "wink_right"
         elif right_closed:
             blink_type = "wink_left"
-                
-        if (time.time() - last_emote) > 4:
-            velocity_moy = []
-            for i in range(2):
-                velocity_moy.append((velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6] + velocity[i+8] + velocity[i+10] )/6)
-            
-            print(velocity_moy, is_waving([w[0] for w in last_wrist_L]) , is_waving([w[0] for w in last_wrist_R]), above_head)
-            
-            if (is_waving([w[0] for w in last_wrist_L]) or is_waving([w[0] for w in last_wrist_R])) and above_head:
-                emote = "Hello"
-                print("Hello")
-                last_emote = time.time()
-            elif any(velocity > surprise_threshold for velocity in velocity_moy):
-                emote = "Surprise"
-                print("Surprise")
-                last_emote = time.time()
-            else:
-                emote = None
+    if (time.time() - last_emote) > 4:
+        velocity_moy = []
+        for i in range(2):
+            velocity_moy.append((velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6] + velocity[i+8] + velocity[i+10] )/6)
+        
+        print(velocity_moy, is_waving([w[0] for w in last_wrist_L]) , is_waving([w[0] for w in last_wrist_R]), above_head)
+        
+        if (is_waving([w[0] for w in last_wrist_L]) or is_waving([w[0] for w in last_wrist_R])) and above_head:
+            emote = "Hello"
+            print("Hello")
+            last_emote = time.time()
+        elif any(velocity > surprise_threshold for velocity in velocity_moy):
+            emote = "Surprise"
+            print("Surprise")
+            last_emote = time.time()
+        else:
+            emote = None
 
-        res = [x_position, y_position, z_position, head_tilt, blink_type, emote]
-        
-        emote=None
-        
-        return res
-    else:
-        return None
+    res = [x_position, y_position, z_position, head_tilt, blink_type, emote]
+    emote=None    
+    return res
     
-
-def is_waving(history, threshold=0.02, min_crossings=2):
-    crossings = 0
-    for i in range(2, len(history)):
-        if (history[i-2] - history[i-1]) * (history[i-1] - history[i]) < 0:
-            if abs(history[i-1] - history[i]) > threshold:
-                crossings += 1
-    return crossings >= min_crossings
