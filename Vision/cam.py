@@ -169,11 +169,12 @@ def head_factor():
 def body_factor():
     global last_results,last_results_pose, last_wrist_L, last_wrist_R, last_elbow_L, last_elbow_R, last_process, velocity, above_head, nose_tip_y
     if last_results_pose.pose_landmarks:
-        pose_landmarks = last_results_pose.pose_landmarks
-        wrist_L = pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_WRIST.value]
-        wrist_R = pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_WRIST.value]
-        elbow_L = pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_ELBOW.value]
-        elbow_R = pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_ELBOW.value]
+        # On prend la première personne détectée
+        pose_landmarks = last_results_pose.pose_landmarks[0]
+        wrist_L = pose_landmarks[15]  # 15 = LEFT_WRIST
+        wrist_R = pose_landmarks[16]  # 16 = RIGHT_WRIST
+        elbow_L = pose_landmarks[13]  # 13 = LEFT_ELBOW
+        elbow_R = pose_landmarks[14]  # 14 = RIGHT_ELBOW
         
         
         now= time.time()
