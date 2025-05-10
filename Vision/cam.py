@@ -96,7 +96,9 @@ def gen_frames():
         last_results_pose = pose_result 
         
         if face_result.face_blendshapes:
-            print(f"Expressions faciales détectées : {face_result.face_blendshapes["mouthSmileLeft"]}")
+            for blendshape in face_result.face_blendshapes:
+                if blendshape.category_name == "mouthSmileLeft":
+                    print(f"Expressions faciales détectées : {blendshape.score}")
 
         
         last_frame = frame
