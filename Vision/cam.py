@@ -41,7 +41,7 @@ last_process = time.time()
 velocity = [0]*12
 emote = None
 last_emote = 0
-surprise_threshold = 4
+surprise_threshold = 5
 hello_threshold = 1
 above_head = False
 
