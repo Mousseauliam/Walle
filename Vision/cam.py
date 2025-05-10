@@ -44,6 +44,7 @@ last_emote = 0
 surprise_threshold = 5
 hello_threshold = 1
 above_head = False
+nose_tip_y = 0
 
 def gen_frames():
     global last_frame, last_results,last_results_pose, last_process
@@ -91,7 +92,7 @@ def frame_process():
     body_factor()
     
 def head_factor():
-    global head_detected, last_results, x_position_history, y_position_history, z_position_history, head_tilt_history, L_eye_history, R_eye_history
+    global head_detected, last_results, x_position_history, y_position_history, z_position_history, head_tilt_history, L_eye_history, R_eye_history, nose_tip_y
     if last_results.multi_face_landmarks:
         head_detected = True
         face_landmarks = last_results.multi_face_landmarks[0]
@@ -113,6 +114,7 @@ def head_factor():
         y_position_history.append(nose_tip.y)
         z_position_history.pop(0)
         z_position_history.append(nose_tip.z)
+        nose_tip_y = nose_tip.y
         
 
         # head angle
@@ -132,14 +134,13 @@ def head_factor():
         head_detected = False
         
 def body_factor():
-    global last_results,last_results_pose, last_wrist_L, last_wrist_R, last_elbow_L, last_elbow_R, last_process, velocity, above_head
+    global last_results,last_results_pose, last_wrist_L, last_wrist_R, last_elbow_L, last_elbow_R, last_process, velocity, above_head, nose_tip_y
     if last_results_pose.pose_landmarks:
         pose_landmarks = last_results_pose.pose_landmarks
         wrist_L = pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_WRIST.value]
         wrist_R = pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_WRIST.value]
         elbow_L = pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_ELBOW.value]
         elbow_R = pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_ELBOW.value]
-        nose_tip = last_results.multi_face_landmarks[0].landmark[1]
         
         
         now= time.time()
@@ -150,8 +151,8 @@ def body_factor():
         velocity.append(np.sqrt((elbow_L.x - last_elbow_L[9][0])**2 + (elbow_L.y - last_elbow_L[9][1])**2 + (elbow_L.z - last_elbow_L[9][2])**2) / (now - last_process))
         velocity.append(np.sqrt((elbow_R.x - last_elbow_R[9][0])**2 + (elbow_R.y - last_elbow_R[9][1])**2 + (elbow_R.z - last_elbow_R[9][2])**2) / (now - last_process))
         
-        h_wrist = nose_tip.y + 0.15
-        h_elbow = nose_tip.y +0.35
+        h_wrist = nose_tip_y + 0.15
+        h_elbow = nose_tip_y +0.35
         above_head = ((last_elbow_L[9][1]< h_elbow) and (last_wrist_L[9][1]< h_wrist)) or ((last_elbow_R[9][1]< h_elbow) and (last_wrist_R[9][1]< h_wrist))
         
         last_process = time.time()
