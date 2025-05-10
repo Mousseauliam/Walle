@@ -77,6 +77,7 @@ while power:
             last_state_change = time.time()
             
     if state_btn[2] == 0:
+        """
         print("[Main] sleep ...")
         if not sleep :
             robot.sleep()
@@ -85,7 +86,8 @@ while power:
             robot.wake_up()
             manager.launch_mode(modes[current_mode_name])
         sleep = not sleep
-        time.sleep(0.5)
+        time.sleep(0.5)"""
+        robot.sound("waow1")
         
         
         
