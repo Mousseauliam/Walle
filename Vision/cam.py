@@ -88,7 +88,7 @@ def gen_frames():
 
 
 def frame_process():
-    global last_frame, last_results, head_detected, blink, L_eye_closed, R_eye_closed, head_tilt_history, x_position_history, y_position_history, last_results_pose, last_wrist_L, last_wrist_R, last_elbow_L, last_elbow_R, last_process, velocity, last_emote
+    global last_frame, last_results, head_detected, head_tilt_history, x_position_history, y_position_history, last_results_pose, last_wrist_L, last_wrist_R, last_elbow_L, last_elbow_R, last_process, velocity, last_emote
     global above_head
     if last_results.multi_face_landmarks:
         head_detected = True
