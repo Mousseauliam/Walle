@@ -27,7 +27,7 @@ z_position_history = [0]*5
 head_detected = False
 
 #eyes variables
-blink_threshold = 0.14
+blink_threshold = 0.16
 L_eye_history = [0]*5
 R_eye_history = [0]*5
 
@@ -154,10 +154,9 @@ def body_factor():
         velocity.append(np.sqrt((elbow_L.x - last_elbow_L[9][0])**2 + (elbow_L.y - last_elbow_L[9][1])**2 + (elbow_L.z - last_elbow_L[9][2])**2) / (now - last_process))
         velocity.append(np.sqrt((elbow_R.x - last_elbow_R[9][0])**2 + (elbow_R.y - last_elbow_R[9][1])**2 + (elbow_R.z - last_elbow_R[9][2])**2) / (now - last_process))
         
-        nose_chin_distance = abs(nose_tip_y - chin_tip_y)
-        h_wrist = chin_tip_y + (nose_chin_distance *1.5)
-        h_elbow = chin_tip_y + (nose_chin_distance * 3)
-        above_head = ((last_elbow_L[9][1]< h_elbow) and (last_wrist_L[9][1]< h_wrist)) or ((last_elbow_R[9][1]< h_elbow) and (last_wrist_R[9][1]< h_wrist))
+        
+        h_wrist = chin_tip_y + (abs(nose_tip_y - chin_tip_y) *2)
+        above_head = (last_wrist_L[9][1]< h_wrist) or (last_wrist_R[9][1]< h_wrist)
         
         last_process = time.time()
         
