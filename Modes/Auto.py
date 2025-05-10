@@ -26,7 +26,6 @@ def run(robot,server):
     while active:
         head_factor=get_head_factor()
         if all(element is not None for element in head_factor[:5]):
-            print("Au moins un élément est None")
             neck_angle = robot.get_coef("neck_angle")
             if (head_factor[1] < (0.5 - deadzone)) and (neck_angle>y_step) :
                 robot.neckAngle(round(neck_angle - y_step,2))

@@ -16,24 +16,25 @@ VisionRunningMode = vision.RunningMode
 # Hand Gesture Recognizer
 hand_options = vision.GestureRecognizerOptions(
     base_options=BaseOptions(model_asset_path=HAND_MODEL_PATH),
-    running_mode=VisionRunningMode.IMAGE
+    running_mode=VisionRunningMode.LIVE_STREAM,
 )
 hand_recognizer = vision.GestureRecognizer.create_from_options(hand_options)
 
 # Face Landmarker
 face_options = vision.FaceLandmarkerOptions(
     base_options=BaseOptions(model_asset_path=FACE_MODEL_PATH),
-    running_mode=VisionRunningMode.IMAGE,
+    running_mode=VisionRunningMode.LIVE_STREAM,
     num_faces=1,
-    output_face_blendshapes=True,
-    output_facial_transformation_matrixes=True
+    output_face_blendshapes=True
+    
 )
 face_landmarker = vision.FaceLandmarker.create_from_options(face_options)
 
 # Pose Landmarker
 pose_options = vision.PoseLandmarkerOptions(
     base_options=BaseOptions(model_asset_path=POSE_MODEL_PATH),
-    running_mode=VisionRunningMode.IMAGE
+    running_mode=VisionRunningMode.LIVE_STREAM,
+    num_poses=1
 )
 pose_landmarker = vision.PoseLandmarker.create_from_options(pose_options)
 
@@ -75,6 +76,9 @@ above_head = False
 nose_tip_y = 0
 chin_tip_y = 0
 
+#hand variables
+last_hand_gesture = None
+
 def gen_frames():
     global last_frame, last_results,last_results_pose, last_process
     while True:
@@ -89,6 +93,11 @@ def gen_frames():
         
         pose_result = pose_landmarker.detect(mp_image)
         last_results_pose = pose_result 
+        
+        if face_result.face_blendshapes:
+            print("Expressions faciales détectées :")
+            for blendshape in face_result.face_blendshapes[0]:  # [0] = premier visage
+                print(f"{blendshape.category_name}: {blendshape.score:.2f}")
         
         last_frame = frame
         h, w, _ = frame.shape
@@ -121,6 +130,7 @@ def gen_frames():
 def frame_process():
     head_factor()
     body_factor()
+    hand_factor()
     
     
 def head_factor():
@@ -202,13 +212,21 @@ def body_factor():
         last_elbow_R.pop(0)
         last_elbow_R.append([elbow_R.x, elbow_R.y, elbow_R.z])
 
-def is_waving(history, threshold=0.015, min_crossings=2):
-    crossings = 0
-    for i in range(2, len(history)):
-        if (history[i-2] - history[i-1]) * (history[i-1] - history[i]) < 0:
-            if abs(history[i-1] - history[i]) > threshold:
-                crossings += 1
-    return crossings >= min_crossings
+def hand_factor():
+    global last_frame, hand_recognizer, last_hand_gesture
+    if last_frame is None:
+        last_hand_gesture = None
+        return
+
+    rgb_frame = cv2.cvtColor(last_frame, cv2.COLOR_BGR2RGB)
+    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
+    result = hand_recognizer.recognize(mp_image)
+
+    if result.gestures and len(result.gestures) > 0 and len(result.gestures[0]) > 0:
+        last_hand_gesture = result.gestures[0][0].category_name
+        print(f"Hand gesture detected: {last_hand_gesture}")
+    else:
+        last_hand_gesture = None
 
 def get_head_factor():
     if head_detected:
@@ -246,7 +264,7 @@ def get_head_factor():
         
         #print(velocity_moy, is_waving([w[0] for w in last_wrist_L]) , is_waving([w[0] for w in last_wrist_R]), above_head)
         
-        if (is_waving([w[0] for w in last_wrist_L]) or is_waving([w[0] for w in last_wrist_R])) and above_head:
+        if () and above_head:
             emote = "Hello"
             print("Hello")
             last_emote = time.time()
