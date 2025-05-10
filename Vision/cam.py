@@ -95,7 +95,7 @@ def gen_frames():
         
         if face_result.face_landmarks:
             for face_landmarks in face_result.face_landmarks:
-                for landmark in face_landmarks.landmark:
+                for landmark in face_landmarks:
                     x, y = int(landmark.x * w), int(landmark.y * h)
                     cv2.circle(frame, (x, y), 1, (0, 255, 0), -1)
 
