@@ -27,7 +27,7 @@ z_position_history = [0]*5
 head_detected = False
 
 #eyes variables
-blink_threshold = 0.13
+blink_threshold = 0.14
 L_eye_history = [0]*5
 R_eye_history = [0]*5
 
@@ -175,7 +175,7 @@ def get_head_factor():
         both_closed = (L_eye_ratio < blink_threshold) and (R_eye_ratio < blink_threshold)
         both_open = (L_eye_ratio >= blink_threshold) and (R_eye_ratio >= blink_threshold)
         left_closed = (L_eye_ratio < blink_threshold) and (R_eye_ratio >= blink_threshold)
-        right_closed = (R_eye_ratio < blink_threshold) and (L_eye_ratio >= blink_threshold)
+        right_closed = (R_eye_ratio < (blink_threshold+0.01)) and (L_eye_ratio >= blink_threshold)
         
         blink_type = "none"
         if both_closed:
