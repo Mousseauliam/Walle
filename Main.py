@@ -87,7 +87,7 @@ while power:
             manager.launch_mode(modes[current_mode_name])
         sleep = not sleep
         time.sleep(0.5)"""
-        robot.sound("oh1")
+        robot.sound("waow1")
         
         
         
