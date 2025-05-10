@@ -4,6 +4,7 @@ from picamera2 import Picamera2
 from mediapipe.tasks.python import vision
 from mediapipe.tasks import python
 import mediapipe as mp
+import numpy as np
 
 HAND_MODEL_PATH = "Vision/Modele/gesture_recognizer.task"
 FACE_MODEL_PATH = "Vision/Modele/face_landmarker.task"
