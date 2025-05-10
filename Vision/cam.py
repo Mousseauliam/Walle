@@ -42,7 +42,7 @@ velocity = [0]*12
 emote = None
 last_emote = 0
 surprise_threshold = 4
-hello_threshold = 1.1
+hello_threshold = 1
 above_head = False
 
 def gen_frames():
@@ -187,7 +187,7 @@ def get_head_factor():
         elif right_closed:
             blink_type = "wink_left"
                 
-        if (time.time() - last_emote) > 1:
+        if (time.time() - last_emote) > 4:
             velocity_moy = []
             for i in range(2):
                 velocity_moy.append((velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6] + velocity[i+8] + velocity[i+10] )/6)
