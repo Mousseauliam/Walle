@@ -132,13 +132,15 @@ def head_factor():
         head_detected = False
         
 def body_factor():
-    global last_results_pose, last_wrist_L, last_wrist_R, last_elbow_L, last_elbow_R, last_process, velocity, above_head
+    global last_results,last_results_pose, last_wrist_L, last_wrist_R, last_elbow_L, last_elbow_R, last_process, velocity, above_head
     if last_results_pose.pose_landmarks:
         pose_landmarks = last_results_pose.pose_landmarks
         wrist_L = pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_WRIST.value]
         wrist_R = pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_WRIST.value]
         elbow_L = pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_ELBOW.value]
         elbow_R = pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_ELBOW.value]
+        nose_tip = last_results.multi_face_landmarks[0].landmark[1]
+        
         
         now= time.time()
         
