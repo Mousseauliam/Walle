@@ -192,6 +192,8 @@ def get_head_factor():
             for i in range(2):
                 velocity_moy.append((velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6] + velocity[i+8] + velocity[i+10] )/6)
             
+            print(velocity_moy, is_waving([w[0] for w in last_wrist_L]) , is_waving([w[0] for w in last_wrist_R]), above_head)
+            
             if (is_waving([w[0] for w in last_wrist_L]) or is_waving([w[0] for w in last_wrist_R])) and any(velocity > hello_threshold for velocity in velocity_moy) and any(velocity < (hello_threshold+1) for velocity in velocity_moy) and above_head:
                 emote = "Hello"
                 print("Hello")
@@ -202,7 +204,6 @@ def get_head_factor():
                 last_emote = time.time()
             else:
                 emote = None
-            print(velocity_moy, is_waving([w[0] for w in last_wrist_L]) , is_waving([w[0] for w in last_wrist_R]))
 
         res = [x_position, y_position, z_position, head_tilt, blink_type, emote]
         
