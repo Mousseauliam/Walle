@@ -1,26 +1,40 @@
 import time
 import cv2
 from picamera2 import Picamera2
+from mediapipe.tasks.python import vision
+from mediapipe.tasks import python
 import mediapipe as mp
-import numpy as np
 
-mp_face_mesh = mp.solutions.face_mesh
-mp_pose = mp.solutions.pose
-face_mesh = mp_face_mesh.FaceMesh(static_image_mode=False, max_num_faces=1, refine_landmarks=True)
-pose = mp_pose.Pose(
-    static_image_mode=False,
-    #min_detection_confidence=0.7,
-    min_tracking_confidence=0.9
-    #min_pose_presence_confidence=0.7
-)
+HAND_MODEL_PATH = "Vision/Modele/gesture_recognizer.task"
+FACE_MODEL_PATH = "Vision/Modele/face_landmarker.task"
+POSE_MODEL_PATH = "Vision/Modele/pose_landmarker_lite.task"
 
-mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(
-    static_image_mode=False,
-    max_num_hands=2,
-    min_detection_confidence=0.7,
-    min_tracking_confidence=0.7
+BaseOptions = python.BaseOptions
+VisionRunningMode = vision.RunningMode
+
+# Hand Gesture Recognizer
+hand_options = vision.GestureRecognizerOptions(
+    base_options=BaseOptions(model_asset_path=HAND_MODEL_PATH),
+    running_mode=VisionRunningMode.IMAGE
 )
+hand_recognizer = vision.GestureRecognizer.create_from_options(hand_options)
+
+# Face Landmarker
+face_options = vision.FaceLandmarkerOptions(
+    base_options=BaseOptions(model_asset_path=FACE_MODEL_PATH),
+    running_mode=VisionRunningMode.IMAGE,
+    num_faces=1,
+    output_face_blendshapes=True,
+    output_facial_transformation_matrixes=True
+)
+face_landmarker = vision.FaceLandmarker.create_from_options(face_options)
+
+# Pose Landmarker
+pose_options = vision.PoseLandmarkerOptions(
+    base_options=BaseOptions(model_asset_path=POSE_MODEL_PATH),
+    running_mode=VisionRunningMode.IMAGE
+)
+pose_landmarker = vision.PoseLandmarker.create_from_options(pose_options)
 
 # Camera init
 screen_width, screen_height = 1240, 960
@@ -65,31 +79,35 @@ def gen_frames():
     while True:
         frame = picam2.capture_array()
         frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         
-        results = face_mesh.process(frame)
-        results_pose = pose.process(frame)
+        mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
+        
+        face_result = face_landmarker.detect(mp_image)
+        last_results = face_result 
+        
+        pose_result = pose_landmarker.detect(mp_image)
+        last_results_pose = pose_result 
         
         last_frame = frame
-        last_results = results
-        last_results_pose = results_pose
         h, w, _ = frame.shape
         
-        if results.multi_face_landmarks:
-            for face_landmarks in results.multi_face_landmarks:
+        if face_result.face_landmarks:
+            for face_landmarks in face_result.face_landmarks:
                 for landmark in face_landmarks.landmark:
                     x, y = int(landmark.x * w), int(landmark.y * h)
                     cv2.circle(frame, (x, y), 1, (0, 255, 0), -1)
 
         
-        if results_pose.pose_landmarks:
+        if pose_result.pose_landmarks:
             key_landmarks = [
-                mp_pose.PoseLandmark.LEFT_WRIST,
-                mp_pose.PoseLandmark.RIGHT_WRIST,
-                mp_pose.PoseLandmark.LEFT_ELBOW,
-                mp_pose.PoseLandmark.RIGHT_ELBOW
+                15,  # LEFT_WRIST
+                16,  # RIGHT_WRIST
+                13,  # LEFT_ELBOW
+                14   # RIGHT_ELBOW
             ]
             for landmark_id in key_landmarks:
-                landmark = results_pose.pose_landmarks.landmark[landmark_id.value]
+                landmark = pose_result.pose_landmarks.landmark[landmark_id.value]
                 x, y = int(landmark.x * w), int(landmark.y * h)
                 cv2.circle(frame, (x, y), 4, (0, 0, 255), -1)
         
@@ -105,7 +123,7 @@ def gen_frames():
 def frame_process():
     head_factor()
     body_factor()
-    hand_factor()
+    
     
 def head_factor():
     global head_detected, last_results, x_position_history, y_position_history, z_position_history, head_tilt_history, L_eye_history, R_eye_history, nose_tip_y, chin_tip_y
@@ -244,33 +262,3 @@ def get_head_factor():
     emote=None    
     return res
     
-def hand_factor():
-    global last_frame
-    if last_frame is None:
-        return
-
-    # MediaPipe attend une image RGB
-    image = cv2.cvtColor(last_frame, cv2.COLOR_BGR2RGB)
-    results = hands.process(image)
-
-    if results.multi_hand_landmarks:
-        for hand_landmarks, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
-            label = handedness.classification[0].label  # 'Left' or 'Right'
-            gesture = detect_hand_gesture(hand_landmarks)
-            print(f"Hand: {label}, Gesture: {gesture}")
-    else:
-        print("No hands detected.")
-
-def detect_hand_gesture(hand_landmarks):
-    # Exemple simple : détecter un "thumbs up"
-    # Le pouce est levé si le tip du pouce est au-dessus de la base du pouce (en coordonnées y)
-    thumb_tip = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP]
-    thumb_ip = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_IP]
-    thumb_mcp = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_MCP]
-    index_mcp = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_MCP]
-
-    # Thumbs up: le tip du pouce est plus haut (plus petit en y) que le MCP et le pouce est éloigné de l'index
-    if (thumb_tip.y < thumb_mcp.y) and (abs(thumb_tip.x - index_mcp.x) > 0.1):
-        return "Thumbs Up"
-    # Ajoute d'autres règles pour "peace", "fist", etc.
-    return "Unknown"
