@@ -151,8 +151,8 @@ def body_factor():
         velocity.append(np.sqrt((elbow_L.x - last_elbow_L[9][0])**2 + (elbow_L.y - last_elbow_L[9][1])**2 + (elbow_L.z - last_elbow_L[9][2])**2) / (now - last_process))
         velocity.append(np.sqrt((elbow_R.x - last_elbow_R[9][0])**2 + (elbow_R.y - last_elbow_R[9][1])**2 + (elbow_R.z - last_elbow_R[9][2])**2) / (now - last_process))
         
-        h_wrist = nose_tip_y + 0.15
-        h_elbow = nose_tip_y +0.35
+        h_wrist = nose_tip_y + 0.25
+        h_elbow = nose_tip_y +0.45
         above_head = ((last_elbow_L[9][1]< h_elbow) and (last_wrist_L[9][1]< h_wrist)) or ((last_elbow_R[9][1]< h_elbow) and (last_wrist_R[9][1]< h_wrist))
         
         last_process = time.time()
@@ -167,7 +167,7 @@ def body_factor():
         last_elbow_R.pop(0)
         last_elbow_R.append([elbow_R.x, elbow_R.y, elbow_R.z])
 
-def is_waving(history, threshold=0.02, min_crossings=2):
+def is_waving(history, threshold=0.015, min_crossings=2):
     crossings = 0
     for i in range(2, len(history)):
         if (history[i-2] - history[i-1]) * (history[i-1] - history[i]) < 0:
@@ -204,7 +204,7 @@ def get_head_factor():
     else:
         res =[None, None, None, None,None]
         
-    if (time.time() - last_emote) > 4:
+    if (time.time() - last_emote) > 5:
         velocity_moy = []
         for i in range(2):
             velocity_moy.append((velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6] + velocity[i+8] + velocity[i+10] )/6)
