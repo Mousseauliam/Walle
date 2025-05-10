@@ -128,17 +128,17 @@ def head_factor():
     if last_results.face_landmarks:
         head_detected = True
         face_landmarks = last_results.face_landmarks[0]
-        L_eye_bottom = face_landmarks.landmark[145] 
-        R_eye_bottom = face_landmarks.landmark[374] 
-        nose_tip = face_landmarks.landmark[1]
-        chin_tip = face_landmarks.landmark[152] 
+        L_eye_bottom = face_landmarks[145]
+        R_eye_bottom = face_landmarks[374]
+        nose_tip = face_landmarks[1]
+        chin_tip = face_landmarks[152]
         
-        L_eye_top = face_landmarks.landmark[159]  # Haut de l'œil gauche
-        R_eye_top = face_landmarks.landmark[386]  # Haut de l'œil droit
-        L_eye_L = face_landmarks.landmark[130]  # Coin gauche œil gauche
-        L_eye_R = face_landmarks.landmark[133]  # Coin droit œil gauche
-        R_eye_L = face_landmarks.landmark[362]  # Coin gauche œil droit
-        R_eye_R = face_landmarks.landmark[263]  # Coin droit œil droit  
+        L_eye_top = face_landmarks[159]
+        R_eye_top = face_landmarks[386]
+        L_eye_L = face_landmarks[130]
+        L_eye_R = face_landmarks[133]
+        R_eye_L = face_landmarks[362]
+        R_eye_R = face_landmarks[263]
 
         # position
         x_position_history.pop(0)
