@@ -105,7 +105,7 @@ def dance(walle):
     
 def hello(walle):
     walle.headAngle(0.8)
-    walle.sound("oh1")
+    walle.sound("walle2")
     time.sleep(0.2)
     walle.manual("hand_L", 0.3)
     time.sleep(0.3)
