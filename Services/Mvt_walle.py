@@ -5,6 +5,9 @@ import time
 
 class Walle:
     def __init__(self, port: str):
+        self.sound_player = SoundPlayer()
+        self.sound("start")
+        
         self.serial_available = True
         try:
             self.serial = serial.Serial(port, baudrate=115200, timeout=1)
@@ -36,10 +39,12 @@ class Walle:
         }
         
         self.coef = self.coef_init.copy()
-
+        
+        
+        time.sleep(2)
         self.wake_up()
         
-        self.sound_player = SoundPlayer()
+        
         
 
     def update(self, tab):
@@ -107,6 +112,16 @@ class Walle:
         print(f"[Mvt_Walle] Niveau de tristesse réglé à {angle}")
         self.headAngle()
         
+    def hand(self, angle):
+        self.coef["hand_L"] = angle
+        self.coef["hand_R"] = angle
+        self.update(["hand_L", "hand_R"])
+
+    def arm(self, angle):
+        self.coef["arm_L"] = angle
+        self.coef["arm_R"] = angle
+        self.update(["arm_L", "arm_R"])
+
     """  
     def neckLevel(self, necklevel=None):
         neckAngle = self.coef["neck_angle"]
@@ -170,6 +185,10 @@ class Walle:
     def sound(self, name):
         if not self.sound_player.is_playing():
             self.sound_player.play(name)
+            
+    def stop_sound(self):
+        if self.sound_player.is_playing():
+            self.sound_player.stop()
 
     def get_coef(self, name):
         if name in self.coef:
@@ -194,7 +213,6 @@ class Walle:
         self.manual("hand_R", 0.5)
         
     def wake_up(self):
-        time.sleep(2)
         self.manual("lid_L", 0)
         self.manual("lid_R", 0)
         time.sleep(0.3)
@@ -212,7 +230,7 @@ class Walle:
         self.manual("hand_L", 0.5)
         self.manual("hand_R", 0.5)
         self.sadness(0.3)
-        time.sleep(2)
+        time.sleep(1)
         self.emote("Auto_adjust")
         
 

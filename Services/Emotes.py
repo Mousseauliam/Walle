@@ -14,7 +14,7 @@ def auto_adjust(walle):
     time.sleep(0.7)
     walle.sadness(0.7)
     time.sleep(1)
-    walle.sadness(0)
+    walle.sadness(0.3)
 
 def happy(walle):
     walle.sadness(0)
@@ -43,16 +43,16 @@ def rizz(walle):
 def looking(walle):
     walle.neckLR(0)
     walle.neckAngle(0.2)
-    #walle.arm_R(0.4)
+    #walle.coef["arm_R"]=0.4
     time.sleep(3)
-    #hand_R(1)
+    #walle.coef["hand_R"]=1
     time.sleep(0.5)
-    #.hand_R(0)
+    #walle.coef["hand_L"]=0
     walle.neckLR(1)
     time.sleep(0.3)
     walle.blink()
     time.sleep(3)
-    #walle.arm_R(0)
+    #walle.coef["arm_R"]=0
     walle.neckAngle(0.5)
     time.sleep(1)
     walle.neckLR(0)
@@ -65,7 +65,7 @@ def curious(walle):
     walle.eyebrow(1)
     walle.sadness(0)
     walle.headAngle(0)
-    #Mettre le son "Wow!"
+    
     time.sleep(1.5)
     walle.eyebrow(0)
     walle.sadness(0.2)
@@ -74,13 +74,47 @@ def curious(walle):
 def surprise(walle):
     walle.eyebrow(1)
     walle.sadness(0)
+    walle.sound("waow1")
     #walle.arm(0.3)
     time.sleep(0.5)
     #walle.arm(0)
-    time.sleep(1)
+    time.sleep(0.5)
     walle.eyebrow(0)
     walle.sadness(0.2)
 
+def dance(walle):
+    a=0
+    while a<=2:
+        #walle.coef["speed_L"]= 0.7
+        #walle.coef["speed_R"]= 0.3
+        walle.headAngle(0.3)
+        time.sleep(0.4)
+        walle.neckLR(0.4)
+        time.sleep(0.2)
+        walle.neckLR(0.5)
+        time.sleep(0.5)
+        walle.headAngle(0.7)
+        time.sleep(0.4)
+        walle.neckLR(0.4)
+        time.sleep(0.2)
+        walle.neckLR(0.5)
+        time.sleep(0.5)
+        a+=1
+    walle.headAngle(0.5)
+    walle.neckLR(0.5)
+    
+def hello(walle):
+    walle.headAngle(0.8)
+    time.sleep(0.2)
+    walle.manual("hand_L", 0.3)
+    time.sleep(0.3)
+    walle.manual("hand_L", 0.6)
+    time.sleep(0.3)
+    walle.manual("hand_L", 0.3)
+    time.sleep(0.3)
+    walle.manual("hand_L", 0.5)
+    time.sleep(0.3)
+    walle.headAngle(0.5)
 
 EMOTES = {
     "Auto_adjust": auto_adjust,
@@ -89,5 +123,7 @@ EMOTES = {
     "Rizz": rizz,
     "Looking": looking,
     "Curious": curious,
-    "Surprise": surprise
+    "Surprise": surprise,
+    "Dance": dance,
+    "Hello": hello
 }
