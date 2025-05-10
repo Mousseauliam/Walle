@@ -5,7 +5,7 @@ active = False
 
 deadzone = 0.09
 y_step = 0.03
-tilt_factor = 1.2
+tilt_factor = 1
 
 global last_blink
 global wink_left
@@ -50,13 +50,12 @@ def run(robot,server):
                         robot.manual("lid_L", 0)
                     if (time.time() - wink_right) > 0.4:
                         robot.manual("lid_R", 0)
+                    eye_closed = False
                 case "blink":
                     if not eye_closed and (time.time() - last_blink) > 0.8:
                         robot.blink()
                         last_blink = time.time()
                         eye_closed = True
-                    else:
-                        eye_closed = False
                     
                 case "wink_left":
                     robot.manual("lid_L", 1)
