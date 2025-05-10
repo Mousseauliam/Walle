@@ -16,7 +16,7 @@ VisionRunningMode = vision.RunningMode
 # Hand Gesture Recognizer
 hand_options = vision.GestureRecognizerOptions(
     base_options=BaseOptions(model_asset_path=HAND_MODEL_PATH),
-    running_mode=VisionRunningMode.LIVE_STREAM,
+    running_mode=VisionRunningMode.LIVE_STREAM
 )
 hand_recognizer = vision.GestureRecognizer.create_from_options(hand_options)
 
