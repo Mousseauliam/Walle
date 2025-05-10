@@ -104,17 +104,18 @@ def dance(walle):
     walle.neckLR(0.5)
     
 def hello(walle):
-    walle.headAngle(0.8)
     walle.sound("walle2")
-    time.sleep(0.2)
+    time.sleep(0.8)
+    walle.headAngle(0.8)
+    time.sleep(0.5)
     walle.manual("hand_L", 0.3)
-    time.sleep(0.3)
+    time.sleep(0.5)
     walle.manual("hand_L", 0.6)
-    time.sleep(0.3)
+    time.sleep(0.5)
     walle.manual("hand_L", 0.3)
-    time.sleep(0.3)
+    time.sleep(0.5)
     walle.manual("hand_L", 0.5)
-    time.sleep(0.3)
+    time.sleep(0.5)
     walle.headAngle(0.5)
 
 EMOTES = {
