@@ -41,8 +41,8 @@ last_process = time.time()
 velocity = [0]*12
 emote = None
 last_emote = 0
-surprise_threshold = 5
-hello_threshold = 1.5
+surprise_threshold = 4
+hello_threshold = 1.3
 above_head = False
 
 def gen_frames():
@@ -199,7 +199,7 @@ def get_head_factor():
                 print("Hello")
                 last_emote = time.time()
             elif any(velocity > surprise_threshold for velocity in velocity_moy):
-                emote = "Surpise"
+                emote = "Surprise"
                 print("Surprise")
                 last_emote = time.time()
             else:
