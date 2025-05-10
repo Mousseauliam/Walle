@@ -14,6 +14,14 @@ pose = mp_pose.Pose(
     #min_pose_presence_confidence=0.7
 )
 
+mp_hands = mp.solutions.hands
+hands = mp_hands.Hands(
+    static_image_mode=False,
+    max_num_hands=2,
+    min_detection_confidence=0.7,
+    min_tracking_confidence=0.7
+)
+
 # Camera init
 screen_width, screen_height = 1240, 960
 picam2 = Picamera2()
@@ -84,8 +92,9 @@ def gen_frames():
                 landmark = results_pose.pose_landmarks.landmark[landmark_id.value]
                 x, y = int(landmark.x * w), int(landmark.y * h)
                 cv2.circle(frame, (x, y), 4, (0, 0, 255), -1)
-                
+        
         ret, buffer = cv2.imencode('.jpg', frame)
+        
         if not ret:
             continue
         yield (b'--frame\r\n'
@@ -96,6 +105,7 @@ def gen_frames():
 def frame_process():
     head_factor()
     body_factor()
+    hand_factor()
     
 def head_factor():
     global head_detected, last_results, x_position_history, y_position_history, z_position_history, head_tilt_history, L_eye_history, R_eye_history, nose_tip_y, chin_tip_y
@@ -217,7 +227,7 @@ def get_head_factor():
         for i in range(2):
             velocity_moy.append((velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6] + velocity[i+8] + velocity[i+10] )/6)
         
-        print(velocity_moy, is_waving([w[0] for w in last_wrist_L]) , is_waving([w[0] for w in last_wrist_R]), above_head)
+        #print(velocity_moy, is_waving([w[0] for w in last_wrist_L]) , is_waving([w[0] for w in last_wrist_R]), above_head)
         
         if (is_waving([w[0] for w in last_wrist_L]) or is_waving([w[0] for w in last_wrist_R])) and above_head:
             emote = "Hello"
@@ -234,3 +244,33 @@ def get_head_factor():
     emote=None    
     return res
     
+def hand_factor():
+    global last_frame
+    if last_frame is None:
+        return
+
+    # MediaPipe attend une image RGB
+    image = cv2.cvtColor(last_frame, cv2.COLOR_BGR2RGB)
+    results = hands.process(image)
+
+    if results.multi_hand_landmarks:
+        for hand_landmarks, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
+            label = handedness.classification[0].label  # 'Left' or 'Right'
+            gesture = detect_hand_gesture(hand_landmarks)
+            print(f"Hand: {label}, Gesture: {gesture}")
+    else:
+        print("No hands detected.")
+
+def detect_hand_gesture(hand_landmarks):
+    # Exemple simple : détecter un "thumbs up"
+    # Le pouce est levé si le tip du pouce est au-dessus de la base du pouce (en coordonnées y)
+    thumb_tip = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP]
+    thumb_ip = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_IP]
+    thumb_mcp = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_MCP]
+    index_mcp = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_MCP]
+
+    # Thumbs up: le tip du pouce est plus haut (plus petit en y) que le MCP et le pouce est éloigné de l'index
+    if (thumb_tip.y < thumb_mcp.y) and (abs(thumb_tip.x - index_mcp.x) > 0.1):
+        return "Thumbs Up"
+    # Ajoute d'autres règles pour "peace", "fist", etc.
+    return "Unknown"
