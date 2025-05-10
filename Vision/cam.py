@@ -7,7 +7,12 @@ import numpy as np
 mp_face_mesh = mp.solutions.face_mesh
 mp_pose = mp.solutions.pose
 face_mesh = mp_face_mesh.FaceMesh(static_image_mode=False, max_num_faces=1, refine_landmarks=True)
-pose = mp_pose.Pose(static_image_mode=False)
+pose = mp_pose.Pose(
+    static_image_mode=False,
+    min_detection_confidence=0.7,
+    min_tracking_confidence=0.7,
+    min_pose_presence_confidence=0.7
+)
 
 # Camera init
 screen_width, screen_height = 1240, 960
