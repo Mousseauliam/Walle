@@ -301,11 +301,18 @@ def get_factor():
             
             if last_hand_gesture == "Open_Palm" and above_head:
                 emote = "Hello"
-                print("Hello")
                 last_emote = time.time()
             elif any(velocity > surprise_threshold for velocity in velocity_moy):
                 emote = "Surprise"
-                print("Surprise")
+                last_emote = time.time()
+            elif last_hand_gesture == "Thumb_Down" :
+                emote = "Sadness"
+                last_emote = time.time()
+            elif last_hand_gesture == "Thumb_Up" :
+                emote = "Happy"
+                last_emote = time.time()
+            elif last_hand_gesture == "ILoveYou" :
+                emote = "Rizz"
                 last_emote = time.time()
             else:
                 emote = None
