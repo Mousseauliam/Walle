@@ -59,8 +59,8 @@ head_detected = False
 #eyes variables
 blink_threshold = 0.4
 blink_threshold_R = 0.35
-L_eye_history = 0
-R_eye_history = 0
+L_eye_ratio = 0
+R_eye_ratio = 0
 L_brow_history = 0
 R_brow_history = 0
 browns_threshold = 0.5
@@ -136,7 +136,7 @@ def frame_process():
     
     
 def head_factor():
-    global head_detected, last_results, x_position_history, y_position_history, z_position_history, head_tilt_history, L_eye_history, R_eye_history, nose_tip_y, chin_tip_y
+    global head_detected, last_results, x_position_history, y_position_history, z_position_history, head_tilt_history, L_eye_ratio, R_eye_ratio, nose_tip_y, chin_tip_y
     global L_brow_history, R_brow_history
     if last_results.face_landmarks:
         head_detected = True
@@ -174,8 +174,8 @@ def head_factor():
         head_tilt_history.append((angle / (np.pi / 4) + 1) / 2)
         
         #blink detection
-        L_eye_history=round(blendshape[9].score,3)
-        R_eye_history=round(blendshape[10].score,3)
+        L_eye_ratio=round(blendshape[9].score,3)
+        R_eye_ratio=round(blendshape[10].score,3)
         
         #eyebrow detection
         L_brow_history=round(blendshape[7].score,3)
@@ -237,14 +237,13 @@ def hand_factor():
 
 def get_factor():
     if head_detected:
-        global blink_threshold, L_eye_history, R_eye_history, emote, surprise_threshold, hello_threshold, last_emote, above_head, last_wrist_L, last_wrist_R, velocity, last_hand_gesture
+        global blink_threshold, emote, surprise_threshold, hello_threshold, last_emote, above_head, last_wrist_L, last_wrist_R, velocity, last_hand_gesture
         global L_brow_history, R_brow_history, browns_threshold
         x_position= round(sum(x_position_history) / len(x_position_history),2)
         y_position= round(sum(y_position_history) / len(y_position_history),2)
         z_position= round(sum(z_position_history) / len(z_position_history),2)
         head_tilt = round(sum(head_tilt_history) / len(head_tilt_history),2)
-        L_eye_ratio = L_eye_history[0]
-        R_eye_ratio = R_eye_history[0]
+
         
         blink_type = "none"
         if (L_eye_ratio > blink_threshold) and (R_eye_ratio > blink_threshold_R):
