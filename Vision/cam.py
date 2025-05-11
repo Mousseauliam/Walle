@@ -64,6 +64,8 @@ R_eye_ratio = 0
 L_brow = 0
 R_brow = 0
 browns_threshold = 0.5
+eye_look_threshold = 0.3
+eye_look_values = {}
 
 #body variables
 last_results_pose = None
@@ -137,7 +139,7 @@ def frame_process():
     
 def head_factor():
     global head_detected, last_results, x_position_history, y_position_history, z_position_history, head_tilt_history, L_eye_ratio, R_eye_ratio, nose_tip_y, chin_tip_y
-    global L_brow, R_brow
+    global L_brow, R_brow, eye_look_values
     if last_results.face_landmarks:
         head_detected = True
         face_landmarks = last_results.face_landmarks[0]
@@ -180,6 +182,13 @@ def head_factor():
         #eyebrow detection
         L_brow=round(blendshape[4].score,3)
         R_brow=round(blendshape[5].score,3)
+        
+        #eye look detection
+        for b in blendshape:
+            if b.category_name in [
+                "eyeLookInLeft", "eyeLookOutLeft", "eyeLookInRight", "eyeLookOutRight",
+                "eyeLookUpLeft", "eyeLookDownLeft", "eyeLookUpRight", "eyeLookDownRight"]:
+                eye_look_values[b.category_name] = b.score
 
     else:
         head_detected = False
@@ -243,6 +252,11 @@ def get_factor():
         y_position= round(sum(y_position_history) / len(y_position_history),2)
         z_position= round(sum(z_position_history) / len(z_position_history),2)
         head_tilt = round(sum(head_tilt_history) / len(head_tilt_history),2)
+        
+        if all(v < eye_look_threshold for v in eye_look_values.values()):
+            print("La personne regarde la caméra")
+        else:
+            print("La personne regarde ailleurs")
 
         
         blink_type = "none"
