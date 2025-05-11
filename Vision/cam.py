@@ -96,9 +96,7 @@ def gen_frames():
         last_results_pose = pose_result 
         
         if face_result.face_blendshapes:
-            for blendshape in face_result.face_blendshapes[0]:  # [0] = premier visage détecté
-                if blendshape.category_name == "browOuterUpRight":
-                    print(f"mouthSmileLeft: {blendshape.score:.3f}")
+            print(f"eyeb_left: {face_result.face_blendshapes[0][0].scor:.3f} eyeb_rig: {face_result.face_blendshapes[0][1].scor:.3f}")
 
 
         
