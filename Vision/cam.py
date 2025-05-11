@@ -50,7 +50,7 @@ picam2.start()
 #globale variables
 last_frame = None
 last_results = None
-head_tilt_history=[0]*5
+head_tilt_history=[0]*2
 x_position_history = [0]*5
 y_position_history = [0]*3
 z_position_history = [0]*5
