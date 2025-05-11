@@ -84,7 +84,7 @@ def run(robot,server):
         if head_factor[6] is not None:
             robot.emote(head_factor[6])
             
-        time.sleep(0.01) 
+        time.sleep(0.05) 
 
 def stop():
     global active
