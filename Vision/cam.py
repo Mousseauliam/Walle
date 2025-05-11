@@ -132,7 +132,6 @@ def gen_frames():
 
 def get_frame() :
     global last_frame
-    ret, buffer = cv2.imencode('.jpg', last_frame)
     if last_frame is not None:
         ret, buffer = cv2.imencode('.jpg', last_frame)
         if ret:
