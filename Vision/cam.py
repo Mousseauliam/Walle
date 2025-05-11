@@ -194,9 +194,9 @@ def head_factor():
         
         #eyebrow detection
         L_brow_history.pop(0)
-        L_brow_history=round(blendshape[4].score,3)
+        L_brow_history.append(round(blendshape[4].score,3))
         R_brow_history.pop(0)
-        R_brow_history=round(blendshape[5].score,3)
+        R_brow_history.append(round(blendshape[5].score,3))
         
         #eye look detection
         eye_looks_values.pop(0)
