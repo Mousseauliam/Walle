@@ -5,7 +5,6 @@ from mediapipe.tasks.python import vision
 from mediapipe.tasks import python
 import mediapipe as mp
 import numpy as np
-from Main import current_mode_name
 
 HAND_MODEL_PATH = "Vision/Modele/gesture_recognizer.task"
 FACE_MODEL_PATH = "Vision/Modele/face_landmarker.task"
@@ -136,6 +135,7 @@ def gen_frames():
         time.sleep(0.03)
 
 def frame_process():
+    from Main import current_mode_name
     if current_mode_name == "Auto":
         head_factor()
         body_factor()
