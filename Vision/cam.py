@@ -50,7 +50,7 @@ picam2.start()
 #globale variables
 last_frame = None
 last_results = None
-head_tilt_history=[0]*10
+head_tilt_history=[0]*5
 x_position_history = [0]*5
 y_position_history = [0]*3
 z_position_history = [0]*5
@@ -63,8 +63,8 @@ L_eye_ratio = 0
 R_eye_ratio = 0
 L_brow = 0
 R_brow = 0
-browns_threshold = 0.4
-browns_threshold_L = 0.55
+browns_threshold = 0.45
+browns_threshold_L = 0.6
 eye_look_threshold = 0.1
 eye_looking = False
 
