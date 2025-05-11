@@ -255,7 +255,7 @@ def get_factor():
         
         blink_type = "none"
         brown_type = "none"
-        if all(v < eye_look_threshold for v in eye_look_values.values())
+        if all(v < eye_look_threshold for v in eye_look_values.values()):
             
             #blink detection
             if (L_eye_ratio > blink_threshold) and (R_eye_ratio > blink_threshold_R):
