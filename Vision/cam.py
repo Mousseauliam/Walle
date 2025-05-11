@@ -96,7 +96,7 @@ def gen_frames():
         last_results_pose = pose_result 
         
         if face_result.face_blendshapes:
-            print(f"eyeb_left: {face_result.face_blendshapes[0][0].scor:.3f} eyeb_rig: {face_result.face_blendshapes[0][1].scor:.3f}")
+            print(f"eyeb_left: {face_result.face_blendshapes[0][0].score:.3f} eyeb_rig: {face_result.face_blendshapes[0][1].score:.3f}")
 
 
         
