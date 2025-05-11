@@ -64,7 +64,7 @@ R_eye_ratio = 0
 L_brow = 0
 R_brow = 0
 browns_threshold = 0.5
-eye_look_threshold = 0.3
+eye_look_threshold = 0.4
 eye_look_values = {}
 
 #body variables
@@ -253,31 +253,30 @@ def get_factor():
         z_position= round(sum(z_position_history) / len(z_position_history),2)
         head_tilt = round(sum(head_tilt_history) / len(head_tilt_history),2)
         
-        if all(v < eye_look_threshold for v in eye_look_values.values()):
-            print("La personne regarde la caméra")
-        else:
-            print("ailleurs")
-
-        
         blink_type = "none"
-        if (L_eye_ratio > blink_threshold) and (R_eye_ratio > blink_threshold_R):
-            blink_type = "blink"
-        elif (L_eye_ratio <= blink_threshold) and (R_eye_ratio <= blink_threshold_R):
-            blink_type = "open"
-        elif (L_eye_ratio > blink_threshold) and (R_eye_ratio <= blink_threshold_R):
-            blink_type = "wink_left"
-        elif (R_eye_ratio > blink_threshold_R) and (L_eye_ratio <= blink_threshold):
-            blink_type = "wink_right"
-        
         brown_type = "none"
-        if (L_brow > browns_threshold) and (R_brow > browns_threshold):
-            brown_type = "brow_up"
-        elif (L_brow <= browns_threshold) and (R_brow <= browns_threshold):
-            brown_type = "brow_down"
-        elif (L_brow > browns_threshold) and (R_brow <= browns_threshold):
-            brown_type = "brow_up_left"
-        elif (R_brow > browns_threshold) and (L_brow <= browns_threshold):
-            brown_type = "brow_up_right"
+        if all(v < eye_look_threshold for v in eye_look_values.values())
+            
+            #blink detection
+            if (L_eye_ratio > blink_threshold) and (R_eye_ratio > blink_threshold_R):
+                blink_type = "blink"
+            elif (L_eye_ratio <= blink_threshold) and (R_eye_ratio <= blink_threshold_R):
+                blink_type = "open"
+            elif (L_eye_ratio > blink_threshold) and (R_eye_ratio <= blink_threshold_R):
+                blink_type = "wink_left"
+            elif (R_eye_ratio > blink_threshold_R) and (L_eye_ratio <= blink_threshold):
+                blink_type = "wink_right"
+            
+            #eyebrow detection
+            if (L_brow > browns_threshold) and (R_brow > browns_threshold):
+                brown_type = "brow_up"
+            elif (L_brow <= browns_threshold) and (R_brow <= browns_threshold):
+                brown_type = "brow_down"
+            elif (L_brow > browns_threshold) and (R_brow <= browns_threshold):
+                brown_type = "brow_up_left"
+            elif (R_brow > browns_threshold) and (L_brow <= browns_threshold):
+                brown_type = "brow_up_right"
+        
         
         res = [x_position, y_position, z_position, head_tilt, blink_type, brown_type]
     else:
