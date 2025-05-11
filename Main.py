@@ -4,6 +4,7 @@ from Services.Mvt_walle import Walle
 from Services.Modes_manager import ModeManager
 from Web.log_redirector import init_socketio, redirect_stdout
 import lgpio
+from Vision.cam import gen_frames
 
 import threading
 import time
@@ -56,7 +57,19 @@ music =["sunday_clothe", "la_vie_en_rose", "takes_a_moments"]
 last_music =0
 
 
-current_mode_name =None
+
+current_mode_name = "Auto"
+manager.launch_mode(modes[current_mode_name])
+
+def vision_loop():
+    while power:
+        gen_frames()
+        time.sleep(0.03) 
+
+vision_thread = threading.Thread(target=vision_loop)
+vision_thread.daemon = True
+vision_thread.start()
+
 while power:
     
     state_btn[0] = lgpio.gpio_read(h, pinBtn_R)

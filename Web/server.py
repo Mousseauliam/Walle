@@ -1,5 +1,5 @@
 from flask import Flask, render_template, Response, request, redirect
-from Vision.cam import gen_frames
+from Vision.cam import get_frame
 from flask_socketio import SocketIO
 
 app = Flask(__name__)
@@ -55,7 +55,7 @@ def send_command():
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(get_frame(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 def get_selected_mode():
     return selected_mode

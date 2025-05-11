@@ -33,7 +33,7 @@ def sadness(walle):
     walle.sound('oh2')
     time.sleep(3.5)
     walle.neckAngle(walle.coef["neck_angle"])
-    walle.sadness(0)
+    walle.sadness(0.3)
     walle.lid(0)
     #walle.neck_level(0)
     #Mettre un son triste

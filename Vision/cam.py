@@ -5,7 +5,8 @@ from mediapipe.tasks.python import vision
 from mediapipe.tasks import python
 import mediapipe as mp
 import numpy as np
-
+import threading
+from 
 HAND_MODEL_PATH = "Vision/Modele/gesture_recognizer.task"
 FACE_MODEL_PATH = "Vision/Modele/face_landmarker.task"
 POSE_MODEL_PATH = "Vision/Modele/pose_landmarker_lite.task"
@@ -65,7 +66,7 @@ R_eye_ratio = 0
 L_brow = 0
 R_brow = 0
 browns_threshold = 0.45
-browns_threshold_L = 0.6
+browns_threshold_L = 0.5
 eye_look_threshold = 0.5
 eye_looks_values =  [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] for _ in range(4)]
 smile=False
@@ -107,8 +108,6 @@ def gen_frames():
         last_results_pose = pose_result 
         
 
-        
-        last_frame = frame
         h, w, _ = frame.shape
         
         if face_result.face_landmarks:
@@ -126,16 +125,23 @@ def gen_frames():
                     landmark = person_landmarks[landmark_id]
                     x, y = int(landmark.x * w), int(landmark.y * h)
                     cv2.circle(frame, (x, y), 4, (0, 0, 255), -1)
+                    
+        last_frame = frame
         
-        ret, buffer = cv2.imencode('.jpg', frame)
-        
-        if not ret:
-            continue
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
         frame_process()
         time.sleep(0.03)
 
+def get_frame() :
+    global last_frame
+    ret, buffer = cv2.imencode('.jpg', last_frame)
+    if last_frame is not None:
+        ret, buffer = cv2.imencode('.jpg', last_frame)
+        if ret:
+            yield (b'--frame\r\n'
+                    b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
+
+        
+    
 def frame_process():
     head_factor()
     body_factor()
