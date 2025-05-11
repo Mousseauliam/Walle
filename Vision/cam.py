@@ -279,26 +279,26 @@ def get_factor():
                 brown_type = "brow_up_right"
         
         res = [x_position, y_position, z_position, head_tilt, blink_type, brown_type]
+        
+        if (time.time() - last_emote) > 5:
+            velocity_moy = []
+            for i in range(2):
+                velocity_moy.append((velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6] + velocity[i+8] + velocity[i+10] )/6)
+            
+            #print(velocity_moy, is_waving([w[0] for w in last_wrist_L]) , is_waving([w[0] for w in last_wrist_R]), above_head)
+            
+            if last_hand_gesture == "Open_Palm" and above_head:
+                emote = "Hello"
+                print("Hello")
+                last_emote = time.time()
+            elif any(velocity > surprise_threshold for velocity in velocity_moy):
+                emote = "Surprise"
+                print("Surprise")
+                last_emote = time.time()
+            else:
+                emote = None
     else:
-        res =[None, None, None, None, None, None]
-        
-    if (time.time() - last_emote) > 5:
-        velocity_moy = []
-        for i in range(2):
-            velocity_moy.append((velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6] + velocity[i+8] + velocity[i+10] )/6)
-        
-        #print(velocity_moy, is_waving([w[0] for w in last_wrist_L]) , is_waving([w[0] for w in last_wrist_R]), above_head)
-        
-        if last_hand_gesture == "Open_Palm" and above_head:
-            emote = "Hello"
-            print("Hello")
-            last_emote = time.time()
-        elif any(velocity > surprise_threshold for velocity in velocity_moy):
-            emote = "Surprise"
-            print("Surprise")
-            last_emote = time.time()
-        else:
-            emote = None
+        res =[None, None, None, None, None, None, None]
 
     #print(res)
     res.append(emote)
