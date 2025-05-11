@@ -13,7 +13,7 @@ def run(robot,server):
     wink_right = 0
     eye_closed = False
     last_mvt=time.time()
-    next_random=0
+    next_random=4
     
     while active:
         head_factor=get_factor()
