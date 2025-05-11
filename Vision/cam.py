@@ -63,6 +63,7 @@ L_eye_history = 0
 R_eye_history = 0
 L_brow_history = 0
 R_brow_history = 0
+browns_threshold = 0.5
 
 #body variables
 last_results_pose = None
@@ -98,12 +99,6 @@ def gen_frames():
         pose_result = pose_landmarker.detect(mp_image)
         last_results_pose = pose_result 
         
-        if face_result.face_blendshapes:
-            print("Expressions faciales détectées :")
-            count=0
-            for blendshape in face_result.face_blendshapes[0]:
-                print(f"{count} : {blendshape.category_name}: {blendshape.score:.2f}")
-                count+=1
 
         
         last_frame = frame
@@ -142,6 +137,7 @@ def frame_process():
     
 def head_factor():
     global head_detected, last_results, x_position_history, y_position_history, z_position_history, head_tilt_history, L_eye_history, R_eye_history, nose_tip_y, chin_tip_y
+    global L_brow_history, R_brow_history
     if last_results.face_landmarks:
         head_detected = True
         face_landmarks = last_results.face_landmarks[0]
@@ -242,7 +238,7 @@ def hand_factor():
 def get_factor():
     if head_detected:
         global blink_threshold, L_eye_history, R_eye_history, emote, surprise_threshold, hello_threshold, last_emote, above_head, last_wrist_L, last_wrist_R, velocity, last_hand_gesture
-        
+        global L_brow_history, R_brow_history, browns_threshold
         x_position= round(sum(x_position_history) / len(x_position_history),2)
         y_position= round(sum(y_position_history) / len(y_position_history),2)
         z_position= round(sum(z_position_history) / len(z_position_history),2)
@@ -250,7 +246,6 @@ def get_factor():
         L_eye_ratio = L_eye_history[0]
         R_eye_ratio = R_eye_history[0]
         
-        print(L_eye_ratio, R_eye_ratio)
         blink_type = "none"
         if (L_eye_ratio > blink_threshold) and (R_eye_ratio > blink_threshold_R):
             blink_type = "blink"
@@ -261,10 +256,19 @@ def get_factor():
         elif (R_eye_ratio > blink_threshold_R) and (L_eye_ratio <= blink_threshold):
             blink_type = "wink_right"
         
+        brown_type = "none"
+        if (L_brow_history > browns_threshold) and (R_brow_history > browns_threshold):
+            brown_type = "brow_up"
+        elif (L_brow_history <= browns_threshold) and (R_brow_history <= browns_threshold):
+            brown_type = "brow_down"
+        elif (L_brow_history > browns_threshold) and (R_brow_history <= browns_threshold):
+            brown_type = "brow_up_left"
+        elif (R_brow_history > browns_threshold) and (L_brow_history <= browns_threshold):
+            brown_type = "brow_up_right"
         
-        res = [x_position, y_position, z_position, head_tilt, blink_type]
+        res = [x_position, y_position, z_position, head_tilt, blink_type, brown_type]
     else:
-        res =[None, None, None, None,None]
+        res =[None, None, None, None, None, None]
         
     if (time.time() - last_emote) > 5:
         velocity_moy = []
@@ -284,7 +288,65 @@ def get_factor():
         else:
             emote = None
 
+    print(res)
     res.append(emote)
     emote=None    
     return res
 
+
+
+
+    """May 11 14:46:33 Walle start.sh[3040]: Expressions faciales détectées :
+May 11 14:46:33 Walle start.sh[3040]: 0 : _neutral: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 1 : browDownLeft: 0.02
+May 11 14:46:33 Walle start.sh[3040]: 2 : browDownRight: 0.08
+May 11 14:46:33 Walle start.sh[3040]: 3 : browInnerUp: 0.01
+May 11 14:46:33 Walle start.sh[3040]: 4 : browOuterUpLeft: 0.17
+May 11 14:46:33 Walle start.sh[3040]: 5 : browOuterUpRight: 0.01
+May 11 14:46:33 Walle start.sh[3040]: 6 : cheekPuff: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 7 : cheekSquintLeft: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 8 : cheekSquintRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 9 : eyeBlinkLeft: 0.38
+May 11 14:46:33 Walle start.sh[3040]: 10 : eyeBlinkRight: 0.39
+May 11 14:46:33 Walle start.sh[3040]: 11 : eyeLookDownLeft: 0.33
+May 11 14:46:33 Walle start.sh[3040]: 12 : eyeLookDownRight: 0.34
+May 11 14:46:33 Walle start.sh[3040]: 13 : eyeLookInLeft: 0.03
+May 11 14:46:33 Walle start.sh[3040]: 14 : eyeLookInRight: 0.16
+May 11 14:46:33 Walle start.sh[3040]: 15 : eyeLookOutLeft: 0.19
+May 11 14:46:33 Walle start.sh[3040]: 16 : eyeLookOutRight: 0.05
+May 11 14:46:33 Walle start.sh[3040]: 17 : eyeLookUpLeft: 0.04
+May 11 14:46:33 Walle start.sh[3040]: 18 : eyeLookUpRight: 0.04
+May 11 14:46:33 Walle start.sh[3040]: 19 : eyeSquintLeft: 0.48
+May 11 14:46:33 Walle start.sh[3040]: 20 : eyeSquintRight: 0.65
+May 11 14:46:33 Walle start.sh[3040]: 21 : eyeWideLeft: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 22 : eyeWideRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 23 : jawForward: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 24 : jawLeft: 0.01
+May 11 14:46:33 Walle start.sh[3040]: 25 : jawOpen: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 26 : jawRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 27 : mouthClose: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 28 : mouthDimpleLeft: 0.02
+May 11 14:46:33 Walle start.sh[3040]: 29 : mouthDimpleRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 30 : mouthFrownLeft: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 31 : mouthFrownRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 32 : mouthFunnel: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 33 : mouthLeft: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 34 : mouthLowerDownLeft: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 35 : mouthLowerDownRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 36 : mouthPressLeft: 0.03
+May 11 14:46:33 Walle start.sh[3040]: 37 : mouthPressRight: 0.03
+May 11 14:46:33 Walle start.sh[3040]: 38 : mouthPucker: 0.07
+May 11 14:46:33 Walle start.sh[3040]: 39 : mouthRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 40 : mouthRollLower: 0.07
+May 11 14:46:33 Walle start.sh[3040]: 41 : mouthRollUpper: 0.08
+May 11 14:46:33 Walle start.sh[3040]: 42 : mouthShrugLower: 0.08
+May 11 14:46:33 Walle start.sh[3040]: 43 : mouthShrugUpper: 0.01
+May 11 14:46:33 Walle start.sh[3040]: 44 : mouthSmileLeft: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 45 : mouthSmileRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 46 : mouthStretchLeft: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 47 : mouthStretchRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 48 : mouthUpperUpLeft: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 49 : mouthUpperUpRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 50 : noseSneerLeft: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 51 : noseSneerRight: 0.00
+    """
