@@ -286,7 +286,6 @@ def get_factor():
                 blink_type = "wink_left"
             elif (R_eye_ratio > blink_threshold_R) and (L_eye_ratio <= blink_threshold):
                 blink_type = "wink_right"
-            print("eyeBlinkLeft:", L_eye_ratio, "eyeBlinkRight:", R_eye_ratio)
             
             #eyebrow detection
             if (L_brow > browns_threshold_L) and (R_brow > browns_threshold):
