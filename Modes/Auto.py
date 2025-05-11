@@ -71,13 +71,13 @@ def run(robot,server):
                     robot.manual("eyebrow_L", 0)
                     robot.manual("eyebrow_R", 1)
             last_mvt=time.time()
-            next_random= random.uniform(4, 20)
+            next_random= random.uniform(4, 15)
         else :
+            print('rien')
             if (time.time()-last_mvt)>next_random :
-                if random.choice([True, False]):
-                    robot.neckAngle(max(1,min(robot.get_coef['neck_angle']+random.uniform(-0.1,0.1)),0.3))
-                if random.choice([True, False]):
-                    robot.neckLR(robot.get_coef['neck_angle']+random.uniform(-0.2,0.2))
+                print('maintenant')
+                robot.neckAngle(max(1,min(robot.get_coef['neck_angle']+random.uniform(-0.1,0.1)),0.3))
+                robot.neckLR(robot.get_coef['neck_angle']+random.uniform(-0.2,0.2))
             
         if head_factor[6] is not None:
             robot.emote(head_factor[6])
