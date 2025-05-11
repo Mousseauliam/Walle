@@ -64,7 +64,7 @@ R_eye_ratio = 0
 L_brow = 0
 R_brow = 0
 browns_threshold = 0.5
-eye_look_threshold = 0.3
+eye_look_threshold = 0.4
 eye_look_values = {}
 
 #body variables
@@ -257,7 +257,6 @@ def get_factor():
         brown_type = "brow_down"
         if all(v < eye_look_threshold for v in eye_look_values.values()):
             
-            print(f"Eye look values: {eye_look_values}")
             #blink detection
             if (L_eye_ratio > blink_threshold) and (R_eye_ratio > blink_threshold_R):
                 blink_type = "blink"
