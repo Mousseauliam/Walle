@@ -311,6 +311,9 @@ def get_factor():
             elif last_hand_gesture == "Thumb_Up" :
                 emote = "Happy"
                 last_emote = time.time()
+            elif last_hand_gesture == "Victory" :
+                emote = "Curious"
+                last_emote = time.time()
             elif last_hand_gesture == "ILoveYou" :
                 emote = "Rizz"
                 last_emote = time.time()
