@@ -78,11 +78,13 @@ def run(robot,server):
                 print('maintenant')
                 robot.neckAngle(max(0.3, min(robot.get_coef('neck_angle') + random.uniform(-0.1, 0.1), 1)))
                 robot.neckLR(robot.get_coef('neck_LR') + random.uniform(-0.2, 0.2))
+                last_mvt=time.time()
+                next_random= random.uniform(4, 15)
             
         if head_factor[6] is not None:
             robot.emote(head_factor[6])
             
-        time.sleep(0.05) 
+        time.sleep(0.01) 
 
 def stop():
     global active
