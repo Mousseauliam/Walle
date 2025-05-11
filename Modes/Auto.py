@@ -17,6 +17,7 @@ def run(robot,server):
     
     while active:
         head_factor=get_factor()
+        print(head_factor)
         if all(element is not None for element in head_factor[:5]):
             neck_angle = robot.get_coef("neck_angle")
             if (head_factor[1] < (0.5 - deadzone)) and (neck_angle>y_step) :
@@ -72,14 +73,14 @@ def run(robot,server):
                     robot.manual("eyebrow_R", 1)
             last_mvt=time.time()
             next_random= random.uniform(4, 15)
-        else :
+        else:
             print('rien')
-            if (time.time()-last_mvt)>next_random :
+            if (time.time() - last_mvt) > next_random:
                 print('maintenant')
                 robot.neckAngle(max(0.3, min(robot.get_coef('neck_angle') + random.uniform(-0.1, 0.1), 1)))
                 robot.neckLR(robot.get_coef('neck_LR') + random.uniform(-0.2, 0.2))
-                last_mvt=time.time()
-                next_random= random.uniform(4, 15)
+                last_mvt = time.time()
+                next_random = random.uniform(4, 15)
             
         if head_factor[6] is not None:
             robot.emote(head_factor[6])
