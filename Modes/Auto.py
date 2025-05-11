@@ -81,8 +81,7 @@ def run(robot,server):
 
 
         if head_factor[6] is not None:
-            robot.sound("oh7")
-            robot.emote(head_factor[5])
+            robot.emote(head_factor[6])
             
         time.sleep(0.05) 
 
