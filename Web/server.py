@@ -6,7 +6,7 @@ app = Flask(__name__)
 socketio = SocketIO(app, async_mode='threading')
 
 
-selected_mode = "Manual"
+selected_mode = "Auto"
 selected_emote = None
 selected_servo = None
 servo_position = 90
