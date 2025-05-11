@@ -1,31 +1,20 @@
 import time
 from Vision.cam import get_factor
 
-active = False
-
-deadzone = 0.09
-y_step = 0.01
-tilt_factor = 1
-
-global last_blink
-global wink_left
-global wink_right 
-global cooling_time
-global eye_closed
-
 
 def run(robot,server):
-    global active, last_blink, wink_left, wink_right, cooling_time, eye_closed
+    deadzone = 0.09
+    y_step = 0.01
+    tilt_factor = 1
     active = True
     last_blink = 0
     wink_left = 0
     wink_right = 0
-    cooling_time = 0.5
     eye_closed = False
     
     while active:
         head_factor=get_factor()
-        if all(element is not None for element in head_factor[:5]):
+        if any(element is not None for element in head_factor[:5]):
             neck_angle = robot.get_coef("neck_angle")
             if (head_factor[1] < (0.5 - deadzone)) and (neck_angle>y_step) :
                 robot.neckAngle(round(neck_angle - y_step,2))
@@ -65,21 +54,21 @@ def run(robot,server):
                     robot.manual("lid_L", 0)
                     wink_right = time.time()
         
-        match head_factor[5]:
-            case "brow_up":
-                robot.manual("eyebrow_L", 1)
-                robot.manual("eyebrow_R", 1)
-            case "brow_down":
-                robot.manual("eyebrow_L", 0)
-                robot.manual("eyebrow_R", 0)
-            case "brow_up_left":
-                robot.manual("eyebrow_L", 1)
-                robot.manual("eyebrow_R", 0)
-            case "brow_up_right":
-                robot.manual("eyebrow_L", 0)
-                robot.manual("eyebrow_R", 1)
-
-
+            match head_factor[5]:
+                case "brow_up":
+                    robot.manual("eyebrow_L", 1)
+                    robot.manual("eyebrow_R", 1)
+                case "brow_down":
+                    robot.manual("eyebrow_L", 0)
+                    robot.manual("eyebrow_R", 0)
+                case "brow_up_left":
+                    robot.manual("eyebrow_L", 1)
+                    robot.manual("eyebrow_R", 0)
+                case "brow_up_right":
+                    robot.manual("eyebrow_L", 0)
+                    robot.manual("eyebrow_R", 1)
+        else :
+            
         if head_factor[6] is not None:
             robot.emote(head_factor[6])
             
