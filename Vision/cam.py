@@ -185,7 +185,7 @@ def head_factor():
         R_eye_ratio=round(blendshape[10].score,3)
         
         #smile
-        #print(blendshape[44])
+        print(blendshape[44])
         #smile=round((blendshape[44]+blendshape[45])/2,3)>smile_threshold
         
         #eyebrow detection
