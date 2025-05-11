@@ -61,8 +61,8 @@ blink_threshold = 0.35
 blink_threshold_R = 0.35
 L_eye_ratio = 0
 R_eye_ratio = 0
-L_brow_history = 0
-R_brow_history = 0
+L_brow = 0
+R_brow = 0
 browns_threshold = 0.3
 
 #body variables
@@ -137,7 +137,7 @@ def frame_process():
     
 def head_factor():
     global head_detected, last_results, x_position_history, y_position_history, z_position_history, head_tilt_history, L_eye_ratio, R_eye_ratio, nose_tip_y, chin_tip_y
-    global L_brow_history, R_brow_history
+    global L_brow, R_brow
     if last_results.face_landmarks:
         head_detected = True
         face_landmarks = last_results.face_landmarks[0]
@@ -178,8 +178,8 @@ def head_factor():
         R_eye_ratio=round(blendshape[10].score,3)
         
         #eyebrow detection
-        L_brow_history=round(blendshape[7].score,3)
-        R_brow_history=round(blendshape[8].score,3)
+        L_brow=round(blendshape[4].score,3)
+        R_brow=round(blendshape[5].score,3)
 
     else:
         head_detected = False
@@ -238,7 +238,7 @@ def hand_factor():
 def get_factor():
     if head_detected:
         global blink_threshold, emote, surprise_threshold, hello_threshold, last_emote, above_head, last_wrist_L, last_wrist_R, velocity, last_hand_gesture
-        global L_brow_history, R_brow_history, browns_threshold
+        global L_brow, R_brow, browns_threshold
         x_position= round(sum(x_position_history) / len(x_position_history),2)
         y_position= round(sum(y_position_history) / len(y_position_history),2)
         z_position= round(sum(z_position_history) / len(z_position_history),2)
@@ -256,13 +256,13 @@ def get_factor():
             blink_type = "wink_right"
         
         brown_type = "none"
-        if (L_brow_history > browns_threshold) and (R_brow_history > browns_threshold):
+        if (L_brow > browns_threshold) and (R_brow > browns_threshold):
             brown_type = "brow_up"
-        elif (L_brow_history <= browns_threshold) and (R_brow_history <= browns_threshold):
+        elif (L_brow <= browns_threshold) and (R_brow <= browns_threshold):
             brown_type = "brow_down"
-        elif (L_brow_history > browns_threshold) and (R_brow_history <= browns_threshold):
+        elif (L_brow > browns_threshold) and (R_brow <= browns_threshold):
             brown_type = "brow_up_left"
-        elif (R_brow_history > browns_threshold) and (L_brow_history <= browns_threshold):
+        elif (R_brow > browns_threshold) and (L_brow <= browns_threshold):
             brown_type = "brow_up_right"
         
         res = [x_position, y_position, z_position, head_tilt, blink_type, brown_type]
@@ -287,7 +287,7 @@ def get_factor():
         else:
             emote = None
 
-    print(res, L_brow_history)
+    print(res, L_brow)
     res.append(emote)
     emote=None    
     return res
