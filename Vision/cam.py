@@ -189,7 +189,6 @@ def head_factor():
         R_eye_ratio=round(blendshape[10].score,3)
         
         #smile
-        print(blendshape[44])
         smile=round((blendshape[44].score+blendshape[45].score)/2,3)>smile_threshold
         
         #eyebrow detection
@@ -259,7 +258,7 @@ def hand_factor():
 
     if result.gestures and len(result.gestures) > 0 and len(result.gestures[0]) > 0:
         last_hand_gesture = result.gestures[0][0].category_name
-        print(f"Hand gesture detected: {last_hand_gesture}")
+        print(f"[Cam] Hand gesture detected: {last_hand_gesture}")
     else:
         last_hand_gesture = None
 
