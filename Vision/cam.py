@@ -256,7 +256,7 @@ def get_factor():
         if all(v < eye_look_threshold for v in eye_look_values.values()):
             print("La personne regarde la caméra")
         else:
-            print("La personne regarde ailleurs")
+            print("ailleurs")
 
         
         blink_type = "none"
@@ -301,7 +301,7 @@ def get_factor():
         else:
             emote = None
 
-    print(res)
+    #print(res)
     res.append(emote)
     emote=None    
     return res
