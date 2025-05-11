@@ -57,13 +57,13 @@ z_position_history = [0]*5
 head_detected = False
 
 #eyes variables
-blink_threshold = 0.4
+blink_threshold = 0.35
 blink_threshold_R = 0.35
 L_eye_ratio = 0
 R_eye_ratio = 0
 L_brow_history = 0
 R_brow_history = 0
-browns_threshold = 0.5
+browns_threshold = 0.3
 
 #body variables
 last_results_pose = None
@@ -287,7 +287,7 @@ def get_factor():
         else:
             emote = None
 
-    print(res)
+    print(res, L_brow_history)
     res.append(emote)
     emote=None    
     return res
