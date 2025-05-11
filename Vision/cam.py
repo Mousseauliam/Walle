@@ -90,7 +90,7 @@ chin_tip_y = 0
 #hand variables
 last_hand_gesture = None
 
-def gen_frames(modes):
+def gen_frames():
     global last_frame, last_results,last_results_pose, last_process
     
     while True:
