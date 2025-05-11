@@ -232,7 +232,7 @@ def body_factor():
         velocity.append(np.sqrt((elbow_R.x - last_elbow_R[9][0])**2 + (elbow_R.y - last_elbow_R[9][1])**2 + (elbow_R.z - last_elbow_R[9][2])**2) / (now - last_process))
         
         
-        h_wrist = chin_tip_y + (abs(nose_tip_y - chin_tip_y) *2)
+        h_wrist = chin_tip_y + (abs(nose_tip_y - chin_tip_y) *3)
         above_head = (last_wrist_L[9][1]< h_wrist) or (last_wrist_R[9][1]< h_wrist)
         
         last_process = time.time()
