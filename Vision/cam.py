@@ -95,12 +95,7 @@ def gen_frames():
         pose_result = pose_landmarker.detect(mp_image)
         last_results_pose = pose_result 
         
-        if face_result.face_blendshapes:
-            print("Expressions faciales détectées :")
-            count=0
-            for blendshape in face_result.face_blendshapes[0]:
-                print(f"{count} : {blendshape.category_name}: {blendshape.score:.2f}")
-                count+=1
+
 
         
         last_frame = frame
@@ -245,7 +240,7 @@ def get_factor():
         L_eye_ratio = round(sum(L_eye_history) / len(L_eye_history),2)
         R_eye_ratio = round(sum(R_eye_history) / len(R_eye_history),2)
         
-        
+        print(L_eye_ratio, R_eye_ratio)
         blink_type = "none"
         if (L_eye_ratio < blink_threshold) and (R_eye_ratio < blink_threshold):
             blink_type = "blink"
@@ -255,7 +250,8 @@ def get_factor():
             blink_type = "wink_right"
         elif (R_eye_ratio < (blink_threshold)) and (L_eye_ratio >= blink_threshold):
             blink_type = "wink_left"
-            
+        
+        
         res = [x_position, y_position, z_position, head_tilt, blink_type]
     else:
         res =[None, None, None, None,None]
