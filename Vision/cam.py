@@ -63,7 +63,7 @@ L_eye_ratio = 0
 R_eye_ratio = 0
 L_brow = 0
 R_brow = 0
-browns_threshold = 0.3
+browns_threshold = 0.5
 
 #body variables
 last_results_pose = None
