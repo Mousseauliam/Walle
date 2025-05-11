@@ -1,9 +1,10 @@
 import time
 from Vision.cam import get_factor
 import random
-
+global active
 
 def run(robot,server):
+    global active
     deadzone = 0.09
     y_step = 0.01
     tilt_factor = 1
