@@ -4,7 +4,7 @@ from Vision.cam import get_head_factor
 active = False
 
 deadzone = 0.09
-y_step = 0.03
+y_step = 0.01
 tilt_factor = 1
 
 global last_blink
@@ -68,7 +68,7 @@ def run(robot,server):
         if head_factor[5] is not None:
             robot.emote(head_factor[5])
             
-        time.sleep(0.1) 
+        time.sleep(0.05) 
 
 def stop():
     global active
