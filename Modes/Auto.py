@@ -76,7 +76,7 @@ def run(robot,server):
             if ((time.time() - last_mvt) > next_random):
                 print('maintenant')
                 robot.neckAngle(round(max(0, min(robot.get_coef('neck_angle') + random.uniform(-0.1, 0.1), 0.7)),2))
-                print(robot.get_coef('neck_LR') + random.uniform(-0.2, 0.2))
+                print(max(0,min(robot.get_coef('neck_LR') + random.uniform(-0.2, 0.2)),1))
                 #robot.neckLR()
                 last_mvt = time.time()
                 print(f"réinitialisation tps {last_mvt}")
