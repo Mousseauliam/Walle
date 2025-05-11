@@ -58,8 +58,11 @@ head_detected = False
 
 #eyes variables
 blink_threshold = 0.4
-L_eye_history = [0]*1
-R_eye_history = [0]*1
+blink_threshold_R = 0.35
+L_eye_history = 0
+R_eye_history = 0
+L_brow_history = 0
+R_brow_history = 0
 
 #body variables
 last_results_pose = None
@@ -95,7 +98,12 @@ def gen_frames():
         pose_result = pose_landmarker.detect(mp_image)
         last_results_pose = pose_result 
         
-
+        if face_result.face_blendshapes:
+            print("Expressions faciales détectées :")
+            count=0
+            for blendshape in face_result.face_blendshapes[0]:
+                print(f"{count} : {blendshape.category_name}: {blendshape.score:.2f}")
+                count+=1
 
         
         last_frame = frame
@@ -170,10 +178,12 @@ def head_factor():
         head_tilt_history.append((angle / (np.pi / 4) + 1) / 2)
         
         #blink detection
-        L_eye_history.pop(0)
-        L_eye_history.append(round(blendshape[9].score,3))
-        R_eye_history.pop(0)
-        R_eye_history.append(round(blendshape[10].score,3))
+        L_eye_history=round(blendshape[9].score,3)
+        R_eye_history=round(blendshape[10].score,3)
+        
+        #eyebrow detection
+        L_brow_history=round(blendshape[7].score,3)
+        R_brow_history=round(blendshape[8].score,3)
 
     else:
         head_detected = False
@@ -242,13 +252,13 @@ def get_factor():
         
         print(L_eye_ratio, R_eye_ratio)
         blink_type = "none"
-        if (L_eye_ratio > blink_threshold) and (R_eye_ratio > blink_threshold):
+        if (L_eye_ratio > blink_threshold) and (R_eye_ratio > blink_threshold_R):
             blink_type = "blink"
-        elif (L_eye_ratio <= blink_threshold) and (R_eye_ratio <= blink_threshold):
+        elif (L_eye_ratio <= blink_threshold) and (R_eye_ratio <= blink_threshold_R):
             blink_type = "open"
-        elif (L_eye_ratio > blink_threshold) and (R_eye_ratio <= blink_threshold):
+        elif (L_eye_ratio > blink_threshold) and (R_eye_ratio <= blink_threshold_R):
             blink_type = "wink_left"
-        elif (R_eye_ratio > (blink_threshold)) and (L_eye_ratio <= blink_threshold):
+        elif (R_eye_ratio > blink_threshold_R) and (L_eye_ratio <= blink_threshold):
             blink_type = "wink_right"
         
         
