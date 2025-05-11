@@ -70,7 +70,7 @@ def run(robot,server):
                 case "brow_up_right":
                     robot.manual("eyebrow_L", 0)
                     robot.manual("eyebrow_R", 1)
-        """
+        
         else :
             
             if ((time.time() - last_mvt) > next_random):
@@ -80,7 +80,7 @@ def run(robot,server):
                 last_mvt = time.time()
                 print(f"réinitialisation tps {last_mvt}")
                 next_random = random.uniform(4, 15)
-        """ 
+        
         if head_factor[6] is not None:
             robot.emote(head_factor[6])
             

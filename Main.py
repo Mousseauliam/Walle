@@ -76,7 +76,7 @@ while power:
     state_btn[1] = lgpio.gpio_read(h, pinBtn_T)
     state_btn[2] = lgpio.gpio_read(h, pinBtn_C)
     state_btn[3] = lgpio.gpio_read(h, pinBtn_S)
-    print(f"[Main] Button states: {state_btn}")
+    #print(f"[Main] Button states: {state_btn}")
     
     if ((time.time() -last_state_change)>0.5):
         if state_btn[0] == 0:
