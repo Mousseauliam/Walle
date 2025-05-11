@@ -1,5 +1,6 @@
 import time
 from Vision.cam import get_factor
+import random
 
 
 def run(robot,server):
@@ -11,6 +12,8 @@ def run(robot,server):
     wink_left = 0
     wink_right = 0
     eye_closed = False
+    last_mvt=time.time()
+    next_random=0
     
     while active:
         head_factor=get_factor()
@@ -67,7 +70,14 @@ def run(robot,server):
                 case "brow_up_right":
                     robot.manual("eyebrow_L", 0)
                     robot.manual("eyebrow_R", 1)
+            last_mvt=time.time()
+            next_random= random.uniform(4, 20)
         else :
+            if (time.time()-last_mvt)>next_random :
+                if random.choice([True, False]):
+                    robot.neckAngle(max(1,min(robot.get_coef['neck_angle']+random.uniform(-0.1,0.1)),0.3))
+                if random.choice([True, False]):
+                    robot.neckLR(robot.get_coef['neck_angle']+random.uniform(-0.2,0.2))
             
         if head_factor[6] is not None:
             robot.emote(head_factor[6])
