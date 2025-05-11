@@ -52,14 +52,14 @@ last_frame = None
 last_results = None
 head_tilt_history=[0]*10
 x_position_history = [0]*5
-y_position_history = [0]*4
+y_position_history = [0]*3
 z_position_history = [0]*5
 head_detected = False
 
 #eyes variables
-blink_threshold = 0.16
-L_eye_history = [0]*5
-R_eye_history = [0]*5
+blink_threshold = 0.5
+L_eye_history = [0]*3
+R_eye_history = [0]*3
 
 #body variables
 last_results_pose = None
@@ -147,13 +147,15 @@ def head_factor():
         nose_tip = face_landmarks[1]
         chin_tip = face_landmarks[152]
         
+        blendshape = last_results.face_blendshapes[0]
+        """
         L_eye_top = face_landmarks[159]
         R_eye_top = face_landmarks[386]
         L_eye_L = face_landmarks[130]
         L_eye_R = face_landmarks[133]
         R_eye_L = face_landmarks[362]
         R_eye_R = face_landmarks[263]
-
+        """
         # position
         x_position_history.pop(0)
         x_position_history.append(nose_tip.x)
@@ -174,9 +176,9 @@ def head_factor():
         
         #blink detection
         L_eye_history.pop(0)
-        L_eye_history.append(abs(L_eye_top.y - L_eye_bottom.y)/abs(L_eye_L.x-L_eye_R.x))
+        L_eye_history.append(round(blendshape[9].score,3))
         R_eye_history.pop(0)
-        R_eye_history.append(abs(R_eye_top.y - R_eye_bottom.y)/abs(R_eye_L.x-R_eye_R.x))
+        R_eye_history.append(round(blendshape[10].score,3))
 
     else:
         head_detected = False
@@ -232,7 +234,7 @@ def hand_factor():
     else:
         last_hand_gesture = None
 
-def get_head_factor():
+def get_factor():
     if head_detected:
         global blink_threshold, L_eye_history, R_eye_history, emote, surprise_threshold, hello_threshold, last_emote, above_head, last_wrist_L, last_wrist_R, velocity, last_hand_gesture
         
@@ -243,20 +245,17 @@ def get_head_factor():
         L_eye_ratio = round(sum(L_eye_history) / len(L_eye_history),2)
         R_eye_ratio = round(sum(R_eye_history) / len(R_eye_history),2)
         
-        both_closed = (L_eye_ratio < blink_threshold) and (R_eye_ratio < blink_threshold)
-        both_open = (L_eye_ratio >= blink_threshold) and (R_eye_ratio >= blink_threshold)
-        left_closed = (L_eye_ratio < blink_threshold) and (R_eye_ratio >= blink_threshold)
-        right_closed = (R_eye_ratio < (blink_threshold+0.02)) and (L_eye_ratio >= blink_threshold)
         
         blink_type = "none"
-        if both_closed:
+        if (L_eye_ratio < blink_threshold) and (R_eye_ratio < blink_threshold):
             blink_type = "blink"
-        elif both_open:
+        elif (L_eye_ratio >= blink_threshold) and (R_eye_ratio >= blink_threshold):
             blink_type = "open"
-        elif left_closed:
+        elif (L_eye_ratio < blink_threshold) and (R_eye_ratio >= blink_threshold):
             blink_type = "wink_right"
-        elif right_closed:
+        elif (R_eye_ratio < (blink_threshold)) and (L_eye_ratio >= blink_threshold):
             blink_type = "wink_left"
+            
         res = [x_position, y_position, z_position, head_tilt, blink_type]
     else:
         res =[None, None, None, None,None]
