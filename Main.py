@@ -122,7 +122,6 @@ while power:
     
 
 lgpio.gpiochip_close(h)
-vision_thread.stop()
 manager.stop_mode()
 robot.sleep()
 robot.close()
