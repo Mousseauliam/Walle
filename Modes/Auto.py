@@ -22,7 +22,7 @@ def run(robot,server):
     wink_right = 0
     cooling_time = 0.5
     eye_closed = False
-
+    
     while active:
         head_factor=get_factor()
         if all(element is not None for element in head_factor[:5]):
@@ -65,6 +65,7 @@ def run(robot,server):
                     robot.manual("lid_L", 0)
                     wink_right = time.time()
         
+        print(head_factor)
         match head_factor[5]:
             case "brow_up":
                 robot.manual("eyebrow_L", 1)
