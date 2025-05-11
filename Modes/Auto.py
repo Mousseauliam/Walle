@@ -65,19 +65,19 @@ def run(robot,server):
                     robot.manual("lid_L", 0)
                     wink_right = time.time()
         
-            match head_factor[5]:
-                case "brow_up":
-                    robot.manual("eyebrow_L", 1)
-                    robot.manual("eyebrow_R", 1)
-                case "brow_down":
-                    robot.manual("eyebrow_L", 0)
-                    robot.manual("eyebrow_R", 0)
-                case "brow_up_left":
-                    robot.manual("eyebrow_L", 1)
-                    robot.manual("eyebrow_R", 0)
-                case "brow_up_right":
-                    robot.manual("eyebrow_L", 0)
-                    robot.manual("eyebrow_R", 1)
+        match head_factor[5]:
+            case "brow_up":
+                robot.manual("eyebrow_L", 1)
+                robot.manual("eyebrow_R", 1)
+            case "brow_down":
+                robot.manual("eyebrow_L", 0)
+                robot.manual("eyebrow_R", 0)
+            case "brow_up_left":
+                robot.manual("eyebrow_L", 1)
+                robot.manual("eyebrow_R", 0)
+            case "brow_up_right":
+                robot.manual("eyebrow_L", 0)
+                robot.manual("eyebrow_R", 1)
 
 
         if head_factor[6] is not None:
