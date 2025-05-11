@@ -5,7 +5,7 @@ from mediapipe.tasks.python import vision
 from mediapipe.tasks import python
 import mediapipe as mp
 import numpy as np
-import threading
+
 HAND_MODEL_PATH = "Vision/Modele/gesture_recognizer.task"
 FACE_MODEL_PATH = "Vision/Modele/face_landmarker.task"
 POSE_MODEL_PATH = "Vision/Modele/pose_landmarker_lite.task"
