@@ -65,7 +65,6 @@ def run(robot,server):
                     robot.manual("lid_L", 0)
                     wink_right = time.time()
         
-        print(head_factor)
         match head_factor[5]:
             case "brow_up":
                 robot.manual("eyebrow_L", 1)

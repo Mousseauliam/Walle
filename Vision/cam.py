@@ -317,7 +317,7 @@ def get_factor():
     else:
         res =[None, None, None, None, None, None, None]
         
-    if emote is not None :
+    if emote is None :
         if last_hand_gesture == "Thumb_Down" :
             emote = "Sadness"
         elif last_hand_gesture == "Thumb_Up" :
@@ -326,8 +326,10 @@ def get_factor():
             emote = "Curious"
         elif last_hand_gesture == "ILoveYou" :
             emote = "Rizz"
-        last_emote = time.time()
+        
 
+    if emote is not None:
+        last_emote = time.time()
     #print(res)
     res.append(emote)
     emote=None    
