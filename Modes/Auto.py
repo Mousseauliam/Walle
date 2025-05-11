@@ -76,7 +76,7 @@ def run(robot,server):
             print('rien')
             if (time.time()-last_mvt)>next_random :
                 print('maintenant')
-                robot.neckAngle(max(1,min(robot.get_coef['neck_angle']+random.uniform(-0.1,0.1)),0.3))
+                robot.neckAngle(max(1,min(robot.coef['neck_angle']+random.uniform(-0.1,0.1)),0.3))
                 robot.neckLR(robot.get_coef['neck_angle']+random.uniform(-0.2,0.2))
             
         if head_factor[6] is not None:
