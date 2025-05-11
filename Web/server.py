@@ -55,7 +55,7 @@ def send_command():
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(gen_frames(selected_mode), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 def get_selected_mode():
     return selected_mode

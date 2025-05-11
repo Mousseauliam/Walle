@@ -55,6 +55,7 @@ x_position_history = [0]*5
 y_position_history = [0]*3
 z_position_history = [0]*5
 head_detected = False
+Modes=""
 
 #head variables
 blink_threshold = 0.35
@@ -89,8 +90,9 @@ chin_tip_y = 0
 #hand variables
 last_hand_gesture = None
 
-def gen_frames():
-    global last_frame, last_results,last_results_pose, last_process
+def gen_frames(modes):
+    global last_frame, last_results,last_results_pose, last_process, Modes
+    Modes=modes
     while True:
         frame = picam2.capture_array()
         frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
@@ -135,12 +137,11 @@ def gen_frames():
         time.sleep(0.03)
 
 def frame_process():
-    from Main import current_mode_name
-    if current_mode_name == "Auto":
+    if Modes == "Auto":
         head_factor()
         body_factor()
         hand_factor()
-    elif current_mode_name == "Follow":
+    elif Modes == "Follow":
         body_factor()
     
     
