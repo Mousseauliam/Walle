@@ -65,8 +65,8 @@ L_brow = 0
 R_brow = 0
 browns_threshold = 0.45
 browns_threshold_L = 0.6
-eye_look_threshold = 0.3
-eye_looks_values =  [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] for _ in range(10)]
+eye_look_threshold = 0.5
+eye_looks_values =  [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] for _ in range(4)]
 
 #body variables
 last_results_pose = None
