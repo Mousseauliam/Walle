@@ -55,8 +55,8 @@ modes = {
 music =["sunday_clothe", "la_vie_en_rose", "takes_a_moments"]
 last_music =0
 
-current_mode_name = None
-
+global current_mode_name 
+current_mode_name =None
 while power:
     
     state_btn[0] = lgpio.gpio_read(h, pinBtn_R)

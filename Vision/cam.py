@@ -5,6 +5,7 @@ from mediapipe.tasks.python import vision
 from mediapipe.tasks import python
 import mediapipe as mp
 import numpy as np
+from Main import current_mode_name
 
 HAND_MODEL_PATH = "Vision/Modele/gesture_recognizer.task"
 FACE_MODEL_PATH = "Vision/Modele/face_landmarker.task"
@@ -56,7 +57,7 @@ y_position_history = [0]*3
 z_position_history = [0]*5
 head_detected = False
 
-#eyes variables
+#head variables
 blink_threshold = 0.35
 blink_threshold_R = 0.35
 L_eye_ratio = 0
@@ -67,6 +68,8 @@ browns_threshold = 0.45
 browns_threshold_L = 0.6
 eye_look_threshold = 0.5
 eye_looks_values =  [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] for _ in range(4)]
+smile=False
+smile_threshold=0.4
 
 #body variables
 last_results_pose = None
@@ -133,14 +136,17 @@ def gen_frames():
         time.sleep(0.03)
 
 def frame_process():
-    head_factor()
-    body_factor()
-    hand_factor()
+    if current_mode_name == "Auto":
+        head_factor()
+        body_factor()
+        hand_factor()
+    elif current_mode_name == "Follow":
+        body_factor()
     
     
 def head_factor():
     global head_detected, last_results, x_position_history, y_position_history, z_position_history, head_tilt_history, L_eye_ratio, R_eye_ratio, nose_tip_y, chin_tip_y
-    global L_brow, R_brow, eye_look_threshold, eye_looks_values
+    global L_brow, R_brow, eye_look_threshold, eye_looks_values, smile, smile_threshold
     if last_results.face_landmarks:
         head_detected = True
         face_landmarks = last_results.face_landmarks[0]
@@ -179,6 +185,9 @@ def head_factor():
         #blink detection
         L_eye_ratio=round(blendshape[9].score,3)
         R_eye_ratio=round(blendshape[10].score,3)
+        
+        #smile
+        smile=round((blendshape[44]+blendshape[45])/2,3)>smile_threshold
         
         #eyebrow detection
         L_brow=round(blendshape[4].score,3)
@@ -252,7 +261,7 @@ def hand_factor():
 def get_factor():
     if head_detected:
         global blink_threshold, emote, surprise_threshold, hello_threshold, last_emote, above_head, last_wrist_L, last_wrist_R, velocity, last_hand_gesture
-        global L_brow, R_brow, browns_threshold, browns_threshold_L, eye_looks_values
+        global L_brow, R_brow, browns_threshold, browns_threshold_L, eye_looks_values, smile
         x_position= round(sum(x_position_history) / len(x_position_history),2)
         y_position= round(sum(y_position_history) / len(y_position_history),2)
         z_position= round(sum(z_position_history) / len(z_position_history),2)
@@ -301,26 +310,25 @@ def get_factor():
             
             if last_hand_gesture == "Open_Palm" and above_head:
                 emote = "Hello"
-                last_emote = time.time()
             elif any(velocity > surprise_threshold for velocity in velocity_moy):
                 emote = "Surprise"
-                last_emote = time.time()
-            elif last_hand_gesture == "Thumb_Down" :
-                emote = "Sadness"
-                last_emote = time.time()
-            elif last_hand_gesture == "Thumb_Up" :
+            elif smile :
                 emote = "Happy"
-                last_emote = time.time()
-            elif last_hand_gesture == "Victory" :
-                emote = "Curious"
-                last_emote = time.time()
-            elif last_hand_gesture == "ILoveYou" :
-                emote = "Rizz"
-                last_emote = time.time()
             else:
                 emote = None
     else:
         res =[None, None, None, None, None, None, None]
+        
+    if emote is not None :
+        if last_hand_gesture == "Thumb_Down" :
+            emote = "Sadness"
+        elif last_hand_gesture == "Thumb_Up" :
+            emote = "Happy"
+        elif last_hand_gesture == "Victory" :
+            emote = "Curious"
+        elif last_hand_gesture == "ILoveYou" :
+            emote = "Rizz"
+        last_emote = time.time()
 
     #print(res)
     res.append(emote)
