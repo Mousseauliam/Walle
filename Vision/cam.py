@@ -186,7 +186,7 @@ def head_factor():
         
         #smile
         print(blendshape[44])
-        #smile=round((blendshape[44]+blendshape[45])/2,3)>smile_threshold
+        smile=round((blendshape[44].score+blendshape[45].score)/2,3)>smile_threshold
         
         #eyebrow detection
         L_brow=round(blendshape[4].score,3)
