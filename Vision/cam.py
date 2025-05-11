@@ -185,7 +185,7 @@ def head_factor():
         
         #eye look detection
         center = (L_eye_bottom.x + R_eye_bottom.x) / 2
-        eye_looking = abs(center - nose_tip.x) > eye_look_threshold
+        eye_looking = abs(center - nose_tip.x) < eye_look_threshold
 
     else:
         head_detected = False
