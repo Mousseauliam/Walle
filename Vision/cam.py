@@ -287,7 +287,7 @@ def get_factor():
         else:
             emote = None
 
-    print(res, L_brow)
+    print(res)
     res.append(emote)
     emote=None    
     return res
