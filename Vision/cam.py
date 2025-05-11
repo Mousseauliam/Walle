@@ -57,9 +57,9 @@ z_position_history = [0]*5
 head_detected = False
 
 #eyes variables
-blink_threshold = 0.5
-L_eye_history = [0]*3
-R_eye_history = [0]*3
+blink_threshold = 0.4
+L_eye_history = [0]*1
+R_eye_history = [0]*1
 
 #body variables
 last_results_pose = None
@@ -237,19 +237,19 @@ def get_factor():
         y_position= round(sum(y_position_history) / len(y_position_history),2)
         z_position= round(sum(z_position_history) / len(z_position_history),2)
         head_tilt = round(sum(head_tilt_history) / len(head_tilt_history),2)
-        L_eye_ratio = round(sum(L_eye_history) / len(L_eye_history),2)
-        R_eye_ratio = round(sum(R_eye_history) / len(R_eye_history),2)
+        L_eye_ratio = L_eye_history[0]
+        R_eye_ratio = R_eye_history[0]
         
         print(L_eye_ratio, R_eye_ratio)
         blink_type = "none"
-        if (L_eye_ratio < blink_threshold) and (R_eye_ratio < blink_threshold):
+        if (L_eye_ratio > blink_threshold) and (R_eye_ratio > blink_threshold):
             blink_type = "blink"
-        elif (L_eye_ratio >= blink_threshold) and (R_eye_ratio >= blink_threshold):
+        elif (L_eye_ratio <= blink_threshold) and (R_eye_ratio <= blink_threshold):
             blink_type = "open"
-        elif (L_eye_ratio < blink_threshold) and (R_eye_ratio >= blink_threshold):
-            blink_type = "wink_right"
-        elif (R_eye_ratio < (blink_threshold)) and (L_eye_ratio >= blink_threshold):
+        elif (L_eye_ratio > blink_threshold) and (R_eye_ratio <= blink_threshold):
             blink_type = "wink_left"
+        elif (R_eye_ratio > (blink_threshold)) and (L_eye_ratio <= blink_threshold):
+            blink_type = "wink_right"
         
         
         res = [x_position, y_position, z_position, head_tilt, blink_type]
