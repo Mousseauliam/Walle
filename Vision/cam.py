@@ -186,7 +186,7 @@ def head_factor():
         
         #eye look detection
         eye_looks_values.pop(0)
-        temp = [0]*8
+        temp = []
         for b in blendshape:
             if b.category_name in [
                 "eyeLookInLeft", "eyeLookOutLeft", "eyeLookInRight", "eyeLookOutRight",
