@@ -73,12 +73,10 @@ def run(robot,server):
                     robot.manual("eyebrow_R", 1)
             last_mvt=time.time()
             next_random= random.uniform(4, 15)
-        else:
-            print('rien')
-            if (time.time() - last_mvt) > next_random:
+        elif ((time.time() - last_mvt) > next_random):
                 print('maintenant')
-                robot.neckAngle(max(0.3, min(robot.get_coef('neck_angle') + random.uniform(-0.1, 0.1), 1)))
-                robot.neckLR(robot.get_coef('neck_LR') + random.uniform(-0.2, 0.2))
+                robot.neckAngle(max(0, min(robot.get_coef('neck_angle') + random.uniform(-0.1, 0.1), 0.7)))
+                robot.neckLR(max(0,min(robot.get_coef('neck_LR') + random.uniform(-0.2, 0.2)),1))
                 last_mvt = time.time()
                 next_random = random.uniform(4, 15)
             
