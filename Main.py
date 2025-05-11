@@ -4,7 +4,7 @@ from Services.Mvt_walle import Walle
 from Services.Modes_manager import ModeManager
 from Web.log_redirector import init_socketio, redirect_stdout
 import lgpio
-from Vision.cam import gen_frames
+from Vision.cam import detection
 
 import threading
 import time
@@ -61,12 +61,7 @@ last_music =0
 current_mode_name = "Auto"
 manager.launch_mode(modes[current_mode_name])
 
-def vision_loop():
-    while power:
-        gen_frames()
-        time.sleep(0.03) 
-
-vision_thread = threading.Thread(target=vision_loop)
+vision_thread = threading.Thread(target=detection)
 vision_thread.daemon = True
 vision_thread.start()
 
@@ -127,6 +122,7 @@ while power:
     
 
 lgpio.gpiochip_close(h)
+vision_thread.stop()
 manager.stop_mode()
 robot.sleep()
 robot.close()
