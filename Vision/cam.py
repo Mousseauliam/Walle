@@ -1,13 +1,43 @@
 import time
 import cv2
 from picamera2 import Picamera2
+from mediapipe.tasks.python import vision
+from mediapipe.tasks import python
 import mediapipe as mp
 import numpy as np
 
-mp_face_mesh = mp.solutions.face_mesh
-mp_pose = mp.solutions.pose
-face_mesh = mp_face_mesh.FaceMesh(static_image_mode=False, max_num_faces=1, refine_landmarks=True)
-pose = mp_pose.Pose(static_image_mode=False)
+HAND_MODEL_PATH = "Vision/Modele/gesture_recognizer.task"
+FACE_MODEL_PATH = "Vision/Modele/face_landmarker.task"
+POSE_MODEL_PATH = "Vision/Modele/pose_landmarker_lite.task"
+
+BaseOptions = python.BaseOptions
+VisionRunningMode = vision.RunningMode
+
+
+# Hand Gesture Recognizer
+hand_options = vision.GestureRecognizerOptions(
+    base_options=BaseOptions(model_asset_path=HAND_MODEL_PATH),
+    running_mode=VisionRunningMode.IMAGE,
+)
+hand_recognizer = vision.GestureRecognizer.create_from_options(hand_options)
+
+# Face Landmarker
+face_options = vision.FaceLandmarkerOptions(
+    base_options=BaseOptions(model_asset_path=FACE_MODEL_PATH),
+    running_mode=VisionRunningMode.IMAGE,
+    num_faces=1,
+    output_face_blendshapes=True
+    
+)
+face_landmarker = vision.FaceLandmarker.create_from_options(face_options)
+
+# Pose Landmarker
+pose_options = vision.PoseLandmarkerOptions(
+    base_options=BaseOptions(model_asset_path=POSE_MODEL_PATH),
+    running_mode=VisionRunningMode.IMAGE,
+    num_poses=1
+)
+pose_landmarker = vision.PoseLandmarker.create_from_options(pose_options)
 
 # Camera init
 screen_width, screen_height = 1240, 960
@@ -20,16 +50,23 @@ picam2.start()
 #globale variables
 last_frame = None
 last_results = None
-head_tilt_history=[0]*10
+head_tilt_history=[0]*2
 x_position_history = [0]*5
-y_position_history = [0]*4
+y_position_history = [0]*3
 z_position_history = [0]*5
 head_detected = False
 
 #eyes variables
-blink_threshold = 0.13
-L_eye_history = [0]*5
-R_eye_history = [0]*5
+blink_threshold = 0.35
+blink_threshold_R = 0.35
+L_eye_ratio = 0
+R_eye_ratio = 0
+L_brow = 0
+R_brow = 0
+browns_threshold = 0.45
+browns_threshold_L = 0.6
+eye_look_threshold = 0.5
+eye_looks_values =  [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] for _ in range(4)]
 
 #body variables
 last_results_pose = None
@@ -41,44 +78,53 @@ last_process = time.time()
 velocity = [0]*12
 emote = None
 last_emote = 0
-surprise_threshold = 3
-hello_threshold = 1.1
+surprise_threshold = 5
+hello_threshold = 1
 above_head = False
+nose_tip_y = 0
+chin_tip_y = 0
+
+#hand variables
+last_hand_gesture = None
 
 def gen_frames():
     global last_frame, last_results,last_results_pose, last_process
     while True:
         frame = picam2.capture_array()
         frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         
-        results = face_mesh.process(frame)
-        results_pose = pose.process(frame)
+        mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
+        
+        face_result = face_landmarker.detect(mp_image)
+        last_results = face_result 
+        
+        pose_result = pose_landmarker.detect(mp_image)
+        last_results_pose = pose_result 
+        
+
         
         last_frame = frame
-        last_results = results
-        last_results_pose = results_pose
         h, w, _ = frame.shape
         
-        if results.multi_face_landmarks:
-            for face_landmarks in results.multi_face_landmarks:
-                for landmark in face_landmarks.landmark:
+        if face_result.face_landmarks:
+            for face_landmarks in face_result.face_landmarks:
+                for landmark in face_landmarks:
                     x, y = int(landmark.x * w), int(landmark.y * h)
                     cv2.circle(frame, (x, y), 1, (0, 255, 0), -1)
 
         
-        if results_pose.pose_landmarks:
-            key_landmarks = [
-                mp_pose.PoseLandmark.LEFT_WRIST,
-                mp_pose.PoseLandmark.RIGHT_WRIST,
-                mp_pose.PoseLandmark.LEFT_ELBOW,
-                mp_pose.PoseLandmark.RIGHT_ELBOW
-            ]
-            for landmark_id in key_landmarks:
-                landmark = results_pose.pose_landmarks.landmark[landmark_id.value]
-                x, y = int(landmark.x * w), int(landmark.y * h)
-                cv2.circle(frame, (x, y), 4, (0, 0, 255), -1)
-                
+        if pose_result.pose_landmarks:
+            key_landmarks = [15, 16, 13, 14]
+            # pose_result.pose_landmarks est une liste de listes (une par personne détectée)
+            for person_landmarks in pose_result.pose_landmarks:
+                for landmark_id in key_landmarks:
+                    landmark = person_landmarks[landmark_id]
+                    x, y = int(landmark.x * w), int(landmark.y * h)
+                    cv2.circle(frame, (x, y), 4, (0, 0, 255), -1)
+        
         ret, buffer = cv2.imencode('.jpg', frame)
+        
         if not ret:
             continue
         yield (b'--frame\r\n'
@@ -86,24 +132,32 @@ def gen_frames():
         frame_process()
         time.sleep(0.03)
 
-
 def frame_process():
-    global last_frame, last_results, head_detected, blink, L_eye_closed, R_eye_closed, head_tilt_history, x_position_history, y_position_history, last_results_pose, last_wrist_L, last_wrist_R, last_elbow_L, last_elbow_R, last_process, velocity, last_emote
-    global above_head
-    if last_results.multi_face_landmarks:
+    head_factor()
+    body_factor()
+    hand_factor()
+    
+    
+def head_factor():
+    global head_detected, last_results, x_position_history, y_position_history, z_position_history, head_tilt_history, L_eye_ratio, R_eye_ratio, nose_tip_y, chin_tip_y
+    global L_brow, R_brow, eye_look_threshold, eye_looks_values
+    if last_results.face_landmarks:
         head_detected = True
-        face_landmarks = last_results.multi_face_landmarks[0]
-        L_eye_bottom = face_landmarks.landmark[145] 
-        R_eye_bottom = face_landmarks.landmark[374] 
-        nose_tip = face_landmarks.landmark[1]
+        face_landmarks = last_results.face_landmarks[0]
+        L_eye_bottom = face_landmarks[145]
+        R_eye_bottom = face_landmarks[374]
+        nose_tip = face_landmarks[1]
+        chin_tip = face_landmarks[152]
         
-        L_eye_top = face_landmarks.landmark[159]  # Haut de l'œil gauche
-        R_eye_top = face_landmarks.landmark[386]  # Haut de l'œil droit
-        L_eye_L = face_landmarks.landmark[130]  # Coin gauche œil gauche
-        L_eye_R = face_landmarks.landmark[133]  # Coin droit œil gauche
-        R_eye_L = face_landmarks.landmark[362]  # Coin gauche œil droit
-        R_eye_R = face_landmarks.landmark[263]  # Coin droit œil droit  
-
+        blendshape = last_results.face_blendshapes[0]
+        """
+        L_eye_top = face_landmarks[159]
+        R_eye_top = face_landmarks[386]
+        L_eye_L = face_landmarks[130]
+        L_eye_R = face_landmarks[133]
+        R_eye_L = face_landmarks[362]
+        R_eye_R = face_landmarks[263]
+        """
         # position
         x_position_history.pop(0)
         x_position_history.append(nose_tip.x)
@@ -111,6 +165,8 @@ def frame_process():
         y_position_history.append(nose_tip.y)
         z_position_history.pop(0)
         z_position_history.append(nose_tip.z)
+        nose_tip_y = nose_tip.y
+        chin_tip_y = chin_tip.y
         
 
         # head angle
@@ -121,21 +177,37 @@ def frame_process():
         head_tilt_history.append((angle / (np.pi / 4) + 1) / 2)
         
         #blink detection
-        L_eye_history.pop(0)
-        L_eye_history.append(abs(L_eye_top.y - L_eye_bottom.y)/abs(L_eye_L.x-L_eye_R.x))
-        R_eye_history.pop(0)
-        R_eye_history.append(abs(R_eye_top.y - R_eye_bottom.y)/abs(R_eye_L.x-R_eye_R.x))
-            
+        L_eye_ratio=round(blendshape[9].score,3)
+        R_eye_ratio=round(blendshape[10].score,3)
+        
+        #eyebrow detection
+        L_brow=round(blendshape[4].score,3)
+        R_brow=round(blendshape[5].score,3)
+        
+        #eye look detection
+        eye_looks_values.pop(0)
+        temp = []
+        for b in blendshape:
+            if b.category_name in [
+                "eyeLookInLeft", "eyeLookOutLeft", "eyeLookInRight", "eyeLookOutRight",
+                "eyeLookUpLeft", "eyeLookDownLeft", "eyeLookUpRight", "eyeLookDownRight"
+            ]:
+                temp.append(round(b.score,3))
+        eye_looks_values.append(temp)
+
     else:
         head_detected = False
-        return None
-    
+        
+def body_factor():
+    global last_results,last_results_pose, last_wrist_L, last_wrist_R, last_elbow_L, last_elbow_R, last_process, velocity, above_head, nose_tip_y
     if last_results_pose.pose_landmarks:
-        pose_landmarks = last_results_pose.pose_landmarks
-        wrist_L = pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_WRIST.value]
-        wrist_R = pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_WRIST.value]
-        elbow_L = pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_ELBOW.value]
-        elbow_R = pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_ELBOW.value]
+        # On prend la première personne détectée
+        pose_landmarks = last_results_pose.pose_landmarks[0]
+        wrist_L = pose_landmarks[15]  # 15 = LEFT_WRIST
+        wrist_R = pose_landmarks[16]  # 16 = RIGHT_WRIST
+        elbow_L = pose_landmarks[13]  # 13 = LEFT_ELBOW
+        elbow_R = pose_landmarks[14]  # 14 = RIGHT_ELBOW
+        
         
         now= time.time()
         
@@ -145,9 +217,9 @@ def frame_process():
         velocity.append(np.sqrt((elbow_L.x - last_elbow_L[9][0])**2 + (elbow_L.y - last_elbow_L[9][1])**2 + (elbow_L.z - last_elbow_L[9][2])**2) / (now - last_process))
         velocity.append(np.sqrt((elbow_R.x - last_elbow_R[9][0])**2 + (elbow_R.y - last_elbow_R[9][1])**2 + (elbow_R.z - last_elbow_R[9][2])**2) / (now - last_process))
         
-        h_wrist = nose_tip.y + 0.15
-        h_elbow = nose_tip.y +0.35
-        above_head = ((last_elbow_L[9][1]< h_elbow) and (last_wrist_L[9][1]< h_wrist)) or ((last_elbow_R[9][1]< h_elbow) and (last_wrist_R[9][1]< h_wrist))
+        
+        h_wrist = chin_tip_y + (abs(nose_tip_y - chin_tip_y) *2)
+        above_head = (last_wrist_L[9][1]< h_wrist) or (last_wrist_R[9][1]< h_wrist)
         
         last_process = time.time()
         
@@ -161,63 +233,154 @@ def frame_process():
         last_elbow_R.pop(0)
         last_elbow_R.append([elbow_R.x, elbow_R.y, elbow_R.z])
 
-def get_head_factor():
+def hand_factor():
+    global last_frame, hand_recognizer, last_hand_gesture
+    if last_frame is None:
+        last_hand_gesture = None
+        return
+
+    rgb_frame = cv2.cvtColor(last_frame, cv2.COLOR_BGR2RGB)
+    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
+    result = hand_recognizer.recognize(mp_image)
+
+    if result.gestures and len(result.gestures) > 0 and len(result.gestures[0]) > 0:
+        last_hand_gesture = result.gestures[0][0].category_name
+        print(f"Hand gesture detected: {last_hand_gesture}")
+    else:
+        last_hand_gesture = None
+
+def get_factor():
     if head_detected:
-        global blink_threshold, L_eye_history, R_eye_history, emote, surprise_threshold, hello_threshold, last_emote, above_head, last_wrist_L, last_wrist_R, velocity
-        
+        global blink_threshold, emote, surprise_threshold, hello_threshold, last_emote, above_head, last_wrist_L, last_wrist_R, velocity, last_hand_gesture
+        global L_brow, R_brow, browns_threshold, browns_threshold_L, eye_looks_values
         x_position= round(sum(x_position_history) / len(x_position_history),2)
         y_position= round(sum(y_position_history) / len(y_position_history),2)
         z_position= round(sum(z_position_history) / len(z_position_history),2)
         head_tilt = round(sum(head_tilt_history) / len(head_tilt_history),2)
-        L_eye_ratio = round(sum(L_eye_history) / len(L_eye_history),2)
-        R_eye_ratio = round(sum(R_eye_history) / len(R_eye_history),2)
         
-        both_closed = (L_eye_ratio < blink_threshold) and (R_eye_ratio < blink_threshold)
-        both_open = (L_eye_ratio >= blink_threshold) and (R_eye_ratio >= blink_threshold)
-        left_closed = (L_eye_ratio < blink_threshold) and (R_eye_ratio >= blink_threshold)
-        right_closed = (R_eye_ratio < blink_threshold) and (L_eye_ratio >= blink_threshold)
+        eye_values=[0]*8
+        for i in range(8):
+            temp=0
+            for j in range(len(eye_looks_values)):
+                temp += eye_looks_values[j][i]
+            eye_values[i] = round(temp / len(eye_looks_values),3)
         
-        blink_type = "none"
-        if both_closed:
-            blink_type = "blink"
-        elif both_open:
-            blink_type = "open"
-        elif left_closed:
-            blink_type = "wink_right"
-        elif right_closed:
-            blink_type = "wink_left"
-                
-        if (time.time() - last_emote) > 1:
+        blink_type = "open"
+        brown_type = "brow_down"
+        if all(values < eye_look_threshold for values in eye_values):
+            
+            #blink detection
+            if (L_eye_ratio > blink_threshold) and (R_eye_ratio > blink_threshold_R):
+                blink_type = "blink"
+            elif (L_eye_ratio <= blink_threshold) and (R_eye_ratio <= blink_threshold_R):
+                blink_type = "open"
+            elif (L_eye_ratio > blink_threshold) and (R_eye_ratio <= blink_threshold_R):
+                blink_type = "wink_left"
+            elif (R_eye_ratio > blink_threshold_R) and (L_eye_ratio <= blink_threshold):
+                blink_type = "wink_right"
+            print("eyeBlinkLeft:", L_eye_ratio, "eyeBlinkRight:", R_eye_ratio)
+            
+            #eyebrow detection
+            if (L_brow > browns_threshold_L) and (R_brow > browns_threshold):
+                brown_type = "brow_up"
+            elif (L_brow <= browns_threshold_L) and (R_brow <= browns_threshold):
+                brown_type = "brow_down"
+            elif (L_brow > browns_threshold_L) and (R_brow <= browns_threshold):
+                brown_type = "brow_up_left"
+            elif (R_brow > browns_threshold) and (L_brow <= browns_threshold_L):
+                brown_type = "brow_up_right"
+        
+        res = [x_position, y_position, z_position, head_tilt, blink_type, brown_type]
+        
+        if (time.time() - last_emote) > 5:
             velocity_moy = []
             for i in range(2):
                 velocity_moy.append((velocity[i] + velocity[i+2] + velocity[i+4] + velocity[i+6] + velocity[i+8] + velocity[i+10] )/6)
             
-            print(velocity_moy, is_waving([w[0] for w in last_wrist_L]) , is_waving([w[0] for w in last_wrist_R]), above_head)
+            #print(velocity_moy, is_waving([w[0] for w in last_wrist_L]) , is_waving([w[0] for w in last_wrist_R]), above_head)
             
-            if (is_waving([w[0] for w in last_wrist_L]) or is_waving([w[0] for w in last_wrist_R])) and any(velocity > hello_threshold for velocity in velocity_moy) and any(velocity < (hello_threshold+1) for velocity in velocity_moy) and above_head:
+            if last_hand_gesture == "Open_Palm" and above_head:
                 emote = "Hello"
-                print("Hello")
                 last_emote = time.time()
             elif any(velocity > surprise_threshold for velocity in velocity_moy):
                 emote = "Surprise"
-                print("Surprise")
+                last_emote = time.time()
+            elif last_hand_gesture == "Thumb_Down" :
+                emote = "Sadness"
+                last_emote = time.time()
+            elif last_hand_gesture == "Thumb_Up" :
+                emote = "Happy"
+                last_emote = time.time()
+            elif last_hand_gesture == "Victory" :
+                emote = "Curious"
+                last_emote = time.time()
+            elif last_hand_gesture == "ILoveYou" :
+                emote = "Rizz"
                 last_emote = time.time()
             else:
                 emote = None
-
-        res = [x_position, y_position, z_position, head_tilt, blink_type, emote]
-        
-        emote=None
-        
-        return res
     else:
-        return None
-    
+        res =[None, None, None, None, None, None, None]
 
-def is_waving(history, threshold=0.02, min_crossings=2):
-    crossings = 0
-    for i in range(2, len(history)):
-        if (history[i-2] - history[i-1]) * (history[i-1] - history[i]) < 0:
-            if abs(history[i-1] - history[i]) > threshold:
-                crossings += 1
-    return crossings >= min_crossings
+    #print(res)
+    res.append(emote)
+    emote=None    
+    return res
+
+
+
+
+    """May 11 14:46:33 Walle start.sh[3040]: Expressions faciales détectées :
+May 11 14:46:33 Walle start.sh[3040]: 0 : _neutral: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 1 : browDownLeft: 0.02
+May 11 14:46:33 Walle start.sh[3040]: 2 : browDownRight: 0.08
+May 11 14:46:33 Walle start.sh[3040]: 3 : browInnerUp: 0.01
+May 11 14:46:33 Walle start.sh[3040]: 4 : browOuterUpLeft: 0.17
+May 11 14:46:33 Walle start.sh[3040]: 5 : browOuterUpRight: 0.01
+May 11 14:46:33 Walle start.sh[3040]: 6 : cheekPuff: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 7 : cheekSquintLeft: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 8 : cheekSquintRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 9 : eyeBlinkLeft: 0.38
+May 11 14:46:33 Walle start.sh[3040]: 10 : eyeBlinkRight: 0.39
+May 11 14:46:33 Walle start.sh[3040]: 11 : eyeLookDownLeft: 0.33
+May 11 14:46:33 Walle start.sh[3040]: 12 : eyeLookDownRight: 0.34
+May 11 14:46:33 Walle start.sh[3040]: 13 : eyeLookInLeft: 0.03
+May 11 14:46:33 Walle start.sh[3040]: 14 : eyeLookInRight: 0.16
+May 11 14:46:33 Walle start.sh[3040]: 15 : eyeLookOutLeft: 0.19
+May 11 14:46:33 Walle start.sh[3040]: 16 : eyeLookOutRight: 0.05
+May 11 14:46:33 Walle start.sh[3040]: 17 : eyeLookUpLeft: 0.04
+May 11 14:46:33 Walle start.sh[3040]: 18 : eyeLookUpRight: 0.04
+May 11 14:46:33 Walle start.sh[3040]: 19 : eyeSquintLeft: 0.48
+May 11 14:46:33 Walle start.sh[3040]: 20 : eyeSquintRight: 0.65
+May 11 14:46:33 Walle start.sh[3040]: 21 : eyeWideLeft: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 22 : eyeWideRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 23 : jawForward: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 24 : jawLeft: 0.01
+May 11 14:46:33 Walle start.sh[3040]: 25 : jawOpen: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 26 : jawRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 27 : mouthClose: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 28 : mouthDimpleLeft: 0.02
+May 11 14:46:33 Walle start.sh[3040]: 29 : mouthDimpleRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 30 : mouthFrownLeft: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 31 : mouthFrownRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 32 : mouthFunnel: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 33 : mouthLeft: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 34 : mouthLowerDownLeft: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 35 : mouthLowerDownRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 36 : mouthPressLeft: 0.03
+May 11 14:46:33 Walle start.sh[3040]: 37 : mouthPressRight: 0.03
+May 11 14:46:33 Walle start.sh[3040]: 38 : mouthPucker: 0.07
+May 11 14:46:33 Walle start.sh[3040]: 39 : mouthRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 40 : mouthRollLower: 0.07
+May 11 14:46:33 Walle start.sh[3040]: 41 : mouthRollUpper: 0.08
+May 11 14:46:33 Walle start.sh[3040]: 42 : mouthShrugLower: 0.08
+May 11 14:46:33 Walle start.sh[3040]: 43 : mouthShrugUpper: 0.01
+May 11 14:46:33 Walle start.sh[3040]: 44 : mouthSmileLeft: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 45 : mouthSmileRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 46 : mouthStretchLeft: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 47 : mouthStretchRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 48 : mouthUpperUpLeft: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 49 : mouthUpperUpRight: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 50 : noseSneerLeft: 0.00
+May 11 14:46:33 Walle start.sh[3040]: 51 : noseSneerRight: 0.00
+    """

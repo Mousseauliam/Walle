@@ -87,8 +87,8 @@ class Walle:
         UD_R_temp = base_position + (0.5-angle)
 
         # sadness effect
-        self.coef["UD_L"] = max(0, min(1,((1 - self.coef["sadness"]) * UD_L_temp)))
-        self.coef["UD_R"] = max(0, min(1,((1 - self.coef["sadness"]) * UD_R_temp)))
+        self.coef["UD_L"] = round(max(0, min(1,((1 - self.coef["sadness"]) * UD_L_temp))), 2)
+        self.coef["UD_R"] = round(max(0, min(1,((1 - self.coef["sadness"]) * UD_R_temp))), 2)
 
         self.update(["UD_L", "UD_R"])
         

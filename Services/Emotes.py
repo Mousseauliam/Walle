@@ -18,14 +18,21 @@ def auto_adjust(walle):
 
 def happy(walle):
     walle.sadness(0)
-    walle.eyebrow(1)
     walle.blink()
+    walle.sound("waow2")
+    time.sleep(2)
+    walle.sadness(0.3)
     #Mettre un son joyeux
 
 def sadness(walle):
     walle.sadness(1)
-    walle.eyebrow(1)
     walle.lid(0.4)
+    walle.manual("neck_L",0.2)
+    walle.manual("neck_U",0)
+    time.sleep(2.5)
+    walle.neckAngle(walle.coef["neck_angle"])
+    walle.sadness(0)
+    walle.lid(0)
     #walle.neck_level(0)
     #Mettre un son triste
 
@@ -104,17 +111,18 @@ def dance(walle):
     walle.neckLR(0.5)
     
 def hello(walle):
-    walle.headAngle(0.8)
     walle.sound("walle2")
-    time.sleep(0.2)
+    time.sleep(0.8)
+    walle.headAngle(0.8)
+    time.sleep(0.5)
     walle.manual("hand_L", 0.3)
-    time.sleep(0.3)
+    time.sleep(0.5)
     walle.manual("hand_L", 0.6)
-    time.sleep(0.3)
+    time.sleep(0.5)
     walle.manual("hand_L", 0.3)
-    time.sleep(0.3)
+    time.sleep(0.5)
     walle.manual("hand_L", 0.5)
-    time.sleep(0.3)
+    time.sleep(0.5)
     walle.headAngle(0.5)
 
 EMOTES = {
