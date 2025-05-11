@@ -57,8 +57,8 @@ z_position_history = [0]*5
 head_detected = False
 
 #eyes variables
-blink_threshold = 0.35
-blink_threshold_R = 0.35
+blink_threshold = 0.3
+blink_threshold_R = 0.3
 L_eye_ratio = 0
 R_eye_ratio = 0
 L_brow = 0
@@ -253,8 +253,8 @@ def get_factor():
         z_position= round(sum(z_position_history) / len(z_position_history),2)
         head_tilt = round(sum(head_tilt_history) / len(head_tilt_history),2)
         
-        blink_type = "none"
-        brown_type = "none"
+        blink_type = "open"
+        brown_type = "brow_down"
         if all(v < eye_look_threshold for v in eye_look_values.values()):
             
             #blink detection
@@ -266,6 +266,7 @@ def get_factor():
                 blink_type = "wink_left"
             elif (R_eye_ratio > blink_threshold_R) and (L_eye_ratio <= blink_threshold):
                 blink_type = "wink_right"
+            print("eyeBlinkLeft:", L_eye_ratio, "eyeBlinkRight:", R_eye_ratio)
             
             #eyebrow detection
             if (L_brow > browns_threshold) and (R_brow > browns_threshold):
