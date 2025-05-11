@@ -71,9 +71,9 @@ def run(robot,server):
                 case "brow_up_right":
                     robot.manual("eyebrow_L", 0)
                     robot.manual("eyebrow_R", 1)
-            last_mvt=time.time()
-            next_random= random.uniform(4, 15)
-        elif ((time.time() - last_mvt) > next_random):
+        
+        else :
+            if ((time.time() - last_mvt) > next_random):
                 print('maintenant')
                 robot.neckAngle(max(0, min(robot.get_coef('neck_angle') + random.uniform(-0.1, 0.1), 0.7)))
                 robot.neckLR(max(0,min(robot.get_coef('neck_LR') + random.uniform(-0.2, 0.2)),1))
