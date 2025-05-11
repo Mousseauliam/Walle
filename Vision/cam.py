@@ -64,8 +64,8 @@ R_eye_ratio = 0
 L_brow = 0
 R_brow = 0
 browns_threshold = 0.5
-eye_look_threshold = 0.4
-eye_look_values = {}
+eye_look_threshold = 0.1
+eye_looking = False
 
 #body variables
 last_results_pose = None
@@ -139,7 +139,7 @@ def frame_process():
     
 def head_factor():
     global head_detected, last_results, x_position_history, y_position_history, z_position_history, head_tilt_history, L_eye_ratio, R_eye_ratio, nose_tip_y, chin_tip_y
-    global L_brow, R_brow, eye_look_values
+    global L_brow, R_brow, eye_look_threshold, eye_looking
     if last_results.face_landmarks:
         head_detected = True
         face_landmarks = last_results.face_landmarks[0]
@@ -184,11 +184,8 @@ def head_factor():
         R_brow=round(blendshape[5].score,3)
         
         #eye look detection
-        for b in blendshape:
-            if b.category_name in [
-                "eyeLookInLeft", "eyeLookOutLeft", "eyeLookInRight", "eyeLookOutRight",
-                "eyeLookUpLeft", "eyeLookDownLeft", "eyeLookUpRight", "eyeLookDownRight"]:
-                eye_look_values[b.category_name] = b.score
+        center = (L_eye_bottom.x + R_eye_bottom.x) / 2
+        eye_looking = abs(center - nose_tip.x) > eye_look_threshold
 
     else:
         head_detected = False
@@ -247,7 +244,7 @@ def hand_factor():
 def get_factor():
     if head_detected:
         global blink_threshold, emote, surprise_threshold, hello_threshold, last_emote, above_head, last_wrist_L, last_wrist_R, velocity, last_hand_gesture
-        global L_brow, R_brow, browns_threshold
+        global L_brow, R_brow, browns_threshold, eye_looking
         x_position= round(sum(x_position_history) / len(x_position_history),2)
         y_position= round(sum(y_position_history) / len(y_position_history),2)
         z_position= round(sum(z_position_history) / len(z_position_history),2)
@@ -255,7 +252,7 @@ def get_factor():
         
         blink_type = "open"
         brown_type = "brow_down"
-        if all(v < eye_look_threshold for v in eye_look_values.values()):
+        if eye_looking:
             
             #blink detection
             if (L_eye_ratio > blink_threshold) and (R_eye_ratio > blink_threshold_R):
