@@ -17,7 +17,6 @@ def run(robot,server):
     
     while active:
         head_factor=get_factor()
-        print(head_factor)
         if all(element is not None for element in head_factor[:5]):
             neck_angle = robot.get_coef("neck_angle")
             if (head_factor[1] < (0.5 - deadzone)) and (neck_angle>y_step) :
@@ -75,8 +74,8 @@ def run(robot,server):
         else :
             if ((time.time() - last_mvt) > next_random):
                 print('maintenant')
-                robot.neckAngle(round(max(0, min(robot.get_coef('neck_angle') + random.uniform(-0.1, 0.1), 0.7))),2)
-                robot.neckLR(round(max(0,min(robot.get_coef('neck_LR') + random.uniform(-0.2, 0.2)), 1)),2)
+                robot.neckAngle(round(max(0, min(robot.get_coef('neck_angle') + random.uniform(-0.1, 0.1), 0.7)),2))
+                robot.neckLR(round(max(0,min(robot.get_coef('neck_LR') + random.uniform(-0.2, 0.2)), 1),2))
                 last_mvt = time.time()
                 print(f"réinitialisation tps {last_mvt}")
                 next_random = random.uniform(4, 15)
