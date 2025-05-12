@@ -6,7 +6,6 @@ import time
 class Walle:
     def __init__(self, port: str):
         self.sound_player = SoundPlayer()
-        #self.sound("start1")
         
         self.serial_available = True
         try:
@@ -42,7 +41,9 @@ class Walle:
         
         
         time.sleep(2)
+        self.sound("start1")
         self.wake_up()
+        
         
         
         

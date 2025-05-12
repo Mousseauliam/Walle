@@ -13,6 +13,7 @@ class ModeManager:
             self.stop_mode()
             self.current_mode = new_mode_module
             self.mode_thread = threading.Thread(target=self._run_mode)
+            self.mode_thread.daemon = True
             self.mode_thread.start()
             print(f"[ModeManager] Launched mode: {new_mode_module.__name__}")
 

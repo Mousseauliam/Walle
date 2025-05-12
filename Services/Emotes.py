@@ -19,7 +19,7 @@ def auto_adjust(walle):
 def happy(walle):
     walle.sadness(0)
     walle.blink()
-    walle.sound("waow2")
+    walle.sound("haha")
     time.sleep(2)
     walle.sadness(0.3)
     #Mettre un son joyeux
@@ -29,9 +29,11 @@ def sadness(walle):
     walle.lid(0.4)
     walle.manual("neck_L",0.2)
     walle.manual("neck_U",0)
-    time.sleep(2.5)
-    walle.neckAngle(walle.coef["neck_angle"])
-    walle.sadness(0)
+    time.sleep(0.2)
+    walle.sound('oh2')
+    time.sleep(3.5)
+    walle.neckAngle(walle.get_coef("neck_angle"))
+    walle.sadness(0.3)
     walle.lid(0)
     #walle.neck_level(0)
     #Mettre un son triste
@@ -72,7 +74,7 @@ def curious(walle):
     walle.eyebrow(1)
     walle.sadness(0)
     walle.headAngle(0)
-    
+    walle.sound("ah")
     time.sleep(1.5)
     walle.eyebrow(0)
     walle.sadness(0.2)
