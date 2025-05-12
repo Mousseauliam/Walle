@@ -50,11 +50,12 @@ picam2.start()
 #globale variables
 last_frame = None
 last_results = None
-head_tilt_history=[0]*2
-x_position_history = [0]*5
-y_position_history = [0]*3
-z_position_history = [0]*5
+head_tilt_history=[0.5]*2
+x_position_history = [0.5]*5
+y_position_history = [0.5]*3
+z_position_history = [0.5]*5
 head_detected = False
+Modes=""
 
 #eyes variables
 blink_threshold = 0.35
@@ -84,6 +85,11 @@ above_head = False
 nose_tip_y = 0
 chin_tip_y = 0
 
+#Follow
+body_center_x_history =[0.5]*5
+body_center_z_history=[0.5]*5
+head_y_history = [0.5]*5
+
 #hand variables
 last_hand_gesture = None
 
@@ -96,24 +102,12 @@ def gen_frames():
         
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
         
-        face_result = face_landmarker.detect(mp_image)
-        last_results = face_result 
-        
         pose_result = pose_landmarker.detect(mp_image)
         last_results_pose = pose_result 
-        
 
-        
         last_frame = frame
         h, w, _ = frame.shape
-        
-        if face_result.face_landmarks:
-            for face_landmarks in face_result.face_landmarks:
-                for landmark in face_landmarks:
-                    x, y = int(landmark.x * w), int(landmark.y * h)
-                    cv2.circle(frame, (x, y), 1, (0, 255, 0), -1)
-
-        
+  
         if pose_result.pose_landmarks:
             key_landmarks = [15, 16, 13, 14]
             # pose_result.pose_landmarks est une liste de listes (une par personne détectée)
@@ -123,6 +117,16 @@ def gen_frames():
                     x, y = int(landmark.x * w), int(landmark.y * h)
                     cv2.circle(frame, (x, y), 4, (0, 0, 255), -1)
         
+        if Modes=="Auto":
+            face_result = face_landmarker.detect(mp_image)
+            last_results = face_result 
+        
+            if face_result.face_landmarks:
+                for face_landmarks in face_result.face_landmarks:
+                    for landmark in face_landmarks:
+                        x, y = int(landmark.x * w), int(landmark.y * h)
+                        cv2.circle(frame, (x, y), 1, (0, 255, 0), -1)
+
         ret, buffer = cv2.imencode('.jpg', frame)
         
         if not ret:
@@ -133,9 +137,13 @@ def gen_frames():
         time.sleep(0.03)
 
 def frame_process():
-    head_factor()
-    body_factor()
-    hand_factor()
+    match Modes :
+        case "Auto":
+            head_factor()
+            body_factor()
+            hand_factor()
+        case "Follow":
+            body_factor()
     
     
 def head_factor():
@@ -200,6 +208,8 @@ def head_factor():
         
 def body_factor():
     global last_results,last_results_pose, last_wrist_L, last_wrist_R, last_elbow_L, last_elbow_R, last_process, velocity, above_head, nose_tip_y
+    global body_center_x_history, body_center_z_history, head_y_history
+
     if last_results_pose.pose_landmarks:
         # On prend la première personne détectée
         pose_landmarks = last_results_pose.pose_landmarks[0]
@@ -207,6 +217,14 @@ def body_factor():
         wrist_R = pose_landmarks[16]  # 16 = RIGHT_WRIST
         elbow_L = pose_landmarks[13]  # 13 = LEFT_ELBOW
         elbow_R = pose_landmarks[14]  # 14 = RIGHT_ELBOW
+
+        #follow
+        left_shoulder = pose_landmarks[11]
+        right_shoulder = pose_landmarks[12]
+        left_hip = pose_landmarks[23]
+        right_hip = pose_landmarks[24]
+        nose = pose_landmarks[0]
+        
         
         
         now= time.time()
@@ -233,6 +251,13 @@ def body_factor():
         last_elbow_R.pop(0)
         last_elbow_R.append([elbow_R.x, elbow_R.y, elbow_R.z])
 
+        body_center_x_history.pop(0)
+        body_center_x_history.append((left_shoulder.x + right_shoulder.x + left_hip.x + right_hip.x) / 4)
+        body_center_z_history.pop(0)
+        body_center_z_history.append((left_shoulder.z + right_shoulder.z + left_hip.z + right_hip.z) / 4)
+        head_y_history.pop(0)
+        head_y_history.append(nose.y)
+
 def hand_factor():
     global last_frame, hand_recognizer, last_hand_gesture
     if last_frame is None:
@@ -249,7 +274,7 @@ def hand_factor():
     else:
         last_hand_gesture = None
 
-def get_factor():
+def Auto_factor():
     if head_detected:
         global blink_threshold, emote, surprise_threshold, hello_threshold, last_emote, above_head, last_wrist_L, last_wrist_R, velocity, last_hand_gesture
         global L_brow, R_brow, browns_threshold, browns_threshold_L, eye_looks_values
@@ -384,3 +409,12 @@ May 11 14:46:33 Walle start.sh[3040]: 49 : mouthUpperUpRight: 0.00
 May 11 14:46:33 Walle start.sh[3040]: 50 : noseSneerLeft: 0.00
 May 11 14:46:33 Walle start.sh[3040]: 51 : noseSneerRight: 0.00
     """
+
+def Follow_factor():
+    global body_center_x_history, body_center_z_history, head_y_history
+    
+    body_center_x=round(sum(body_center_x_history)/len(body_center_x_history),2)
+    body_center_z=round(sum(body_center_z_history)/len(body_center_z_history),2)
+    head_y=round(sum(head_y_history)/len(head_y_history),2)
+
+    return [body_center_x, body_center_z, head_y]

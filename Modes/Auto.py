@@ -1,5 +1,5 @@
 import time
-from Vision.cam import get_factor
+from Vision.cam import Auto_factor
 
 active = False
 
@@ -24,7 +24,7 @@ def run(robot,server):
     eye_closed = False
 
     while active:
-        head_factor=get_factor()
+        head_factor=Auto_factor()
         if all(element is not None for element in head_factor[:5]):
             neck_angle = robot.get_coef("neck_angle")
             if (head_factor[1] < (0.5 - deadzone)) and (neck_angle>y_step) :
