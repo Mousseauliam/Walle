@@ -298,6 +298,8 @@ def hand_factor():
         last_hand_gesture = None
 
 def Auto_factor():
+    global Modes
+    Modes="Auto"
     if head_detected:
         global blink_threshold, emote, surprise_threshold, hello_threshold, last_emote, above_head, last_wrist_L, last_wrist_R, velocity, last_hand_gesture
         global L_brow_history, R_brow_history, browns_threshold, browns_threshold_L, eye_looks_values, smile
@@ -379,6 +381,17 @@ def Auto_factor():
     return res
 
 
+def Follow_factor():
+    global Modes
+    Modes="Follow"
+    global body_center_x_history, body_center_z_history, head_y_history
+    
+    body_center_x=round(sum(body_center_x_history)/len(body_center_x_history),2)
+    body_center_z=round(sum(body_center_z_history)/len(body_center_z_history),2)
+    head_y=round(sum(head_y_history)/len(head_y_history),2)
+
+    return [body_center_x, body_center_z, head_y]
+
 
 
     """May 11 14:46:33 Walle start.sh[3040]: Expressions faciales détectées :
@@ -435,12 +448,3 @@ May 11 14:46:33 Walle start.sh[3040]: 49 : mouthUpperUpRight: 0.00
 May 11 14:46:33 Walle start.sh[3040]: 50 : noseSneerLeft: 0.00
 May 11 14:46:33 Walle start.sh[3040]: 51 : noseSneerRight: 0.00
     """
-
-def Follow_factor():
-    global body_center_x_history, body_center_z_history, head_y_history
-    
-    body_center_x=round(sum(body_center_x_history)/len(body_center_x_history),2)
-    body_center_z=round(sum(body_center_z_history)/len(body_center_z_history),2)
-    head_y=round(sum(head_y_history)/len(head_y_history),2)
-
-    return [body_center_x, body_center_z, head_y]
