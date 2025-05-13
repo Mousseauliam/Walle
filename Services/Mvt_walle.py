@@ -29,8 +29,8 @@ class Walle:
             "arm_R":0.5,
             "hand_L":0.5,
             "hand_R":0.5,
-            "speed_L":0.5,
-            "speed_R":0.5,
+            "speed":0.5,
+            "turn":0.5,
             "head_angle": 0.5,
             "neck_level":1.0,
             "neck_angle":0.4,
@@ -162,22 +162,14 @@ class Walle:
         self.update(["neck_L", "neck_U"])
         
     def forward(self, speed=0.5):
-        self.coef["speed_L"] = speed
-        self.coef["speed_R"] = speed
+        self.coef["speed"] = speed
         print(f"[Mvt_Walle] WALL-E avance à la vitesse {speed}")
-        self.update(["speed_L", "speed_R"])
-        
-    def backward(self, speed=0.5):
-        self.coef["speed_L"] = -speed
-        self.coef["speed_R"] = -speed
-        print(f"[Mvt_Walle] WALL-E recule à la vitesse {speed}")
-        self.update(["speed_L", "speed_R"])
+        self.update(["speed"])
         
     def turn (self, speed=0.5):
-        self.coef["speed_L"] = (0.5-speed)*2
-        self.coef["speed_R"] = (0.5-speed)*-2
-        print(f"[Mvt_Walle] WALL-E tourne à la vitesse {(0.5-speed)*2}")
-        self.update(["speed_L", "speed_R"])
+        self.coef["turn"] = speed
+        print(f"[Mvt_Walle] WALL-E tourne à la vitesse {speed}")
+        self.update(["turn"])
         
     def emote(self, name):
         if name in Emotes.EMOTES:
