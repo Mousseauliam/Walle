@@ -25,8 +25,8 @@ class Walle:
             "neck_U":0,
             "neck_L":0,
             "neck_LR":0.5,
-            "arm_L":0.5,
-            "arm_R":0.5,
+            "shoulder_L":0.5,
+            "shoulder_R":0.5,
             "hand_L":0.5,
             "hand_R":0.5,
             "speed":0.5,
@@ -119,9 +119,9 @@ class Walle:
         self.update(["hand_L", "hand_R"])
 
     def arm(self, angle):
-        self.coef["arm_L"] = angle
-        self.coef["arm_R"] = angle
-        self.update(["arm_L", "arm_R"])
+        self.coef["shoulder_L"] = angle
+        self.coef["shoulder_R"] = angle
+        self.update(["shoulder_L", "shoulder_R"])
 
     """  
     def neckLevel(self, necklevel=None):
@@ -200,8 +200,8 @@ class Walle:
         self.manual("neck_U", 0.0)
         self.manual("neck_L", 0)
         self.manual("neck_LR", 0.5)
-        self.manual("arm_L", 0.5)
-        self.manual("arm_R", 0.5)
+        self.manual("shoulder_L", 0.5)
+        self.manual("shoulder_R", 0.5)
         self.manual("hand_L", 0.5)
         self.manual("hand_R", 0.5)
         
@@ -217,8 +217,8 @@ class Walle:
         self.neckAngle(0.4)
         self.manual("neck_LR", 0.5)
         time.sleep(1)
-        self.manual("arm_L", 0.5)
-        self.manual("arm_R", 0.5)
+        self.manual("shoulder_L", 0.5)
+        self.manual("shoulder_R", 0.5)
         time.sleep(0.5)
         self.manual("hand_L", 0.5)
         self.manual("hand_R", 0.5)
