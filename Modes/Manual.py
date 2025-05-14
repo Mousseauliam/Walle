@@ -21,11 +21,11 @@ def run(robot,server):
                 case "right":
                     robot.turn(0.8)
                 case "forward":
-                    robot.displace(0.9)
+                    robot.move(0.9)
                 case "backward":
-                    robot.displace(0.1)
+                    robot.move(0.1)
                 case "stop":
-                    robot.displace(0.5)
+                    robot.move(0.5)
                 case "blink":
                     robot.blink()
                 
@@ -49,6 +49,8 @@ def run(robot,server):
                     robot.neckLR(position)
                 case "eyebrows":
                     robot.eyebrow(position)
+                case "speed":
+                    robot.move(position)
                 case _:
                     print(f"[Manual] Servo {servo} to position {position}")
                     robot.manual(servo,position)
