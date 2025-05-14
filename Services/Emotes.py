@@ -22,7 +22,7 @@ def happy(walle):
     walle.sound("haha")
     time.sleep(2)
     walle.sadness(0.3)
-    #Mettre un son joyeux
+    time.sleep(2)
 
 def sadness(walle):
     walle.sadness(1)
@@ -49,6 +49,7 @@ def rizz(walle):
     time.sleep(0.2)
     walle.eyebrow(0)
     walle.lid(0)
+    time.sleep.(2)
 
 def looking(walle):
     walle.neckLR(0)
@@ -85,9 +86,9 @@ def surprise(walle):
     walle.eyebrow(1)
     walle.sadness(0)
     walle.sound("waow1")
-    #walle.arm(0.3)
+    walle.arm(0.1)
     time.sleep(0.5)
-    #walle.arm(0)
+    walle.arm(0)
     time.sleep(0.5)
     walle.eyebrow(0)
     walle.sadness(0.2)
