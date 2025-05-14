@@ -56,15 +56,14 @@ modes = {
 music =["sunday_clothe", "la_vie_en_rose", "takes_a_moments"]
 last_music =0
 
-
-
-current_mode_name = "Auto"
-manager.launch_mode(modes[current_mode_name])
-
 print("Lancement du thread vision")
 vision_thread = threading.Thread(target=detection)
 vision_thread.daemon = True
 vision_thread.start()
+
+
+current_mode_name = "Auto"
+manager.launch_mode(modes[current_mode_name])
 
 while power:
     
