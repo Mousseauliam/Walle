@@ -161,7 +161,7 @@ class Walle:
         print(f"[Mvt_Walle] Neck_angle réglé à {neckAngle}")
         self.update(["neck_L", "neck_U"])
         
-    def forward(self, speed=0.5):
+    def displace(self, speed=0.5):
         self.coef["speed"] = speed
         print(f"[Mvt_Walle] WALL-E avance à la vitesse {speed}")
         self.update(["speed"])
