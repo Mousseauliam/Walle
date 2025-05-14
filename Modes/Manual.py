@@ -17,13 +17,13 @@ def run(robot,server):
             print(f"[Manual] Command received:{command}")
             match command:
                 case "left":
-                    robot.turn(0.3)
+                    robot.turn(0.2)
                 case "right":
-                    robot.turn(0.7)
+                    robot.turn(0.8)
                 case "forward":
-                    robot.forward(0.7)
+                    robot.forward(0.9)
                 case "backward":
-                    robot.forward(0.3)
+                    robot.forward(0.1)
                 case "stop":
                     robot.forward(0.5)
                 case "blink":
