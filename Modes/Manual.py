@@ -9,6 +9,8 @@ def run(robot,server):
     dump = server.get_selected_emote()
     dump = server.get_servo_data()
     
+    #commentaire
+    
     while active:
         command = server.get_last_command()
         if command!= None:
