@@ -98,7 +98,7 @@ last_hand_gesture = None
 
 def detection():
     global last_frame, last_results,last_results_pose, last_process
-    
+    print("cam")    
     while True:
         print("cam")
         frame = picam2.capture_array()
