@@ -134,12 +134,7 @@ def detection():
                         x, y = int(landmark.x * w), int(landmark.y * h)
                         cv2.circle(frame, (x, y), 1, (0, 255, 0), -1)
 
-        ret, buffer = cv2.imencode('.jpg', frame)
-        
-        if not ret:
-            continue
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
+
         frame_process()
         time.sleep(0.03)
 
