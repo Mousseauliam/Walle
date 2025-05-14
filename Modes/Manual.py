@@ -21,11 +21,11 @@ def run(robot,server):
                 case "right":
                     robot.turn(0.8)
                 case "forward":
-                    robot.forward(0.9)
+                    robot.displace(0.9)
                 case "backward":
-                    robot.forward(0.1)
+                    robot.displace(0.1)
                 case "stop":
-                    robot.forward(0.5)
+                    robot.displace(0.5)
                 case "blink":
                     robot.blink()
                 
