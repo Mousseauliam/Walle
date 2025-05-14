@@ -84,7 +84,7 @@ def surprise(walle):
     walle.eyebrow(1)
     walle.sadness(0)
     walle.sound("waow1")
-    walle.arm(0.1)
+    walle.arm(0.25)
     time.sleep(0.5)
     walle.arm(0)
     time.sleep(0.5)
