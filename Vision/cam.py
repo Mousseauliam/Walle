@@ -100,6 +100,7 @@ def detection():
     global last_frame, last_results,last_results_pose, last_process
     
     while True:
+        print("cam")
         frame = picam2.capture_array()
         frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
