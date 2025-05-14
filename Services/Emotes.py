@@ -39,6 +39,7 @@ def sadness(walle):
     #Mettre un son triste
 
 def rizz(walle):
+    walle.sound('rizz')
     walle.lid(0.4)
     walle.eyebrow(1)
     time.sleep(0.2)
