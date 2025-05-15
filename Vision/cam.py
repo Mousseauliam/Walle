@@ -84,7 +84,6 @@ emote = None
 last_emote = 0
 surprise_threshold = 5
 hello_threshold = 1
-above_head = False
 nose_tip_y = 0
 chin_tip_y = 0
 
@@ -253,10 +252,8 @@ def body_factor():
         velocity.append(np.sqrt((elbow_R.x - last_elbow_R[9][0])**2 + (elbow_R.y - last_elbow_R[9][1])**2 + (elbow_R.z - last_elbow_R[9][2])**2) / (now - last_process))
         
         
-        h_wrist = chin_tip_y + (abs(nose_tip_y - chin_tip_y) *3)
-        above_head = (last_wrist_L[9][1]< h_wrist) or (last_wrist_R[9][1]< h_wrist)
-        
-        last_process = time.time()
+        #h_wrist = chin_tip_y + (abs(nose_tip_y - chin_tip_y) *3)
+        #above_head = (last_wrist_L[9][1]< h_wrist) or (last_wrist_R[9][1]< h_wrist)
         
         # wrist position
         last_wrist_L.pop(0)
@@ -274,6 +271,8 @@ def body_factor():
         body_center_z_history.append((left_shoulder.z + right_shoulder.z + left_hip.z + right_hip.z) / 4)
         head_y_history.pop(0)
         head_y_history.append(nose.y)
+
+        last_process = time.time()
 
 def hand_factor():
     global last_frame, hand_recognizer, last_hand_gesture
@@ -345,14 +344,17 @@ def Auto_factor():
             
             #print(velocity_moy, is_waving([w[0] for w in last_wrist_L]) , is_waving([w[0] for w in last_wrist_R]), above_head)
             
-            if last_hand_gesture == "Open_Palm" and above_head:
-                emote = "Hello"
-            elif any(velocity > surprise_threshold for velocity in velocity_moy):
+            if any(velocity > surprise_threshold for velocity in velocity_moy):
                 emote = "Surprise"
             elif smile :
                 emote = "Happy"
             else:
                 emote = None
+                
+        wrist_L=sum(last_wrist_L[:][1])/len(last_wrist_L)
+        wrist_R=sum(last_wrist_R[:][1])/len(last_wrist_R)
+        
+        print(wrist_L,wrist_R)
     else:
         res =[None, None, None, None, None, None, None]
         
@@ -365,6 +367,8 @@ def Auto_factor():
             emote = "Curious"
         elif last_hand_gesture == "ILoveYou" :
             emote = "Rizz"
+        if last_hand_gesture == "Open_Palm" :
+            emote = "Hello"
         
 
     if emote is not None:
