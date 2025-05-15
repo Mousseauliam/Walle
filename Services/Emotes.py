@@ -91,20 +91,20 @@ def surprise(walle):
     walle.sadness(0.2)
 
 def dance(walle):
+    walle.neckAngle(0.5)
     a=0
     while a<=3:
         walle.headAngle(0.3)
-        walle.manual("shoulder_L", 0.3)
-        walle.manual("shoulder_R", 0)
-        time.sleep(0.4)
+        walle.manual("shoulder_L", walle.get_coef("shoulder_L")+0.3)
+        walle.manual("shoulder_R", walle.get_coef("shoulder_R")-0,3)
+        time.sleep(0.8)
         walle.headAngle(0.7)
-        walle.manual("shoulder_R", 0.3)
-        walle.manual("shoulder_L", 0)
-        time.sleep(0.4)
+        walle.manual("shoulder_R", walle.get_coef("shoulder_R"+0,3))
+        walle.manual("shoulder_L", walle.get_coef("shoulder_L")-0.3)
+        time.sleep(0.8)
         a+=1
     walle.headAngle(0.5)
-    walle.neckLR(0.5)
-    walle.arm(0)
+    walle.arm(walle.get_coef("shoulder_L"))
     
 def hello(walle):
     walle.manual("shoulder_L",0.7)
@@ -134,4 +134,3 @@ EMOTES = {
     "Dance": dance,
     "Hello": hello
 }
-
