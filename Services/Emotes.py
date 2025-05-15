@@ -83,7 +83,7 @@ def surprise(walle):
     walle.eyebrow(1)
     walle.sadness(0)
     walle.sound(str(random.choices("waow1","waow2")))
-    walle.arm(0.25)
+    walle.arm(0.2)
     time.sleep(0.5)
     walle.arm(0)
     time.sleep(0.5)
