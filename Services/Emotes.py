@@ -99,7 +99,7 @@ def dance(walle):
         walle.manual("shoulder_R", walle.get_coef("shoulder_R")-0.3)
         time.sleep(0.8)
         walle.headAngle(0.7)
-        walle.manual("shoulder_R", walle.get_coef("shoulder_R"+0.3))
+        walle.manual("shoulder_R", walle.get_coef("shoulder_R")+0.3)
         walle.manual("shoulder_L", walle.get_coef("shoulder_L")-0.3)
         time.sleep(0.8)
         a+=1
