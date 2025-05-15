@@ -127,6 +127,7 @@ def hello(walle):
     walle.manual("hand_L", 0.5)
     time.sleep(0.5)
     walle.headAngle(0.5)
+    walle.manual("shoulder_L",0)
 
 EMOTES = {
     "Auto_adjust": auto_adjust,
