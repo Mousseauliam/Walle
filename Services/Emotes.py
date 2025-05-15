@@ -92,19 +92,23 @@ def surprise(walle):
 
 def dance(walle):
     walle.neckAngle(0.5)
+    walle.headAngle(0.5)
+    time.sleep(0.5)
+    walle.sound("sunday_clothe")
     a=0
-    while a<=3:
+    while a<=4:
         walle.headAngle(0.3)
         walle.manual("shoulder_L", walle.get_coef("shoulder_L")+0.3)
         walle.manual("shoulder_R", walle.get_coef("shoulder_R")-0.3)
-        time.sleep(0.8)
+        time.sleep(0.9)
         walle.headAngle(0.7)
         walle.manual("shoulder_R", walle.get_coef("shoulder_R")+0.3)
         walle.manual("shoulder_L", walle.get_coef("shoulder_L")-0.3)
-        time.sleep(0.8)
+        time.sleep(0.9)
         a+=1
     walle.headAngle(0.5)
     walle.arm(walle.get_coef("shoulder_L"))
+    walle.stop_sound()
     
 def hello(walle):
     walle.manual("shoulder_L",0.7)
