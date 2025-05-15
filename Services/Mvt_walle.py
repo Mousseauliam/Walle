@@ -165,7 +165,7 @@ class Walle:
         self.coef["speed_L"] = speed
         self.coef["speed_R"] = speed
         print(f"[Mvt_Walle] WALL-E avance à la vitesse {speed}")
-        self.update(["speed"])
+        self.update(["speed_L","speed_R"])
         
     def turn (self, angle=0.5):
         if (angle<0.5):
