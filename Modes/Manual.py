@@ -51,6 +51,8 @@ def run(robot,server):
                     robot.eyebrow(position)
                 case "speed":
                     robot.move(position)
+                case "arm":
+                    robot.arm(position)
                 case _:
                     print(f"[Manual] Servo {servo} to position {position}")
                     robot.manual(servo,position)
