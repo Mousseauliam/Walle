@@ -72,7 +72,7 @@ class Walle:
         
     def manual(self,name,angle):
         if (self.coef[name] != angle) :
-            self.coef[name]=angle
+            self.coef[name]=round(max(0,min(1,angle)),2)
             print(f"[Mvt_Walle] {name} réglé à {angle}")
             self.update([name])
 
