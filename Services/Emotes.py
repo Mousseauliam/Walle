@@ -51,16 +51,16 @@ def rizz(walle):
 def looking(walle):
     walle.neckLR(0)
     walle.neckAngle(0.2)
-    #walle.coef["arm_R"]=0.4
+    walle.manual("shoulder_R",0.2)
     time.sleep(3)
-    #walle.coef["hand_R"]=1
+    walle.manual("hand_R",0.2)
     time.sleep(0.5)
-    #walle.coef["hand_L"]=0
+    walle.manual("hand_L",0.2)
     walle.neckLR(1)
     time.sleep(0.3)
     walle.blink()
     time.sleep(3)
-    #walle.coef["arm_R"]=0
+    walle.manual("shoulder_R",0)
     walle.neckAngle(0.5)
     time.sleep(1)
     walle.neckLR(0)
@@ -82,7 +82,7 @@ def curious(walle):
 def surprise(walle):
     walle.eyebrow(1)
     walle.sadness(0)
-    walle.sound("waow1")
+    walle.sound(str(random.choices("waow1","waow2")))
     walle.arm(0.25)
     time.sleep(0.5)
     walle.arm(0)
@@ -92,28 +92,23 @@ def surprise(walle):
 
 def dance(walle):
     a=0
-    while a<=2:
-        #walle.coef["speed_L"]= 0.7
-        #walle.coef["speed_R"]= 0.3
+    while a<=3:
         walle.headAngle(0.3)
+        walle.manual("shoulder_L", 0.3)
+        walle.manual("shoulder_R", 0)
         time.sleep(0.4)
-        walle.neckLR(0.4)
-        time.sleep(0.2)
-        walle.neckLR(0.5)
-        time.sleep(0.5)
         walle.headAngle(0.7)
+        walle.manual("shoulder_R", 0.3)
+        walle.manual("shoulder_L", 0)
         time.sleep(0.4)
-        walle.neckLR(0.4)
-        time.sleep(0.2)
-        walle.neckLR(0.5)
-        time.sleep(0.5)
         a+=1
     walle.headAngle(0.5)
     walle.neckLR(0.5)
+    walle.arm(0)
     
 def hello(walle):
     walle.manual("shoulder_L",0.7)
-    walle.sound("walle2")
+    walle.sound(str(random.choice(["walle1","walle2"])))
     time.sleep(0.8)
     walle.headAngle(0.8)
     time.sleep(0.5)
