@@ -113,6 +113,7 @@ def dance(walle):
     walle.neckLR(0.5)
     
 def hello(walle):
+    walle.sound("shoulder_L",0.7)
     walle.sound("walle2")
     time.sleep(0.8)
     walle.headAngle(0.8)
