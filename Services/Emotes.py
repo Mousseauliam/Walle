@@ -1,4 +1,5 @@
 import time
+import random
 
 def auto_adjust(walle):
     walle.headAngle(0.5)
@@ -29,13 +30,11 @@ def sadness(walle):
     walle.manual("neck_L",0.2)
     walle.manual("neck_U",0)
     time.sleep(0.2)
-    walle.sound('oh2')
+    random.choices(walle.sound('oh2'),walle.sound('sight1'))
     time.sleep(3.5)
     walle.neckAngle(walle.get_coef("neck_angle"))
     walle.sadness(0.3)
     walle.lid(0)
-    #walle.neck_level(0)
-    #Mettre un son triste
 
 def rizz(walle):
     walle.sound('rizz')
