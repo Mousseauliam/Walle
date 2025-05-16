@@ -26,19 +26,21 @@ def happy(walle):
 
 def happy2(walle):
     a=0
-    #walle.sound("whistle")
+    walle.sound("whistle")
     while a<2:
         walle.neckAngle(walle.get_coef("neck_angle")+0.1)
-        time.sleep(0.2)
+        walle.eyebrow(0.5)
+        time.sleep(0.6)
         walle.neckAngle(walle.get_coef("neck_angle")-0.1)
-        time.sleep(0.2)
+        walle.eyebrow(0)
+        time.sleep(0.7)
         a+=1
 
 def happy3(walle):
     walle.headAngle(walle.get_coef("neck_angle")+0.15)
-    walle.manual("lid_R",1)
-    time.sleep(0.2)
-    walle.manual("lid_R",0)
+    walle.manual("lid_L",1)
+    time.sleep(0.3)
+    walle.manual("lid_L",0)
     walle.headAngle(walle.get_coef("neck_angle")-0.15)
 
 
