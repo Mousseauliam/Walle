@@ -21,9 +21,9 @@ def run(robot,server):
                 case "right":
                     robot.turn(0.8)
                 case "forward":
-                    robot.move(0.1)
+                    robot.move(0)
                 case "backward":
-                    robot.move(0.9)
+                    robot.move(1)
                 case "stop":
                     robot.move(0.5)
                 case "blink":

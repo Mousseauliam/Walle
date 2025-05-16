@@ -229,11 +229,8 @@ class Walle:
         else:
             return
         speed=self.coef[side]
-        self.coef[side]=(speed -0.2) if speed>0.5 else (speed +0.2)
+        self.coef[side]=(speed -0.3) if speed>0.5 else (speed +0.3)
         print(f"[Mvt_Walle] WALL-E tourne à la vitesse {side}")
-        self.update([side])
-        time.sleep(abs(angle-0.5)*5)
-        self.coef[side]=speed
         self.update([side])
         
     def emote(self, name):
