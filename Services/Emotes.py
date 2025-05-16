@@ -132,7 +132,7 @@ def dance(walle):
 def hello(walle):
     walle.manual("shoulder_L",0.7)
     print('choice2')
-    walle.sound(str(random.choice('walle1','walle2')))
+    walle.sound(str(random.choice(list(['walle1','walle2']))))
     time.sleep(0.8)
     walle.headAngle(0.8)
     time.sleep(0.5)
