@@ -5,6 +5,8 @@ from mediapipe.tasks.python import vision
 from mediapipe.tasks import python
 import mediapipe as mp
 import numpy as np
+import random
+from Services.Emotes import SMILE
 
 HAND_MODEL_PATH = "Vision/Modele/gesture_recognizer.task"
 FACE_MODEL_PATH = "Vision/Modele/face_landmarker.task"
@@ -346,7 +348,7 @@ def Auto_factor():
             if any(velocity > surprise_threshold for velocity in velocity_moy):
                 emote = "Surprise"
             elif smile :
-                emote = "Happy"
+                emote = random.choices(SMILE.key())
             else:
                 emote = None
                 
