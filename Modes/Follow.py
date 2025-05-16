@@ -15,7 +15,7 @@ def run(robot,server):
     y_step = 0.01
     while active:
         factor=Follow_factor()
-        print(z_threshold)
+        print(factor[1])
         '''
         if factor[1]>(z_threshold+z_deadzone) :
             robot.move(0.5+speed)
