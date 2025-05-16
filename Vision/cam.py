@@ -348,7 +348,7 @@ def Auto_factor():
             if any(velocity > surprise_threshold for velocity in velocity_moy):
                 emote = "Surprise"
             elif smile :
-                emote = random.choices(SMILE.key())
+                emote = random.choice(list(SMILE.keys()))
             else:
                 emote = None
                 
