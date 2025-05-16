@@ -47,7 +47,7 @@ def sadness(walle):
     walle.manual("neck_L",0.2)
     walle.manual("neck_U",0)
     time.sleep(0.2)
-    walle.sound(str(random.choice(['oh2', 'sight1'])))
+    walle.sound(str(random.choice('oh2', 'sight1')))
     time.sleep(3.5)
     walle.neckAngle(walle.get_coef("neck_angle"))
     walle.sadness(0.3)
@@ -129,7 +129,7 @@ def dance(walle):
     
 def hello(walle):
     walle.manual("shoulder_L",0.7)
-    walle.sound(str(random.choice(["walle1","walle2"])))
+    walle.sound(str(random.choice("walle1","walle2")))
     time.sleep(0.8)
     walle.headAngle(0.8)
     time.sleep(0.5)

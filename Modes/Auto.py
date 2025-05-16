@@ -92,7 +92,7 @@ def run(robot,server):
                 next_random = random.uniform(4, 15)
             
             if ((tps-last_sound) > next_sound):
-                robot.sound(random.choice(list(['ah','brr1','mission1','oh7','walle1','waow1','waow2','whistle','sunday_clothe_cut'])))
+                robot.sound(str(random.choice(list(['ah','brr1','mission1','oh7','walle1','waow1','waow2','whistle','sunday_clothe_cut']))))
                 last_sound=tps
                 next_sound = random.uniform(15, 40)
                 
