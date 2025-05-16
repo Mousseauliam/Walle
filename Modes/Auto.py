@@ -75,17 +75,16 @@ def run(robot,server):
                     robot.manual("eyebrow_L", 0)
                     robot.manual("eyebrow_R", 1)
                     
-            robot.manual('shoulder_L',max(0.1, min(0.5,robot.get_coef('shoulder_L')+head_factor[6]*-1.5)))
+            robot.manual('shoulder_L',max(0.1, min(0.5,robot.get_coef('shoulder_L')+head_factor[6]*-2)))
             robot.manual('shoulder_R',max(0.1, min(0.5,robot.get_coef('shoulder_R')+head_factor[7]*-2)))
         
         else :
             tps=time.time()
             
             if ((tps - last_mvt) > next_random):
-                robot.neckAngle(round(max(0, min(robot.get_coef('neck_angle') + random.uniform(-0.1, 0.1), 0.7)),2))
+                robot.neckAngle(round(max(0.3, min(robot.get_coef('neck_angle') + random.uniform(-0.1, 0.1), 0.7)),2))
                 val = round(robot.get_coef('neck_LR') + random.uniform(-0.2, 0.2),2)
-                print(val)
-                val = max(0, min(val, 1))
+                val = max(0.3, min(val, 0.7))
                 robot.neckLR(val)
                 last_mvt = tps
                 print(f"réinitialisation tps {last_mvt}")
