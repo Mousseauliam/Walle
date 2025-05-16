@@ -162,6 +162,6 @@ EMOTES = {
 SMILE = {
     "Happy": happy,
     "Happy2": happy2,
-    "Happy3": happpy3,
+    "Happy3": happy3
 
 }

@@ -335,7 +335,7 @@ def Auto_factor():
             elif (R_brow > browns_threshold) and (L_brow <= browns_threshold_L):
                 brown_type = "brow_up_right"
         
-        res = [x_position, y_position, z_position, head_tilt, blink_type, brown_type]
+        res = [x_position, y_position, z_position, head_tilt, blink_type, brown_type, wrist_L, wrist_R]
         
         if (time.time() - last_emote) > 5:
             velocity_moy = []
@@ -356,7 +356,7 @@ def Auto_factor():
         
         print(wrist_L,wrist_R)
     else:
-        res =[None, None, None, None, None, None, None]
+        res =[None, None, None, None, None, None, None, None]
         
     if emote is None :
         if last_hand_gesture == "Thumb_Down" :
