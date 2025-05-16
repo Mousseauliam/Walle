@@ -150,6 +150,8 @@ def hello(walle):
 EMOTES = {
     "Auto_adjust": auto_adjust,
     "Happy": happy,
+    "Happy2": happy2,
+    "Happy3": happy3,
     "Sadness": sadness,
     "Rizz": rizz,
     "Looking": looking,
@@ -162,6 +164,6 @@ EMOTES = {
 SMILE = {
     "Happy": happy,
     "Happy2": happy2,
-    "Happy3": happy3
+    "Happy3": happy3,
 
 }
