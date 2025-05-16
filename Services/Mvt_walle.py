@@ -162,8 +162,8 @@ class Walle:
         self.update(["neck_L", "neck_U"])
 
     def neck_levelbis(self, neckLevel):
-        neck_L = self.get_coef["neck_L"]
-        neck_U = self.get_coef["neck_U"]
+        neck_L = self.coef["neck_L"]
+        neck_U = self.coef["neck_U"]
 
         if 0 <= neckLevel < 0.5:
             delta = neckLevel
