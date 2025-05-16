@@ -37,11 +37,11 @@ def happy2(walle):
         a+=1
 
 def happy3(walle):
-    walle.headAngle(walle.get_coef("neck_angle")+0.15)
-    walle.manual("lid_L",1)
+    walle.headAngle(walle.get_coef("head_angle")+0.15)
+    walle.manual("lid_R",1)
     time.sleep(0.3)
-    walle.manual("lid_L",0)
-    walle.headAngle(walle.get_coef("neck_angle")-0.15)
+    walle.manual("lid_R",0)
+    walle.headAngle(walle.get_coef("head_angle")-0.15)
 
 
 def sadness(walle):
