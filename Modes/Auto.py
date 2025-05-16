@@ -73,8 +73,8 @@ def run(robot,server):
                     robot.manual("eyebrow_L", 0)
                     robot.manual("eyebrow_R", 1)
                     
-            robot.manual('shoulder_L', robot.get_factor('shoulder_L')+head_factor[6]*arm_factor)
-            robot.manual('shoulder_R', robot.get_factor('shoulder_R')+head_factor[7]*arm_factor)
+            robot.manual('shoulder_L', robot.get_coef('shoulder_L')+head_factor[6]*arm_factor)
+            robot.manual('shoulder_R', robot.get_coef('shoulder_R')+head_factor[7]*arm_factor)
         
         else :
             
