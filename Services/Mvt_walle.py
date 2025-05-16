@@ -232,7 +232,7 @@ class Walle:
         else:
             return
         speed=self.coef[side]
-        self.coef[side]=(speed -0.4) if speed>0.5 else (speed +0.4)
+        self.coef[side]=(speed -0.5) if speed>0.5 else (speed +0.5)
         print(f"[Mvt_Walle] WALL-E tourne à la vitesse {side}")
         self.update([side])
         
