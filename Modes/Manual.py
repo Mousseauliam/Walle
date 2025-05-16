@@ -40,7 +40,7 @@ def run(robot,server):
                 case 'head_angle':
                     robot.headAngle(position)
                 case "neck_level":
-                    robot.neckLevel(position)
+                    robot.neck_Levelbis(position)
                 case "neck_angle":
                     robot.neckAngle(position)
                 case "sadness":
