@@ -31,15 +31,14 @@ def happy2(walle):
         walle.neckAngle(walle.get_coef("neck_angle")+0.1)
         time.sleep(0.2)
         walle.neckAngle(walle.get_coef("neck_angle")-0.1)
+        time.sleep(0.2)
         a+=1
 
 def happy3(walle):
     walle.headAngle(walle.get_coef("neck_angle")+0.15)
     walle.manual("lid_R",1)
-    walle.manual("eyebrow_R",1)
     time.sleep(0.2)
     walle.manual("lid_R",0)
-    walle.manual("eyebrow_R",0)
     walle.headAngle(walle.get_coef("neck_angle")-0.15)
 
 
