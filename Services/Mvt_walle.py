@@ -165,8 +165,8 @@ class Walle:
         neck_L = self.coef["neck_L"]
         neck_U = self.coef["neck_U"]
 
+        delta=abs(neckLevel-0.5)
         if 0 <= neckLevel < 0.5:
-            delta = neckLevel
             # Réduction
             new_neck_L = neck_L - delta
             new_neck_U = neck_U - delta
@@ -188,7 +188,6 @@ class Walle:
             new_neck_U = 0.5
 
         elif 0.5 < neckLevel <= 1.0:
-            delta = neckLevel - 0.5
             new_neck_L = neck_L + delta
             new_neck_U = neck_U + delta
             # Gestion des bornes supérieures
