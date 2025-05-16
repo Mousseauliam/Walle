@@ -129,29 +129,29 @@ class Walle:
         ratio=abs(necklevel-0.5)
         if necklevel<0.5:
             self.coef["neck_L"]=self.coef["neck_L"]-ratio
-            self.coef["neck_R"]=self.coef["neck_R"]-ratio
+            self.coef["neck_U"]=self.coef["neck_U"]-ratio
         elif necklevel>0.5:
             self.coef["neck_L"]=self.coef["neck_L"]+ratio
-            self.coef["neck_R"]=self.coef["neck_R"]+ratio
+            self.coef["neck_U"]=self.coef["neck_U"]+ratio
 
         if self.coef["neck_L"]>1:
             a=self.coef["neck_L"]-1
             self.coef["neck_L"]=1
-            self.coef["neck_R"]-=a
+            self.coef["neck_U"]-=a
 
-        elif self.coef["neck_R"]>1:
-            a=self.coef["neck_R"]-1
-            self.coef["neck_R"]=1
+        elif self.coef["neck_U"]>1:
+            a=self.coef["neck_U"]-1
+            self.coef["neck_U"]=1
             self.coef["neck_L"]-=a
         
         elif self.coef["neck_L"]<0:
             a=self.coef["neck_L"]*-1
             self.coef["neck_L"]=0
-            self.coef["neck_R"]+=a
+            self.coef["neck_U"]+=a
 
-        elif self.coef["neck_R"]<0:
-            a=self.coef["neck_R"]*-1
-            self.coef["neck_R"]=0
+        elif self.coef["neck_U"]<0:
+            a=self.coef["neck_U"]*-1
+            self.coef["neck_U"]=0
             self.coef["neck_L"]+=a
         
         print(f"[Mvt_Walle] Neck_Level réglé à {necklevel}")
