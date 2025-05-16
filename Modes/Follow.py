@@ -16,13 +16,7 @@ def run(robot,server):
     while active:
         factor=Follow_factor()
 
-        if factor[0]<(0.5-x_deadzone) :
-            robot.turn(0.5-turn_speed)
-
-        elif factor[0]>(0.5+x_deadzone) :
-            robot.turn(0.5+turn_speed)
-
-        elif factor[1]>(z_threshold+z_deadzone) :
+        if factor[1]>(z_threshold+z_deadzone) :
             robot.move(0.5+speed)
         
         elif factor[1]<(z_threshold-z_deadzone) :
@@ -30,7 +24,7 @@ def run(robot,server):
         
         else:
             robot.move(0.5)
-
+        
         neck_angle = robot.get_coef("neck_angle")
         if (factor[2] < (0.5 - deadzone)) and (neck_angle>y_step) :
             robot.neckAngle(round(neck_angle - y_step,2))
