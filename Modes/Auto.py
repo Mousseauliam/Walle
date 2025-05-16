@@ -15,6 +15,7 @@ def run(robot,server):
     eye_closed = False
     last_mvt=time.time()
     next_random=4
+    arm_factor=-1.5
     
     while active:
         head_factor=Auto_factor()
@@ -71,6 +72,9 @@ def run(robot,server):
                 case "brow_up_right":
                     robot.manual("eyebrow_L", 0)
                     robot.manual("eyebrow_R", 1)
+                    
+            robot.manual('shoulder_L', robot.get_factor('shoulder_L')+head_factor[6]*arm_factor)
+            robot.manual('shoulder_R', robot.get_factor('shoulder_R')+head_factor[7]*arm_factor)
         
         else :
             
