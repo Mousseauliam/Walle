@@ -17,7 +17,8 @@ def run(robot,server):
     next_random=4
     last_sound=time.time()
     next_sound=6
-    arm_factor=-1.5
+    last_blink=time.time()
+    next_blink=10
     
     while active:
         head_factor=Auto_factor()
@@ -93,7 +94,12 @@ def run(robot,server):
             if ((tps-last_sound) > next_sound):
                 robot.sound(random.choice(['ah','brr1','mission1','oh7','walle1','waow1','waow2','whistle']))
                 last_sound=tps
-                next_sound = random.uniform(4, 15)
+                next_sound = random.uniform(15, 40)
+                
+            if ((tps-last_blink) > next_blink):
+                robot.blink()
+                last_blink=tps
+                next_blink = random.uniform(10, 30)
         
         if head_factor[8] is not None:
             print('emote')
