@@ -24,6 +24,25 @@ def happy(walle):
     time.sleep(2)
     walle.sadness(0.3)
 
+def happy2(walle):
+    a=0
+    #walle.sound("whistle")
+    while a<2:
+        walle.neckAngle(walle.get_coef("neck_angle")+0.1)
+        time.sleep(0.2)
+        walle.neckAngle(walle.get_coef("neck_angle")-0.1)
+        a+=1
+
+def happy3(walle):
+    walle.headAngle(walle.get_coef("neck_angle")+0.15)
+    walle.manual("lid_R",1)
+    walle.manual("eyebrow_R",1)
+    time.sleep(0.2)
+    walle.manual("lid_R",0)
+    walle.manual("eyebrow_R",0)
+    walle.headAngle(walle.get_coef("neck_angle")-0.15)
+
+
 def sadness(walle):
     walle.sadness(1)
     walle.lid(0.4)
@@ -94,7 +113,7 @@ def dance(walle):
     walle.neckAngle(0.5)
     walle.headAngle(0.5)
     time.sleep(0.5)
-    walle.sound("sunday_clothe")
+    walle.sound("sunday_clothe_cut")
     a=0
     while a<=4:
         walle.headAngle(0.3)
@@ -137,4 +156,11 @@ EMOTES = {
     "Surprise": surprise,
     "Dance": dance,
     "Hello": hello
+}
+
+SMILE = {
+    "Happy": happy,
+    "Happy2": happy2,
+    "Happy3": happpy3,
+
 }
