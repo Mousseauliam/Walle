@@ -128,6 +128,7 @@ def dance(walle):
     walle.headAngle(0.5)
     walle.arm(walle.get_coef("shoulder_L"))
     walle.stop_sound()
+    #coucou
     
 def hello(walle):
     walle.manual("shoulder_L",0.7)
