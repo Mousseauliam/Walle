@@ -85,6 +85,7 @@ def run(robot,server):
                 print(f"réinitialisation tps {last_mvt}")
                 next_random = random.uniform(4, 15)
         
+        print(head_factor[6],head_factor[7])
         if head_factor[8] is not None:
             print('emote')
             robot.emote(head_factor[8])
