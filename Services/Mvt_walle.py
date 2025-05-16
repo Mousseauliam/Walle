@@ -130,7 +130,7 @@ class Walle:
         if necklevel<0.5:
             self.coef["neck_L"]=walle.get_coef["neck_L"]-ratio
             self.coef["neck_R"]=walle.get_coef["neck_R"]-ratio
-        elif necklevel>0,5:
+        elif necklevel>0.5:
             self.coef["neck_L"]=walle.get_coef["neck_L"]+ratio
             self.coef["neck_R"]=walle.get_coef["neck_R"]+ratio
 
