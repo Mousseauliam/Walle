@@ -91,7 +91,7 @@ chin_tip_y = 0
 
 #Follow
 body_center_x_history =[0.5]*5
-body_center_z_history=[0.5]*5
+body_center_z_history=[0.5]*10
 head_y_history = [0.5]*5
 
 #hand variables
