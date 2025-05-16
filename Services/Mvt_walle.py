@@ -126,13 +126,13 @@ class Walle:
   
     def neckLevel(self, necklevel):
         self.coef["neck_level"]=necklevel
-        ration=abs(necklevel-0.5)
+        ratio=abs(necklevel-0.5)
         if necklevel<0.5:
-            self.coef["neck_L"]=walle.get_coef["neck_L"]-ratio
-            self.coef["neck_R"]=walle.get_coef["neck_R"]-ratio
+            self.coef["neck_L"]=self.coef["neck_L"]-ratio
+            self.coef["neck_R"]=self.coef["neck_R"]-ratio
         elif necklevel>0.5:
-            self.coef["neck_L"]=walle.get_coef["neck_L"]+ratio
-            self.coef["neck_R"]=walle.get_coef["neck_R"]+ratio
+            self.coef["neck_L"]=self.coef["neck_L"]+ratio
+            self.coef["neck_R"]=self.coef["neck_R"]+ratio
 
         if self.coef["neck_L"]>1:
             a=self.coef["neck_L"]-1
