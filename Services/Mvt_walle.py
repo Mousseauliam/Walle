@@ -160,7 +160,57 @@ class Walle:
         self.coef["neck_U"]= neckAngle
         print(f"[Mvt_Walle] Neck_angle réglé à {neckAngle}")
         self.update(["neck_L", "neck_U"])
-        
+
+  def neck_levelbis(self, neckLevel):
+    neck_L = walle.get_coef["neck_L"]
+    neck_U = walle.get_coef["neck_U"]
+
+    if 0 <= neckLevel < 0.5:
+        delta = neckLevel
+        # Réduction
+        new_neck_L = neck_L - delta
+        new_neck_U = neck_U - delta
+        # Gestion des bornes
+        if new_neck_L < 0 and new_neck_U < 0:
+            new_neck_L, new_neck_U = 0.0, 0.0
+        elif new_neck_L < 0:
+            reste = -new_neck_L  # quantité qu'on n'a pas pu retirer à L
+            new_neck_L = 0.0
+            new_neck_U = max(0.0, new_neck_U - reste)
+        elif new_neck_U < 0:
+            reste = -new_neck_U
+            new_neck_U = 0.0
+            new_neck_L = max(0.0, new_neck_L - reste)
+        # sinon, tout va bien
+
+    elif neckLevel == 0.5:
+        new_neck_L = 0.5
+        new_neck_U = 0.5
+
+    elif 0.5 < neckLevel <= 1.0:
+        delta = neckLevel - 0.5
+        new_neck_L = neck_L + delta
+        new_neck_U = neck_U + delta
+        # Gestion des bornes supérieures
+        if new_neck_L > 1 and new_neck_U > 1:
+            new_neck_L, new_neck_U = 1.0, 1.0
+        elif new_neck_L > 1:
+            reste = new_neck_L - 1  # quantité en excès sur L
+            new_neck_L = 1.0
+            new_neck_U = min(1.0, new_neck_U + reste)
+        elif new_neck_U > 1:
+            reste = new_neck_U - 1
+            new_neck_U = 1.0
+            new_neck_L = min(1.0, new_neck_L + reste)
+        # sinon, tout va bien
+
+    else:
+        raise ValueError("neckLevel doit être dans [0, 1]")
+
+    self.coef["neck_L"] = new_neck_L
+    self.coef["neck_U"] = new_neck_U
+    self.update(["neck_L", "neck_U"])
+
     def move(self, speed=0.5):
         self.coef["speed_L"] = speed
         self.coef["speed_R"] = speed
