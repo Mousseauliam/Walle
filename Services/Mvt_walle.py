@@ -164,6 +164,7 @@ class Walle:
     def neck_levelbis(self, neckLevel):
         neck_L = self.coef["neck_L"]
         neck_U = self.coef["neck_U"]
+        self.neckAngle(self.coef['neck_angle'])
 
         delta=abs(neckLevel-0.5)*2
         if 0 <= neckLevel < 0.5:
