@@ -108,7 +108,6 @@ def surprise(walle):
     walle.sadness(0.2)
 
 def dance(walle):
-    walle.neckAngle(0.5)
     walle.headAngle(0.5)
     time.sleep(0.5)
     walle.sound("sunday_clothe_cut")

@@ -15,6 +15,8 @@ def run(robot,server):
     eye_closed = False
     last_mvt=time.time()
     next_random=4
+    last_sound=time.time()
+    next_sound=6
     arm_factor=-1.5
     
     while active:
@@ -77,16 +79,21 @@ def run(robot,server):
             robot.manual('shoulder_R',max(0.1, min(0.5,robot.get_coef('shoulder_R')+head_factor[7]*-2)))
         
         else :
+            tps=time.time()
             
-            if ((time.time() - last_mvt) > next_random):
+            if ((tps - last_mvt) > next_random):
                 robot.neckAngle(round(max(0, min(robot.get_coef('neck_angle') + random.uniform(-0.1, 0.1), 0.7)),2))
                 val = round(robot.get_coef('neck_LR') + random.uniform(-0.2, 0.2),2)
                 print(val)
                 val = max(0, min(val, 1))
                 robot.neckLR(val)
-                last_mvt = time.time()
+                last_mvt = tps
                 print(f"réinitialisation tps {last_mvt}")
                 next_random = random.uniform(4, 15)
+            
+            if ((tps-last_sound) > next_sound):
+                robot.sound(random.choice(['ah','brr1','mission1','oh7','walle1','waow1','waow2','whistle']))
+                next_sound = random.uniform(4, 15)
         
         if head_factor[8] is not None:
             print('emote')
