@@ -92,6 +92,7 @@ def run(robot,server):
             
             if ((tps-last_sound) > next_sound):
                 robot.sound(random.choice(['ah','brr1','mission1','oh7','walle1','waow1','waow2','whistle']))
+                last_sound=tps
                 next_sound = random.uniform(4, 15)
         
         if head_factor[8] is not None:
